@@ -1,140 +1,185 @@
-# 代码审计 Agent
+# 代码安全审计 Agent
 
-用大模型做应用安全审计的 Agent，审计目标是 [gwind/ylinux_old](https://github.com/gwind/ylinux_old)（Django 1.2 / Python 2）。
+这个项目让大模型自己去读一个网站的源代码，找出里面的安全漏洞，最后写成报告。
 
-它由两段独立对话组成：
+被审计的网站是 [gwind/ylinux_old](https://github.com/gwind/ylinux_old)，一个 2010 年前后用 Django 1.2（Python 2）写的中文 Linux 社区，有论坛、Wiki、附件上传和一个远程发帖接口。审计固定在 commit `8a7316deec88287d020eca21c38dad921b623ffc`，保证每次看的是同一份代码。
 
-- **审计员**：自己决定调用哪些工具、按什么顺序读代码，然后记录发现。
-- **复核员**：逐条复核审计员的发现，可以换成另一个模型。
+## 交付物在哪里
 
-两者之间靠门禁来回推动。门禁只检查“某类工作有没有做”（例如扫描线索是否都处理了、视图文件是否读够了），不规定先做哪一步。
+| 要求 | 位置 |
+| --- | --- |
+| 1. 可运行的代码 + 配置、运行、依赖的模型和 API | 代码在 `src/audit_agent/`，说明就是本文件 |
+| 2. Agent 的实际运行结果 | `results/` 下每个子目录是一次真实运行，目录说明见 [results/README.md](results/README.md) |
+| 2. 人类可读的分析报告 | [REPORT.md](REPORT.md)：ylinux_old 有哪些漏洞、Agent 找到了哪些、漏了哪些 |
+| 3. 设计思路、怎么确认结果准确、遇到的问题和取舍 | [DESIGN.md](DESIGN.md) |
 
-为了检验泛化，我在不改代码和提示词的情况下又跑了 [nVisium/django.nV](https://github.com/nVisium/django.nV)。
+## 先认识几个词
 
-- 分析报告：[REPORT.md](REPORT.md)
-- 设计说明：[DESIGN.md](DESIGN.md)
-- 运行结果：[results/](results/README.md)
+| 词 | 意思 | 来源 |
+| --- | --- | --- |
+| 代码审计 | 不运行程序，直接读源码找安全问题。也叫静态分析 | 安全行业通用说法 |
+| 大模型（LLM） | 像 ChatGPT、DeepSeek 这样能读写文字和代码的 AI 模型。LLM 是 Large Language Model 的缩写 | — |
+| Agent（智能体） | 不是一问一答，而是让模型自己决定下一步做什么（读哪个文件、搜什么关键词），拿到结果后再决定下一步，直到完成任务 | 业界通用叫法，例如 Anthropic 的文章 [Building effective agents](https://www.anthropic.com/research/building-effective-agents) |
+| 工具调用（tool calling） | 程序事先告诉模型“你可以用这些工具”，模型回复时不写答案，而是说“我要调用 `read_file`，参数是某个文件”，程序执行后把结果交回给模型 | OpenAI Chat Completions 接口的 function calling 协议，DeepSeek、Kimi 等都兼容 |
+| 审计员 / 复核员 | 本项目里的两个角色。审计员负责找漏洞，复核员负责挑审计员的毛病。两者是两段互不相通的对话 | 本项目的设计 |
+| 门禁 | 审计员想交卷时，程序先检查一些“该做的事做了没有”，没做完就不让交，并告诉它缺什么 | 本项目的设计 |
+| 发现（finding） | Agent 记下的一条漏洞，包括位置、引用的原文、严重性、怎么触发 | — |
+| 线索（lead） | 用关键词规则扫出来的可疑代码，比如出现了 `os.system`。线索不等于漏洞，要人（这里是模型）去看 | — |
+| 严重性 | 从高到低 critical、high、medium、low、info，表示一个漏洞危害有多大 | 参考 [CVSS](https://www.first.org/cvss/) 的定性分级 |
+| 入口身份 | 谁能触发这个漏洞：匿名访客、能自助注册的用户、已有账号的用户、管理员，或者没有网页入口 | 本项目的字段 `entry_role` |
+| OWASP | 一个开放的 Web 安全社区，最有名的是“十大 Web 安全风险”清单 | [owasp.org](https://owasp.org/www-project-top-ten/) |
+| CWE | 软件弱点的统一编号，比如 CWE-79 就是 XSS。报告里每条发现都尽量标了 CWE | MITRE 维护，[cwe.mitre.org](https://cwe.mitre.org/) |
+| 真值（ground truth） | 事先整理好的“标准答案”：这个仓库里到底有哪些真漏洞。拿 Agent 的结果和它对比来打分 | 机器学习评测的通用说法 |
+| 召回率 / 精确率 | 召回率 = 真漏洞里被找到的比例（漏得少不少）；精确率 = 报出来的里面真漏洞的比例（报得准不准） | 信息检索的标准指标 |
+| 重放（replay） | 把模型当时的每一次回复录下来，以后不联网、不花钱，用录音重新跑一遍，检查结果是否一样 | 本项目的功能 |
 
-## 快速开始
+具体的漏洞类型（XSS、CSRF、越权等）在 [REPORT.md](REPORT.md) 里遇到时再解释。
+
+## 安装
+
+需要：
+
+- Python 3.10 或更新版本
+- Git（用来下载被审计的仓库）
+
+在项目根目录执行：
 
 ```powershell
-pip install -e ".[dev]"; copy .env.example .env      # 在 .env 里填 DEEPSEEK_API_KEY
-python -m audit_agent run                             # 克隆 ylinux_old 的固定 commit，完整跑一遍，结果写到 results/<时间戳>/
-python -m audit_agent replay results/run-20261021-r3  # 不需要密钥，用录下的模型响应离线重放
+pip install -e ".[dev]"
 ```
 
-`replay` 用来验证结果可以复现。如果 `workspace/` 里还没有目标仓库，它会先按记录的 commit 克隆。
+运行时只依赖一个第三方包 `openai==2.32.0`（OpenAI 官方的 Python 客户端，用来调兼容接口，不一定要用 OpenAI 的模型）。`[dev]` 会额外装上跑测试用的 `pytest`。
 
-需要 Python 3.10 以上和 Git，唯一的运行时依赖是 `openai==2.32.0`。目标仓库会克隆到 `workspace/`，这个目录不提交。
+## 配置：用哪个模型、哪个 API
 
-## 结果
+Agent 需要一个大模型的 API 密钥。把 `.env.example` 复制成 `.env`，填一个密钥就行：
 
-| 运行 | 目标 | 审计员 / 复核员 | 上报 | 精确率下限 | 召回率 | high 及以上召回 | 复核否决 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `run-20261021-r1..r3`（同配置跑 3 次） | ylinux_old | deepseek-v4-pro / 同一模型 | 14.3 ± 2.1 | 0.952 ± 0.043 | **0.573 ± 0.048** | 1.0 ± 0 | 0 / 43 |
-| `run-20261021-kimi..kimi3`（3 次，后两次复核中断） | ylinux_old | deepseek-v4-pro / **kimi-k3** | 15.7 ± 3.1 | 0.934 ± 0.012 | 0.552 ± 0.065 | 1.0 ± 0 | **6 / 43** |
-| [`run-20261021`](results/run-20261021/report.md) | ylinux_old | deepseek-v4-pro / 同一模型（还没加 `list_endpoints` 等） | 15 | 1.0 | 0.688 | 1.0 | 0 / 15 |
-| [`nv-20261021`](results/nv-20261021/report.md) | django.nV | deepseek-v4-pro / 同一模型，代码和提示词不变 | 22 | 1.0 | 0.958 | 0.923 | 0 / 22 |
-| [`nv-20261021-kimi`](results/nv-20261021-kimi/report.md) | django.nV | deepseek-v4-pro / kimi-k3（复核中断） | 19 | 0.895 | 0.833 | 0.923 | 0 / 16 |
-| [`run-20261020`](results/run-20261020/report.md) | ylinux_old | DeepSeek-V3，还没有门禁 | 7 | 0.857 | 0.188 | 0.5 | — |
+```powershell
+copy .env.example .env
+# 用记事本打开 .env，填上 DEEPSEEK_API_KEY=你的密钥
+```
 
-**召回情况。** ylinux_old 一共标了 32 个真问题。审计员配置相同的 6 次运行里，13 个每次都找到了，8 个一次都没找到，剩下 11 个时有时无。单次召回率在 0.50 到 0.63 之间浮动，所以只看一次运行的结果说明不了什么。high 及以上的问题，每次新版运行都找到了。
+密钥只从环境变量或 `.env` 读，不会写进任何输出文件。`.env` 不提交到仓库。
 
-最难的是 GT-11 和 GT-12。它们是重置口令流程里的逻辑漏洞，要把激活和重置两段代码连起来看才能发现。具体分析见 [REPORT.md](REPORT.md#漏掉的两个逻辑漏洞)。
+程序按下面的顺序找密钥，用第一个找到的：
 
-**复核员的表现。** 用 DeepSeek 自己当复核员时，80 次复核一次都没否决过。换成 Kimi 后在 ylinux_old 上否决了 6 次，其中 3 次是审计员每次都会犯的同一个错（把附件上传判成路径穿越），DeepSeek 复核时 3 次都放过去了。另外 Kimi 提的缺口在 django.nV 上补出了一条审计员漏掉的 critical。所以如果有第二个模型的密钥，建议用它做复核员。
-
-用 Kimi 复核的 4 次运行里有 3 次（kimi2、kimi3、nv-kimi）在复核途中因为账户余额用完中断（429），审计员部分完整，报告开头标了中断，没复核到的条目标为“未复核”。
-
-**分数的局限。**
-
-- 真值是我借助 Claude 标注、再开独立会话交叉核对，最后自己抽查的，没有经过专业安全人员复核。
-- 提示词和门禁是在 ylinux_old 上调出来的，这里的分数偏乐观。
-- django.nV 是泛化测试，但它的源码里带着标出漏洞位置的 OWASP 编号注释，难度比真实项目低。
-
-这些在 [DESIGN.md](DESIGN.md#怎么确认结果准确) 里有详细说明。
-
-## 流程
-
-1. **审计员。**
-   - 先做侦察：`list_endpoints` 列出 URL → 视图 → 装饰器和鉴权情况。
-   - 然后搜索、读代码、写发现。
-   - 门禁通过之前，`finalize_report` 会失败，并把缺什么返回给模型。门禁要求：
-     - 每条扫描线索都处置过；
-     - 读过至少 80% 的视图文件；
-     - 注入这类 confirmed 发现要写明 `data_flow`；
-     - 每条上报的发现要写明 `entry_role`（匿名 / 开放注册 / 受限账号 / 特权 / 无入口）。严重性和它对不对得上，由复核员来查。
-2. **复核员。**
-   - 另起一段对话，可以用另一个模型（`AUDIT_CRITIC_MODEL`）。
-   - 每条发现都要先读证据前后各 10 行。
-   - 先写 `weakest_point`：这条结论最可能错在哪、是怎么核对的。然后才能给出同意或否决。
-3. **退回审计员。**
-   - 否决意见和缺口追加到审计员原来的对话里，最多往返 3 轮。
-   - 3 轮后仍被否决的发现降为 `needs_review`。
-4. **机械核对。** 每条引用都回到磁盘上的原文按行号再比一次，对不上的降级。
-5. **输出。** 每个运行目录里的文件说明见 [results/README.md](results/README.md)。
-
-Agent 没有 shell 工具。路径解析限制在检出目录内，仓库里的内容在提示词里声明为不可信数据。
-
-## 配置
-
-密钥只从环境变量或 `.env` 读取，不会写进任何文件。程序按下表顺序取第一个有值的变量：
-
-| 变量 | 默认 Base URL | 默认模型 |
+| 环境变量 | 接口地址（Base URL） | 默认模型 |
 | --- | --- | --- |
-| `AUDIT_LLM_API_KEY` | `AUDIT_LLM_BASE_URL`，缺省为 `https://api.deepseek.com` | `AUDIT_LLM_MODEL`，缺省为 `deepseek-v4-pro` |
+| `AUDIT_LLM_API_KEY` | `AUDIT_LLM_BASE_URL`，不填就是 `https://api.deepseek.com` | `AUDIT_LLM_MODEL`，不填就是 `deepseek-v4-pro` |
 | `DEEPSEEK_API_KEY` | `https://api.deepseek.com` | `deepseek-v4-pro` |
 | `OPENAI_API_KEY` | `https://api.openai.com/v1` | `gpt-4o-mini` |
 | `MOONSHOT_API_KEY` | `https://api.moonshot.cn/v1` | `kimi-k3` |
 | `DASHSCOPE_API_KEY` | `https://dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` |
 
-默认使用 DeepSeek 官方的 `deepseek-v4-pro`，并设置 `reasoning_effort=max`。这个值由 `AUDIT_LLM_REASONING_EFFORT` 控制，留空就不传。客户端走的是 OpenAI Chat Completions 的 tool calling 协议，兼容这个协议的网关都能用。
+本项目所有正式运行用的是 DeepSeek 官方接口的 `deepseek-v4-pro`，打开了深度思考（`reasoning_effort=max`，由 `AUDIT_LLM_REASONING_EFFORT` 控制，留空就不传这个参数）。只要接口兼容 OpenAI Chat Completions 的工具调用协议，换成别家也能跑。
 
-想让复核员换个模型（例如 Kimi），这样设置：
+复核员可以单独换一个模型。我们实测换成 Kimi 后复核更严格（原因见 [DESIGN.md](DESIGN.md#4-换一个模型当复核员)），有条件的话推荐这样配：
 
 ```powershell
-$env:AUDIT_CRITIC_MODEL="kimi-k3"; $env:AUDIT_CRITIC_BASE_URL="https://api.moonshot.cn/v1"; $env:AUDIT_CRITIC_API_KEY="<kimi key>"
-python -m audit_agent run --run-dir results/my-kimi-run
+$env:AUDIT_CRITIC_MODEL="kimi-k3"
+$env:AUDIT_CRITIC_BASE_URL="https://api.moonshot.cn/v1"
+$env:AUDIT_CRITIC_API_KEY="<Kimi 的密钥>"
 ```
 
-步数预算等其他配置见 `.env.example`。
+不设 `AUDIT_CRITIC_MODEL`，复核员就和审计员用同一个模型。步数上限等其他参数见 `.env.example`，默认值是审计员 80 步、复核员 40 步、退回修改 40 步、最多往返 3 轮。
 
-## 其他命令
+## 运行
+
+下面的命令都在项目根目录执行。
+
+**1. 不花钱先试一下：重放一次录好的运行。** 不需要密钥，大约 1.5 秒：
 
 ```powershell
-# 审计本地已有的目录，不克隆。--vendor 指定要跳过的第三方目录；static、media、vendor 这类目录名总是会跳过
-python -m audit_agent run --local --target-dir workspace/django.nV --target-url https://github.com/nVisium/django.nV --commit a48901f106da4888417339b7b44b8ed56b64c63f --vendor ""
+python -m audit_agent replay results/run-20261021-r3
+```
 
-# 重新核对一次运行的引用，并重新生成报告
-python -m audit_agent verify results/<运行目录>
+它会用录下来的 92 条模型回复重新驱动整个流程，工具（读文件、搜索等）在本机真实执行。最后一行打印 `identical_to_original=True`，说明重放结果和原来那次运行完全一致。如果 `workspace/` 里还没有 ylinux_old，会先自动下载。
 
-# 打分。--group 汇总多次重复运行的均值和标准差，同时给每次运行写一份 REVIEW.md
-python -m audit_agent evaluate results/run-20261020 results/run-20261021 --group deepseek-x3=results/run-20261021-r1,results/run-20261021-r2,results/run-20261021-r3 --group kimi-x3=results/run-20261021-kimi,results/run-20261021-kimi2,results/run-20261021-kimi3 --out results/EVALUATION.md
-python -m audit_agent evaluate results/nv-20261021 results/nv-20261021-kimi --truth eval/django_nv_truth.json --out results/EVALUATION-django.nV.md
+**2. 完整跑一次真实审计。** 需要密钥，DeepSeek 大约 11–16 分钟：
 
-# 单元测试，不会调用模型
+```powershell
+python -m audit_agent run
+```
+
+它会把 ylinux_old 下载到 `workspace/ylinux_old` 并切到固定的 commit，然后开始审计。结果写到 `results/<时间戳>/`，先看里面的 `report.md`。
+
+**3. 给结果打分。** 拿运行结果和真值对比，算召回率、精确率：
+
+```powershell
+python -m audit_agent evaluate results/run-20261021-r1 results/run-20261021-r2 results/run-20261021-r3 --out results/my-score.md
+```
+
+加 `--group 名字=目录1,目录2,目录3` 可以算多次运行的平均值和波动。
+
+**4. 跑单元测试。** 测试用的是写好剧本的假模型，不联网、不花钱：
+
+```powershell
 pytest
 ```
 
-如果本机 Git 配了一个连不上的 GitHub 代理，克隆时会只在那一次命令里去掉代理重试，不会修改你的 Git 配置。
+现在有 28 个测试。GitHub 上每次提交都会自动跑一遍（`.github/workflows/test.yml`，Python 3.10 和 3.12）。
 
-## 工具
+**其他命令：**
 
-| 角色 | 工具 |
-| --- | --- |
-| 审计员 | `list_files`、`list_endpoints`、`read_file`、`search_code`、`find_references`、`pattern_scan`、`triage_leads`、`set_stage`、`upsert_finding`、`mark_reviewed`、`get_audit_state`、`resolve_gap`、`finalize_report` |
-| 复核员 | `list_files`、`list_endpoints`、`read_file`、`search_code`、`find_references`、`get_audit_state`、`review_finding`、`note_gap`、`accept_report` |
+```powershell
+# 审计一个已经在本地的目录（不下载）。这里是我们做泛化测试用的 django.nV
+python -m audit_agent run --local --target-dir workspace/django.nV --target-url https://github.com/nVisium/django.nV --commit a48901f106da4888417339b7b44b8ed56b64c63f --vendor ""
 
-- `list_endpoints`：用文本方式遍历 Django 的 URLconf，按 include 递归，列出每个视图的装饰器、鉴权检查、输入来源和写操作所在的行号。用文本方式是因为目标里有 Python 2 代码，`ast` 解析不了。
-- `find_references`：按词边界在代码和模板里查一个符号的定义、导入和使用位置，用来确认某个配置项有没有被覆盖、某个框架默认值是否真的生效。
+# 重新核对一次运行里的代码引用，并重新生成报告
+python -m audit_agent verify results/<运行目录>
+```
+
+`--vendor` 指定要默认跳过的第三方代码目录（ylinux_old 默认跳过它自带的 `lib/markdown`）。名字叫 `static`、`vendor`、以 `media` 结尾的目录总是跳过。
+
+## 结果一览
+
+ylinux_old 一共标注了 32 个真漏洞。详细分析在 [REPORT.md](REPORT.md)，打分方法在 [DESIGN.md](DESIGN.md#二怎么确认结果是准的)。
+
+| 运行 | 审计员 / 复核员 | 次数 | 每次报出 | 精确率下限 | 召回率 | high 及以上召回 |
+| --- | --- | --- | --- | --- | --- | --- |
+| r1–r3 | DeepSeek / DeepSeek | 3 | 14.3 条 | 0.95 | 0.57 ± 0.05 | 1.0 |
+| kimi1–3 | DeepSeek / Kimi | 3 | 15.7 条 | 0.93 | 0.55 ± 0.07 | 1.0 |
+| 第一版（没有门禁） | DeepSeek-V3 / DeepSeek-V3 | 1 | 7 条 | 0.86 | 0.19 | 0.5 |
+| django.nV（换一个项目） | DeepSeek / DeepSeek | 1 | 22 条 | 1.0 | 0.96 | 0.92 |
+
+用大白话说：
+
+- 6 个 high 级漏洞每次都能找到，报出来的东西平均 93% 以上是真漏洞。
+- 但一次只能找到一半多一点（55%–57%），漏掉的主要是 low 级问题和需要把两段代码连起来想的逻辑漏洞。
+- 第一版没有门禁，召回率只有 0.19；现在是 0.57 左右（中间模型也从 DeepSeek-V3 换成了 v4-pro，两者的功劳分不开）。
+- 同一个模型给自己复核基本不会挑出毛病（80 次复核 0 次否决）；换成 Kimi 后否决了 6 次，拦住了审计员每次都会犯的一个误报。
+- 这些分数有局限：标准答案不是专业安全工程师做的，规则也是在这个仓库上调出来的。详见 [DESIGN.md](DESIGN.md#6-分数的局限)。
+
+## 一次运行里发生了什么
+
+1. **审计员干活。** 程序把任务说明和 13 个工具交给模型。模型自己决定先列 URL、还是先搜关键词、还是先读某个文件，每次调用的结果再交还给它。它觉得找得差不多了，就调 `finalize_report` 交卷。
+2. **门禁检查。** 交卷时程序检查：扫出来的每条线索都处理了吗？视图文件（`views.py`，网站处理请求的代码）读够 80% 了吗？注入类漏洞写清楚数据从哪来、流到哪了吗？每条漏洞写明谁能触发了吗？没做完就退回，告诉模型缺什么。
+3. **复核员挑毛病。** 另开一段对话，复核员只看到审计员写下的漏洞清单，看不到它的思考过程。它要对每条漏洞先读源码，写下“这条最可能错在哪”，再表态同意或否决，也可以指出审计员漏看的地方（叫“缺口”）。
+4. **退回修改。** 被否决的条目和缺口交回给审计员，审计员在原来的对话里改判或补查，然后再复核。最多来回 3 轮，还被否决的降为“需要再确认”。
+5. **回磁盘核对。** 每条漏洞引用的代码原文，都回到文件里按行号再比一次，对不上的降级。
+6. **写报告。** 生成 `report.md`（报告正文）和几个附件，每个文件的用途见 [results/README.md](results/README.md)。
+
+Agent 不能执行任何命令，只能读被审计仓库里的文件，而且读不到仓库目录以外的东西。这样即使被审计的代码里藏着“请执行某命令”之类的文字，也没法让 Agent 去做。
 
 ## 目录
 
 ```
-src/audit_agent/   Agent 本体：循环、工具、门禁、报告渲染、打分
-tests/             单元测试，用脚本化的假模型，不调用接口；CI 在 .github/workflows/test.yml
-eval/              真值文件和生成脚本
-results/           各次运行的完整输出和打分汇总
-REPORT.md          ylinux_old 审计分析报告
-DESIGN.md          设计思路、准确性验证、问题和取舍
+src/audit_agent/   Agent 本体
+  agent.py           工具调用循环、审计员与复核员的往返
+  tools.py           13 个工具和门禁检查
+  prompts.py         给两个角色的任务说明
+  llm.py             调模型接口、出错重试、录制与重放
+  sandbox.py         把文件访问限制在被审计仓库里
+  scanner.py         关键词规则扫描（产生线索）
+  endpoints.py       从 Django 的 URL 配置列出所有网页入口
+  verifier.py        结束后回磁盘核对引用
+  report.py          生成报告
+  evaluate.py        对照真值打分
+tests/             单元测试（假模型，不联网）
+eval/              真值文件（标准答案）和生成脚本
+results/           每次真实运行的完整输出，以及打分汇总
+REPORT.md          ylinux_old 漏洞分析报告
+DESIGN.md          设计说明
 ```
+
+`workspace/` 是下载被审计仓库的地方，不提交到 Git。
