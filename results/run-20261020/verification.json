@@ -1,0 +1,66 @@
+[
+  {
+    "id": "CONFIG-001",
+    "path": "settings.py",
+    "start_line": 18,
+    "end_line": 18,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-002",
+    "path": "settings.py",
+    "start_line": 49,
+    "end_line": 49,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-003",
+    "path": "settings.py",
+    "start_line": 79,
+    "end_line": 79,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/models.py",
+    "start_line": 364,
+    "end_line": 364,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "templates/bbs/topic.html",
+    "start_line": 23,
+    "end_line": 23,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/wiki/utils.py",
+    "start_line": 18,
+    "end_line": 18,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 62,
+    "end_line": 66,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "INJECTION-001",
+    "path": "app/admin/views.py",
+    "start_line": 363,
+    "end_line": 363,
+    "ok": true,
+    "detail": "match"
+  }
+]

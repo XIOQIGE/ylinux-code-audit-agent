@@ -1,0 +1,398 @@
+{
+  "reported": 22,
+  "true_positive_findings": 22,
+  "false_positive_trap_findings": 0,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 1.0,
+  "recall": 0.958,
+  "high_recall": 0.923,
+  "severity_weighted_recall": 0.956,
+  "missed": [
+    "NV-13"
+  ],
+  "found": [
+    "NV-01",
+    "NV-02",
+    "NV-03",
+    "NV-04",
+    "NV-05",
+    "NV-06",
+    "NV-07",
+    "NV-08",
+    "NV-09",
+    "NV-10",
+    "NV-11",
+    "NV-12",
+    "NV-14",
+    "NV-15",
+    "NV-16",
+    "NV-17",
+    "NV-18",
+    "NV-19",
+    "NV-20",
+    "NV-21",
+    "NV-22",
+    "NV-23",
+    "NV-24"
+  ],
+  "optional_found": [
+    "NVO-01",
+    "NVO-03",
+    "NVO-04"
+  ],
+  "traps_hit": [],
+  "findings": [
+    {
+      "id": "CMDI-001",
+      "title": "上传文件名进入 os.system 拼接，导致未认证命令注入（RCE）",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "injection",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-02",
+        "NV-07",
+        "NV-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "SQLI-001",
+      "title": "upload 视图用 % 格式化拼接 INSERT 语句，未认证 SQL 注入",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "injection",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-07",
+        "NV-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "FILE-001",
+      "title": "download 视图无鉴权且路径取自数据库，可任意文件读取（路径穿越）",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "file_access",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-08",
+        "NV-14",
+        "NV-22"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "SESSION-001",
+      "title": "签名 Cookie 会话 + PickleSerializer + 仓库内硬编码 SECRET_KEY 可伪造会话并反序列化 RCE",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "deserialization",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "AUTH-001",
+      "title": "注册表单批量赋值：POST 附加 is_superuser/is_staff 即可匿名创建超级用户",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-04"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "AUTH-002",
+      "title": "profile_by_id 无鉴权 IDOR + csrf_exempt：匿名改任意用户密码实现账户接管",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-02",
+        "NV-05",
+        "NV-10",
+        "NV-24"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "ACCESS-001",
+      "title": "manage_groups POST 分支缺少权限检查：普通用户可提升任意用户到管理员组",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-002",
+      "title": "项目/任务/笔记的编辑与删除端点无鉴权、无归属校验（匿名 IDOR 写操作）",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-11",
+        "NV-12"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-003",
+      "title": "task_details 页面 task.title/task.text 经 |safe 渲染，存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-09"
+      ],
+      "traps": [],
+      "trap_notes": [
+        "NVFP-11"
+      ],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-004",
+      "title": "用户名经 |safe 渲染到全站导航栏，存储型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-002",
+      "title": "tm_settings 页面 {{v|safe}} 渲染 request.META：请求头反射 XSS 与环境信息泄露",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "XSS-001",
+      "title": "search 页面 {{q|safe}} 反射型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "profile_by_id 改密端点豁免 CSRF，可被跨站请求改密",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "csrf",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-02",
+        "NV-05",
+        "NV-24"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "口令使用 MD5 哈希存储，内置超管口令可被快速离线破解",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03",
+        "NV-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "SECRET_KEY 硬编码在仓库中（配置类，独立于会话反序列化记录）",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG/TEMPLATE_DEBUG 开启并提交进仓库，错误页泄露敏感信息",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03",
+        "NV-18"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-003",
+      "title": "会话 Cookie 未设 HttpOnly，XSS 可直接窃取会话",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "under",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "REDIRECT-001",
+      "title": "logout 端点开放重定向",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "FILE-002",
+      "title": "上传文件名无校验且可路径穿越写入静态目录",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "file_access",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-08",
+        "NV-22"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "COMP-001",
+      "title": "使用已停止维护的 Django 1.8.3，存在已知未修复漏洞",
+      "status": "confirmed",
+      "severity": "info",
+      "category": "other",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-21"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "under",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "RESET-001",
+      "title": "密码重置令牌只有 6 位数字且无速率限制，可暴力枚举接管账户",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "auth",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-20"
+      ],
+      "traps": [],
+      "trap_notes": [
+        "NVFP-02"
+      ],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "ACCESS-003",
+      "title": "task_details/profile_view 读侧 IDOR：匿名读取任意任务与用户资料",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-23"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    }
+  ]
+}

@@ -1,0 +1,916 @@
+{
+ "target": "https://github.com/nVisium/django.nV",
+ "commit": "a48901f106da4888417339b7b44b8ed56b64c63f",
+ "notes": "第二个目标，用于检验提示词和规则是否只对 ylinux_old 有效（提示词、规则在跑 django.nV 前已冻结）。由一个独立子代理（Claude）在 Agent 跑 django.nV 之前逐条打开源码标注，标注时看不到任何 Agent 输出；主会话按源码抽查了 NV-01/03/04/05/07 的行号与成因。未经人类安全工程师复核。django.nV 是故意留洞的教学项目，源码里有 A1/A2 等注释提示漏洞位置，标注者和被测 Agent 都能看到。issues 计入召回；optional 命中不扣分；traps 按精确行匹配。",
+ "issues": [
+  {
+   "id": "NV-01",
+   "severity": "critical",
+   "category": "injection",
+   "also_categories": [
+    "file_access",
+    "access_control"
+   ],
+   "title": "项目文件上传名称拼接进 os.system 导致命令注入",
+   "why": "upload 视图无任何登录/授权校验，POST 参数 name 原样传入 store_uploaded_file，被拼接进 os.system(\"mv ... <dir>/<title>\")；未认证攻击者用 name=x;id 即可在服务器执行任意命令。",
+   "locations": [
+    {
+     "path": "taskManager/misc.py",
+     "start_line": 33,
+     "end_line": 39
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 170,
+     "end_line": 179
+    }
+   ]
+  },
+  {
+   "id": "NV-02",
+   "severity": "critical",
+   "category": "injection",
+   "also_categories": [
+    "access_control",
+    "csrf"
+   ],
+   "title": "头像上传：用户名与文件扩展名拼接进 os.system 导致命令注入",
+   "why": "profile_by_id（csrf_exempt、无认证）把 POST 的 username 和 picture 文件名扩展名拼成 title 传给 store_uploaded_file 的 os.system；未认证攻击者可设置 username 或扩展名为 shell 元字符执行任意命令。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 718,
+     "end_line": 730
+    },
+    {
+     "path": "taskManager/misc.py",
+     "start_line": 33,
+     "end_line": 39
+    }
+   ]
+  },
+  {
+   "id": "NV-03",
+   "severity": "critical",
+   "category": "deserialization",
+   "also_categories": [
+    "config",
+    "crypto",
+    "auth"
+   ],
+   "title": "硬编码 SECRET_KEY + 签名 Cookie 会话 + PickleSerializer 导致会话伪造与 RCE",
+   "why": "SECRET_KEY 明文提交在公开仓库，会话后端为 signed_cookies 且序列化器为 PickleSerializer；任何人可用已知密钥签名恶意 pickle 会话 Cookie，服务器反序列化即执行任意代码，或直接伪造任意用户（含超级用户）会话。",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 24,
+     "end_line": 24
+    },
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 104,
+     "end_line": 104
+    },
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 109,
+     "end_line": 109
+    }
+   ]
+  },
+  {
+   "id": "NV-04",
+   "severity": "critical",
+   "category": "auth",
+   "also_categories": [
+    "access_control"
+   ],
+   "title": "注册表单批量赋值可设置 is_superuser/is_staff",
+   "why": "UserForm 使用 exclude 黑名单，未排除 is_superuser、is_staff；未认证用户在 /taskManager/register/ POST 中附加 is_superuser=on&is_staff=on 即注册为超级管理员，可登录 /admin/ 完全接管。",
+   "locations": [
+    {
+     "path": "taskManager/forms.py",
+     "start_line": 71,
+     "end_line": 75
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 429,
+     "end_line": 434
+    }
+   ]
+  },
+  {
+   "id": "NV-05",
+   "severity": "critical",
+   "category": "access_control",
+   "also_categories": [
+    "csrf",
+    "auth"
+   ],
+   "title": "profile_by_id 越权修改任意用户的用户名/邮箱/密码（无认证、无 CSRF）",
+   "why": "profile_by_id 按 URL 中的 user_id 取用户，不校验登录和身份，直接用 POST 的 username/email/password 更新并 set_password；未认证攻击者可重置 admin(id=1) 密码完成账户接管，且视图 csrf_exempt。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 710,
+     "end_line": 712
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 718,
+     "end_line": 732
+    }
+   ]
+  },
+  {
+   "id": "NV-06",
+   "severity": "high",
+   "category": "access_control",
+   "also_categories": [
+    "auth"
+   ],
+   "title": "manage_groups 的 POST 分支缺少权限校验，可自提为 admin_g",
+   "why": "manage_groups 只在 GET 分支检查 has_perm('can_change_group')，POST 分支仅要求已登录；任何普通登录用户提交 accesslevel=admin_g&userid=<自己> 即可加入管理员组。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 116,
+     "end_line": 138
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 155,
+     "end_line": 155
+    }
+   ]
+  },
+  {
+   "id": "NV-07",
+   "severity": "high",
+   "category": "injection",
+   "also_categories": [
+    "access_control",
+    "sensitive_data"
+   ],
+   "title": "文件上传记录使用字符串拼接原生 SQL 导致 SQL 注入",
+   "why": "upload 视图将 POST 的 name 用 % 格式化拼入 INSERT 语句并 cursor.execute；未认证攻击者可注入子查询（如读取 auth_user 密码哈希）写入 path/name 字段，或伪造 path 配合 download 读取任意文件。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 178,
+     "end_line": 185
+    }
+   ]
+  },
+  {
+   "id": "NV-08",
+   "severity": "high",
+   "category": "file_access",
+   "also_categories": [
+    "injection",
+    "access_control"
+   ],
+   "title": "上传文件名未净化导致路径穿越任意文件写入",
+   "why": "store_uploaded_file 将用户可控 title 直接拼到上传目录后作为 mv 目标路径，name=../../views.py 等可覆盖应用源码或写任意位置（runserver 自动重载即可代码执行），上传视图无认证。",
+   "locations": [
+    {
+     "path": "taskManager/misc.py",
+     "start_line": 26,
+     "end_line": 41
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 178,
+     "end_line": 179
+    }
+   ]
+  },
+  {
+   "id": "NV-09",
+   "severity": "high",
+   "category": "xss",
+   "also_categories": [
+    "access_control"
+   ],
+   "title": "任务标题/描述经 |safe 输出导致存储型 XSS",
+   "why": "task_create/task_edit 无认证无授权地把 POST 的 task_title、text 存入 Task，task_details.html 用 {{task.title|safe}}、{{task.text|safe}} 原样输出；任何人可写入脚本，在查看该任务的用户浏览器执行（会话 Cookie 非 HttpOnly 可被窃取）。",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/task_details.html",
+     "start_line": 12,
+     "end_line": 12
+    },
+    {
+     "path": "taskManager/templates/taskManager/task_details.html",
+     "start_line": 48,
+     "end_line": 48
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 246,
+     "end_line": 247
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 282,
+     "end_line": 289
+    }
+   ]
+  },
+  {
+   "id": "NV-10",
+   "severity": "high",
+   "category": "xss",
+   "also_categories": [
+    "access_control"
+   ],
+   "title": "用户名经 |safe 输出导致存储型 XSS",
+   "why": "base_backend.html 与 tutorials/base.html 用 {{ user.username|safe }} 输出用户名；注册表单有用户名正则校验，但 profile_by_id 直接赋值 POST 的 username 绕过校验，攻击者可把任意（含受害者）账户用户名改成脚本，在其每个后台页面执行。",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/base_backend.html",
+     "start_line": 58,
+     "end_line": 58
+    },
+    {
+     "path": "taskManager/templates/taskManager/tutorials/base.html",
+     "start_line": 54,
+     "end_line": 54
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 718,
+     "end_line": 719
+    }
+   ]
+  },
+  {
+   "id": "NV-11",
+   "severity": "high",
+   "category": "access_control",
+   "also_categories": [
+    "csrf"
+   ],
+   "title": "项目编辑/删除 IDOR（无认证、删除走 GET）",
+   "why": "project_edit 与 project_delete 仅凭 URL 中 project_id 取对象，不校验登录或项目成员关系；任何人可修改任意项目，GET /taskManager/<id>/project_delete/ 即删除项目（级联删除任务/备注/文件记录），也可被跨站 GET 触发。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 350,
+     "end_line": 366
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 376,
+     "end_line": 380
+    }
+   ]
+  },
+  {
+   "id": "NV-12",
+   "severity": "high",
+   "category": "access_control",
+   "also_categories": [
+    "csrf"
+   ],
+   "title": "任务创建/编辑/删除/完成 IDOR",
+   "why": "task_create、task_edit、task_delete、task_complete 不做认证与成员授权，task.project==proj 只是一致性校验而非权限校验；任何人可向任意项目创建、修改、删除任务或切换完成状态，删除和完成为 GET 请求可被 CSRF 触发。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 240,
+     "end_line": 261
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 273,
+     "end_line": 289
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 299,
+     "end_line": 304
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 311,
+     "end_line": 317
+    }
+   ]
+  },
+  {
+   "id": "NV-13",
+   "severity": "high",
+   "category": "access_control",
+   "also_categories": [
+    "csrf"
+   ],
+   "title": "备注创建/编辑/删除 IDOR",
+   "why": "note_create、note_edit、note_delete 不校验登录、项目成员或备注作者（Notes.user 从不比对），任何人可对任意任务添加、篡改、删除备注，note_delete 为 GET 可跨站触发。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 530,
+     "end_line": 544
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 554,
+     "end_line": 571
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 581,
+     "end_line": 588
+    }
+   ]
+  },
+  {
+   "id": "NV-14",
+   "severity": "medium",
+   "category": "access_control",
+   "also_categories": [
+    "file_access",
+    "sensitive_data"
+   ],
+   "title": "项目附件下载 IDOR（无认证可下载任意文件记录）",
+   "why": "download 按 file_id 取 File 并读取 file.path 返回内容，不校验登录或项目成员关系；任何人遍历 ID 即可下载所有项目附件，若 path 经 NV-07 SQL 注入伪造（如 /../settings.py）则成为任意文件读取。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 206,
+     "end_line": 214
+    }
+   ]
+  },
+  {
+   "id": "NV-15",
+   "severity": "medium",
+   "category": "xss",
+   "also_categories": [],
+   "title": "搜索参数 q 经 |safe 输出到 href 属性导致反射型 XSS",
+   "why": "search 视图把 GET 参数 q 原样传入模板，search.html 第 14 行 href=\"...?q={{q|safe}}\" 关闭转义，q=\"><script>... 即可闭合属性注入脚本；需诱导受害者点击链接。",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/search.html",
+     "start_line": 14,
+     "end_line": 14
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 662,
+     "end_line": 662
+    }
+   ]
+  },
+  {
+   "id": "NV-16",
+   "severity": "medium",
+   "category": "redirect",
+   "also_categories": [],
+   "title": "注销后跳转参数 redirect 未校验导致开放重定向",
+   "why": "logout_view 直接 redirect(request.GET.get('redirect'))，攻击者构造 /taskManager/logout/?redirect=https://evil.example 可把用户导向钓鱼站点。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 385,
+     "end_line": 387
+    }
+   ]
+  },
+  {
+   "id": "NV-17",
+   "severity": "medium",
+   "category": "sensitive_data",
+   "also_categories": [
+    "config",
+    "access_control",
+    "xss"
+   ],
+   "title": "/taskManager/settings/ 未认证暴露 request.META（含进程环境变量与 Cookie）",
+   "why": "tm_settings 无任何认证，把整个 request.META 渲染给访问者；在 runserver/wsgiref 下 META 包含服务器进程全部环境变量（可能含密钥、路径），值还以 |safe 输出。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 837,
+     "end_line": 841
+    },
+    {
+     "path": "taskManager/templates/taskManager/settings.html",
+     "start_line": 22,
+     "end_line": 28
+    }
+   ]
+  },
+  {
+   "id": "NV-18",
+   "severity": "medium",
+   "category": "config",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "生产配置提交 DEBUG=True / TEMPLATE_DEBUG=True",
+   "why": "DEBUG 开启后任何触发异常的请求（如非数字 project_duedate、不存在的 ID）都会返回含源码、局部变量和配置的调试页面，未认证即可触发。",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 28,
+     "end_line": 29
+    }
+   ]
+  },
+  {
+   "id": "NV-19",
+   "severity": "medium",
+   "category": "crypto",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "密码哈希仅使用 MD5PasswordHasher",
+   "why": "PASSWORD_HASHERS 只配置了 MD5（单轮加盐），一旦数据库或哈希泄露（如经 NV-07 SQL 注入读取 auth_user.password）即可快速离线破解。",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 101,
+     "end_line": 101
+    }
+   ]
+  },
+  {
+   "id": "NV-20",
+   "severity": "medium",
+   "category": "auth",
+   "also_categories": [
+    "crypto",
+    "csrf"
+   ],
+   "title": "密码重置令牌熵低、不绑定用户且无暴力破解限制",
+   "why": "forgot_password 取 os.urandom 字节十进制拼接后的前 6 位数字（分布有偏、≤10^6 空间）作令牌；reset_password（csrf_exempt、无频率限制）仅按 token 查找 UserProfile，不要求用户名，攻击者可在 10 分钟窗口内暴力枚举令牌重置他人密码。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 789,
+     "end_line": 796
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 744,
+     "end_line": 748
+    }
+   ]
+  },
+  {
+   "id": "NV-21",
+   "severity": "medium",
+   "category": "other",
+   "also_categories": [
+    "config"
+   ],
+   "title": "使用存在已知漏洞的 Django 1.8.3",
+   "why": "requirements.txt 固定 Django==1.8.3，该版本后续修复了多项安全问题（如 is_safe_url 校验绕过、会话表填充 DoS 等），应用内教程也将其列为已知漏洞组件。",
+   "locations": [
+    {
+     "path": "requirements.txt",
+     "start_line": 1,
+     "end_line": 1
+    }
+   ]
+  },
+  {
+   "id": "NV-22",
+   "severity": "medium",
+   "category": "file_access",
+   "also_categories": [
+    "xss"
+   ],
+   "title": "无限制文件上传到同源可访问的 static 目录",
+   "why": "upload 与 profile_by_id 不校验文件类型和扩展名，文件被移动到 taskManager/static/taskManager/uploads/ 并以 /static/ 同源 URL 提供，上传 .html/.svg 即形成同源存储型 XSS，且两入口均无认证。",
+   "locations": [
+    {
+     "path": "taskManager/misc.py",
+     "start_line": 26,
+     "end_line": 41
+    },
+    {
+     "path": "taskManager/forms.py",
+     "start_line": 78,
+     "end_line": 81
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 728,
+     "end_line": 730
+    }
+   ]
+  },
+  {
+   "id": "NV-23",
+   "severity": "medium",
+   "category": "access_control",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "task_details 未做访问控制，任何人可读取任意任务及其备注",
+   "why": "task_details 计算了 assigned_to 但从不据此拒绝访问（模板也未使用），未认证用户遍历 project_id/task_id 即可读取任意任务内容、参与者和全部备注，与 project_details 的成员校验不一致。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 593,
+     "end_line": 595
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 610,
+     "end_line": 625
+    }
+   ]
+  },
+  {
+   "id": "NV-24",
+   "severity": "medium",
+   "category": "csrf",
+   "also_categories": [
+    "access_control"
+   ],
+   "title": "敏感账户操作使用 @csrf_exempt 关闭 CSRF 防护",
+   "why": "profile_by_id、reset_password、forgot_password、change_password 均标注 @csrf_exempt；其中 profile_by_id 无需旧密码即可改密码，跨站表单可直接修改受害者用户名/邮箱/密码（教程明确列出该点）。其余三个影响有限，见陷阱项。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 710,
+     "end_line": 711
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 714,
+     "end_line": 727
+    }
+   ]
+  }
+ ],
+ "optional": [
+  {
+   "id": "NVO-01",
+   "severity": "low",
+   "category": "config",
+   "also_categories": [
+    "xss",
+    "sensitive_data"
+   ],
+   "title": "SESSION_COOKIE_HTTPONLY=False，会话 Cookie 可被脚本读取",
+   "why": "关闭 HttpOnly 后，任何 XSS（NV-09/10/15/22）都能用 document.cookie 窃取签名会话 Cookie 实现会话劫持；签名 Cookie 会话内容本身也可被客户端读取。",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 110,
+     "end_line": 110
+    },
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 104,
+     "end_line": 104
+    }
+   ]
+  },
+  {
+   "id": "NVO-02",
+   "severity": "low",
+   "category": "auth",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "登录接口用户名枚举且无暴力破解限制",
+   "why": "login 先判断用户名是否存在，不存在返回“Invalid Username”，存在但密码错返回“Login failed”，未认证攻击者可枚举有效用户名；同时无失败次数限制或锁定。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 395,
+     "end_line": 413
+    }
+   ]
+  },
+  {
+   "id": "NVO-03",
+   "severity": "low",
+   "category": "auth",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "忘记密码接口可按响应差异枚举邮箱",
+   "why": "forgot_password 文案相同，但邮箱存在时 302 跳转到 reset_password、不存在时 200 渲染原页面，可据此判断邮箱是否注册。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 785,
+     "end_line": 809
+    }
+   ]
+  },
+  {
+   "id": "NVO-04",
+   "severity": "low",
+   "category": "access_control",
+   "also_categories": [
+    "sensitive_data"
+   ],
+   "title": "profile_view 未认证可查看任意用户姓名与邮箱",
+   "why": "profile_view 按 user_id 取用户并渲染姓名、邮箱，无登录要求，可遍历 ID 收集全部用户邮箱。",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 491,
+     "end_line": 495
+    },
+    {
+     "path": "taskManager/templates/taskManager/profile_view.html",
+     "start_line": 23,
+     "end_line": 23
+    }
+   ]
+  }
+ ],
+ "false_positive_traps": [
+  {
+   "id": "NVFP-01",
+   "title": "change_password 虽 csrf_exempt，但必须提交正确旧密码，跨站请求无法改密，CSRF 影响可忽略",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 813,
+     "end_line": 825
+    }
+   ],
+   "wrong_min_severity": "medium",
+   "wrong_categories": [
+    "csrf"
+   ]
+  },
+  {
+   "id": "NVFP-02",
+   "title": "forgot_password/reset_password 的 csrf_exempt 作用于未认证流程，跨站提交不借用受害者身份，不构成有意义的 CSRF（真实问题是令牌弱，见 NV-20）",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 739,
+     "end_line": 744
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 779,
+     "end_line": 783
+    }
+   ],
+   "wrong_categories": [
+    "csrf"
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "NVFP-03",
+   "title": "download_profile_pic 的 redirect(filepath) 目标由服务端写入，固定以 /static/taskManager/uploads/ 开头，属站内相对路径，不是开放重定向",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 222,
+     "end_line": 227
+    },
+    {
+     "path": "taskManager/misc.py",
+     "start_line": 41,
+     "end_line": 41
+    }
+   ],
+   "wrong_categories": [
+    "redirect"
+   ],
+   "wrong_cwes": [
+    "CWE-601"
+   ]
+  },
+  {
+   "id": "NVFP-04",
+   "title": "show_tutorial 拼接模板名前已用固定白名单校验 vuln_id（URL 正则也只允许 [a-z-]），不存在模板路径穿越或模板注入",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 684,
+     "end_line": 696
+    }
+   ],
+   "wrong_categories": [
+    "file_access",
+    "injection"
+   ],
+   "wrong_cwes": [
+    "CWE-22",
+    "CWE-1336"
+   ]
+  },
+  {
+   "id": "NVFP-05",
+   "title": "search.html 输入框 value=\"{{q}}\" 走 Django 自动转义，不可注入（真正的反射 XSS 在第 14 行 |safe）",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/search.html",
+     "start_line": 22,
+     "end_line": 22
+    }
+   ],
+   "wrong_categories": [
+    "xss"
+   ],
+   "wrong_cwes": [
+    "CWE-79"
+   ]
+  },
+  {
+   "id": "NVFP-06",
+   "title": "search 视图使用 ORM title__icontains 参数化查询，不是 SQL 注入",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 664,
+     "end_line": 669
+    }
+   ],
+   "wrong_categories": [
+    "injection"
+   ],
+   "wrong_cwes": [
+    "CWE-89"
+   ]
+  },
+  {
+   "id": "NVFP-07",
+   "title": "备注 title/text 在 task_details.html 中未使用 |safe，自动转义，备注不是存储型 XSS（越权写入问题见 NV-13）",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/task_details.html",
+     "start_line": 81,
+     "end_line": 84
+    }
+   ],
+   "wrong_categories": [
+    "xss"
+   ],
+   "wrong_cwes": [
+    "CWE-79"
+   ]
+  },
+  {
+   "id": "NVFP-08",
+   "title": "project_details 校验了当前用户是项目成员，不是 IDOR；项目标题/描述在各模板中均自动转义",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 511,
+     "end_line": 521
+    },
+    {
+     "path": "taskManager/templates/taskManager/project_details.html",
+     "start_line": 111,
+     "end_line": 111
+    }
+   ],
+   "wrong_categories": [
+    "access_control",
+    "xss"
+   ]
+  },
+  {
+   "id": "NVFP-09",
+   "title": "manage_tasks/manage_projects 有登录与 has_perm 检查（权限名缺 app 前缀，实际只有超级用户能通过，属失效闭合），模板带 csrf_token，不是越权或 CSRF",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 44,
+     "end_line": 56
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 78,
+     "end_line": 91
+    }
+   ],
+   "wrong_categories": [
+    "access_control",
+    "csrf"
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "NVFP-10",
+   "title": "Content-Disposition 拼接 file.name：Django HttpResponse 拒绝含 CR/LF 的头值（BadHeaderError），不存在响应头注入",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 216,
+     "end_line": 216
+    }
+   ],
+   "wrong_categories": [
+    "injection"
+   ],
+   "wrong_cwes": [
+    "CWE-113"
+   ]
+  },
+  {
+   "id": "NVFP-11",
+   "title": "task_create/project_create 对 duedate 直接 int()/fromtimestamp()，畸形输入只会触发 500（配合 DEBUG 泄露信息见 NV-18），不是注入",
+   "locations": [
+    {
+     "path": "taskManager/views.py",
+     "start_line": 250,
+     "end_line": 252
+    },
+    {
+     "path": "taskManager/views.py",
+     "start_line": 328,
+     "end_line": 331
+    }
+   ],
+   "wrong_categories": [
+    "injection"
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "NVFP-12",
+   "title": "MESSAGE_STORAGE=CookieStorage 使用签名 JSON 存放提示消息，不涉及 pickle 反序列化，内容非敏感（RCE 来自 SESSION_SERIALIZER，见 NV-03）",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 84,
+     "end_line": 84
+    }
+   ],
+   "wrong_categories": [
+    "deserialization"
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "NVFP-13",
+   "title": "ALLOWED_HOSTS=[] 在 DEBUG=True 下 Django 1.8 跳过 Host 校验，应用不在邮件或链接中使用 Host，Host 头注入无实际利用面",
+   "locations": [
+    {
+     "path": "taskManager/settings.py",
+     "start_line": 31,
+     "end_line": 31
+    }
+   ],
+   "wrong_min_severity": "medium",
+   "wrong_cwes": [
+    "CWE-644"
+   ]
+  },
+  {
+   "id": "NVFP-14",
+   "title": "base 模板中 http:// 引用 html5shim 位于 IE<9 条件注释内，现代浏览器不加载，严重性被高估",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/base.html",
+     "start_line": 26,
+     "end_line": 26
+    },
+    {
+     "path": "taskManager/templates/taskManager/base_backend.html",
+     "start_line": 26,
+     "end_line": 26
+    }
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "NVFP-15",
+   "title": "register.html 中被注释的 {{ user_form }} 仍走自动转义，不构成 XSS",
+   "locations": [
+    {
+     "path": "taskManager/templates/taskManager/register.html",
+     "start_line": 16,
+     "end_line": 16
+    }
+   ],
+   "wrong_categories": [
+    "xss"
+   ]
+  },
+  {
+   "id": "NVFP-16",
+   "title": "fixtures 中的 MD5 密码哈希是演示种子数据，不是泄露的生产凭据；弱哈希问题已在 NV-19 统计",
+   "locations": [
+    {
+     "path": "fixtures/users.json",
+     "start_line": 9,
+     "end_line": 9
+    }
+   ],
+   "wrong_min_severity": "high",
+   "wrong_categories": [
+    "sensitive_data"
+   ]
+  }
+ ]
+}

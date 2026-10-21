@@ -1,0 +1,347 @@
+{
+  "reported": 19,
+  "true_positive_findings": 18,
+  "false_positive_trap_findings": 1,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 0.947,
+  "recall": 0.625,
+  "high_recall": 1.0,
+  "severity_weighted_recall": 0.693,
+  "missed": [
+    "GT-09",
+    "GT-11",
+    "GT-12",
+    "GT-14",
+    "GT-22",
+    "GT-25",
+    "GT-26",
+    "GT-27",
+    "GT-28",
+    "GT-29",
+    "GT-30",
+    "GT-32"
+  ],
+  "found": [
+    "GT-01",
+    "GT-02",
+    "GT-03",
+    "GT-04",
+    "GT-05",
+    "GT-06",
+    "GT-07",
+    "GT-08",
+    "GT-10",
+    "GT-13",
+    "GT-15",
+    "GT-16",
+    "GT-17",
+    "GT-18",
+    "GT-19",
+    "GT-20",
+    "GT-21",
+    "GT-23",
+    "GT-24",
+    "GT-31"
+  ],
+  "optional_found": [
+    "OPT-05",
+    "OPT-08"
+  ],
+  "traps_hit": [
+    "FP-05"
+  ],
+  "findings": [
+    {
+      "id": "XSS-001",
+      "title": "知识库/论坛帖子与主题正文存在存储型 XSS（Markdown 未启用 safe_mode 且模板 |safe 输出）",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-01",
+        "GT-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-002",
+      "title": "附件文件名注入帖子渲染 HTML 导致存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-02",
+        "GT-03",
+        "GT-23"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-003",
+      "title": "注册/密码重置视图将 URL key 未转义回显导致反射型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-04"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "AUTHZ-001",
+      "title": "XML-RPC 接口认证后无授权检查：任意注册用户可删除全站主题或篡改他人主题",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-07",
+        "GT-31"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-001",
+      "title": "editPostAJAX 缺少属主校验：登录用户可篡改任意他人帖子",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-002",
+      "title": "/lab/update_post_profile 匿名可触发全站帖子批量改写",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "全站缺少 CSRF 防护，Cookie 会话下的所有写操作可被跨站伪造",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "csrf",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-13"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "密码重置/激活密钥仅 20 位熵且无尝试限制，可枚举实现账户接管",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "弱口令哈希（单轮 SHA1/MD5、弱盐）且登录接口无限速",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-18",
+        "GT-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG=True 随仓库提交，且媒体目录带目录索引对外服务",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "SECRET_KEY 硬编码提交进公开仓库，会话签名与令牌生成失效",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-003",
+      "title": "数据库口令 '123456' 明文提交进仓库",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "FILE-001",
+      "title": "附件上传文件名直接拼入保存路径（依赖框架 basename 清洗的纵深防御项）",
+      "status": "needs_review",
+      "severity": "low",
+      "category": "file_access",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "FP-05"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    },
+    {
+      "id": "REDIRECT-001",
+      "title": "登录/退出 next 参数未校验导致开放重定向",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-20",
+        "GT-21"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "EMAIL-001",
+      "title": "联系表单可被匿名滥用为任意收件人的邮件中继",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "other",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-24"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "DESER-001",
+      "title": "会话数据 pickle 反序列化 + 公开 SECRET_KEY 的 MD5 签名（潜在 RCE）",
+      "status": "needs_review",
+      "severity": "low",
+      "category": "deserialization",
+      "verdict": "true_positive_optional",
+      "truth": [
+        "OPT-05"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "info"
+    },
+    {
+      "id": "XSS-004",
+      "title": "上传响应将文件名未转义拼入 HTML/JS 导致 self-XSS",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-05",
+        "GT-23"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "ACCESS-003",
+      "title": "附件查看/下载端点无访问控制（权限模型不一致的加固项）",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "ACCESS-004",
+      "title": "版块组权限未在阅读路径强制：受限版块主题/帖子/附件匿名可读",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    }
+  ]
+}

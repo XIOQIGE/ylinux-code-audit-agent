@@ -1,0 +1,158 @@
+{
+  "reported": 7,
+  "true_positive_findings": 6,
+  "false_positive_trap_findings": 1,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 0.857,
+  "recall": 0.188,
+  "high_recall": 0.5,
+  "severity_weighted_recall": 0.227,
+  "missed": [
+    "GT-03",
+    "GT-04",
+    "GT-05",
+    "GT-06",
+    "GT-07",
+    "GT-08",
+    "GT-09",
+    "GT-11",
+    "GT-12",
+    "GT-13",
+    "GT-14",
+    "GT-15",
+    "GT-18",
+    "GT-20",
+    "GT-21",
+    "GT-22",
+    "GT-23",
+    "GT-24",
+    "GT-25",
+    "GT-26",
+    "GT-27",
+    "GT-28",
+    "GT-29",
+    "GT-30",
+    "GT-31",
+    "GT-32"
+  ],
+  "found": [
+    "GT-01",
+    "GT-02",
+    "GT-10",
+    "GT-16",
+    "GT-17",
+    "GT-19"
+  ],
+  "optional_found": [],
+  "traps_hit": [
+    "FP-01"
+  ],
+  "findings": [
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG 模式开启",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "硬编码数据库密码",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-003",
+      "title": "硬编码 SECRET_KEY",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "弱随机盐生成",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-001",
+      "title": "模板中未转义的 HTML 输出",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-01",
+        "GT-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "弱密码哈希算法",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "over",
+      "expected_severity": "low"
+    },
+    {
+      "id": "INJECTION-001",
+      "title": "潜在命令注入风险",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "injection",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "FP-01"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    }
+  ]
+}

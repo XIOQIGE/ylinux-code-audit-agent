@@ -1,0 +1,314 @@
+[
+  {
+    "id": "XSS-001",
+    "path": "app/ydata/models.py",
+    "start_line": 198,
+    "end_line": 200,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/ydata/models.py",
+    "start_line": 258,
+    "end_line": 260,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "lib/markdown/postprocessors.py",
+    "start_line": 43,
+    "end_line": 55,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "templates/wiki/topic.html",
+    "start_line": 53,
+    "end_line": 55,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/wiki/utils.py",
+    "start_line": 17,
+    "end_line": 19,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/wiki/views.py",
+    "start_line": 432,
+    "end_line": 436,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "app/ydata/views.py",
+    "start_line": 31,
+    "end_line": 40,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "app/ydata/views.py",
+    "start_line": 78,
+    "end_line": 84,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 39,
+    "end_line": 45,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 47,
+    "end_line": 58,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 60,
+    "end_line": 69,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 168,
+    "end_line": 183,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-001",
+    "path": "settings.py",
+    "start_line": 164,
+    "end_line": 174,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "settings.py",
+    "start_line": 98,
+    "end_line": 104,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "app/wiki/urls.py",
+    "start_line": 34,
+    "end_line": 38,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "app/wiki/views.py",
+    "start_line": 237,
+    "end_line": 243,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "app/admin/views.py",
+    "start_line": 358,
+    "end_line": 365,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-002",
+    "path": "app/wiki/views.py",
+    "start_line": 447,
+    "end_line": 452,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-002",
+    "path": "app/wiki/views.py",
+    "start_line": 456,
+    "end_line": 460,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACL-002",
+    "path": "app/wiki/views.py",
+    "start_line": 271,
+    "end_line": 278,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/account/views.py",
+    "start_line": 96,
+    "end_line": 102,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/account/views.py",
+    "start_line": 202,
+    "end_line": 208,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/account/urls.py",
+    "start_line": 8,
+    "end_line": 13,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIR-001",
+    "path": "app/account/views.py",
+    "start_line": 55,
+    "end_line": 60,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIR-001",
+    "path": "app/account/views.py",
+    "start_line": 36,
+    "end_line": 45,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIR-001",
+    "path": "app/admin/views.py",
+    "start_line": 62,
+    "end_line": 66,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 62,
+    "end_line": 66,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 228,
+    "end_line": 234,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 241,
+    "end_line": 250,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/models.py",
+    "start_line": 361,
+    "end_line": 369,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/models.py",
+    "start_line": 424,
+    "end_line": 430,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/views.py",
+    "start_line": 205,
+    "end_line": 219,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-001",
+    "path": "settings.py",
+    "start_line": 18,
+    "end_line": 20,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-001",
+    "path": "urls.py",
+    "start_line": 59,
+    "end_line": 63,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-002",
+    "path": "settings.py",
+    "start_line": 42,
+    "end_line": 49,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-002",
+    "path": "settings.py",
+    "start_line": 78,
+    "end_line": 79,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "LAB-001",
+    "path": "app/ylab/urls.py",
+    "start_line": 5,
+    "end_line": 8,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "LAB-001",
+    "path": "app/ylab/views.py",
+    "start_line": 37,
+    "end_line": 48,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "LAB-001",
+    "path": "app/ylab/views.py",
+    "start_line": 24,
+    "end_line": 34,
+    "ok": true,
+    "detail": "match"
+  }
+]

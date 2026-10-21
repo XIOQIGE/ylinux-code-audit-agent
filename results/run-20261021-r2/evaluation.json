@@ -1,0 +1,238 @@
+{
+  "reported": 12,
+  "true_positive_findings": 11,
+  "false_positive_trap_findings": 1,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 0.917,
+  "recall": 0.531,
+  "high_recall": 1.0,
+  "severity_weighted_recall": 0.602,
+  "missed": [
+    "GT-03",
+    "GT-05",
+    "GT-08",
+    "GT-09",
+    "GT-11",
+    "GT-12",
+    "GT-23",
+    "GT-24",
+    "GT-25",
+    "GT-26",
+    "GT-27",
+    "GT-28",
+    "GT-29",
+    "GT-30",
+    "GT-32"
+  ],
+  "found": [
+    "GT-01",
+    "GT-02",
+    "GT-04",
+    "GT-06",
+    "GT-07",
+    "GT-10",
+    "GT-13",
+    "GT-14",
+    "GT-15",
+    "GT-16",
+    "GT-17",
+    "GT-18",
+    "GT-19",
+    "GT-20",
+    "GT-21",
+    "GT-22",
+    "GT-31"
+  ],
+  "optional_found": [],
+  "traps_hit": [
+    "FP-05"
+  ],
+  "findings": [
+    {
+      "id": "XSS-001",
+      "title": "主题/回复正文 Markdown 渲染未启用 safe_mode，存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-01",
+        "GT-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "FILE-001",
+      "title": "附件上传文件名路径穿越，可向 MEDIA_ROOT 任意位置写文件",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "file_access",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "FP-05"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    },
+    {
+      "id": "ACL-001",
+      "title": "XML-RPC 写接口只有认证没有授权：任意注册用户可删除/篡改全站主题",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-07",
+        "GT-31"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "全站缺少 CSRF 防护，删除/重启等敏感操作可用 GET 跨站触发",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "csrf",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-13",
+        "GT-14"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "ACL-002",
+      "title": "editPostAJAX 缺少属主校验：任意登录用户可编辑他人帖子",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-002",
+      "title": "注册/密码重置 key 参数反射型 XSS（匿名可达）",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-04"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "REDIR-001",
+      "title": "logout/login 的 next 与 admin Referer 重定向未校验（开放重定向）",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-20",
+        "GT-21",
+        "GT-22"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "口令使用无迭代 SHA1 + 5 字符弱盐存储",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-18",
+        "GT-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "密码重置/激活 key 熵仅 20 位，可在线爆破接管账号",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG=True 且 /ymedia/ 静态目录带目录列举暴露在生产",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "SECRET_KEY 与数据库口令硬编码提交进仓库",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "LAB-001",
+      "title": "lab 调试端点未授权暴露：匿名批量改写帖子与测试上传",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    }
+  ]
+}

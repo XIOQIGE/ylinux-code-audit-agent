@@ -1,0 +1,386 @@
+[
+  {
+    "id": "XSS-001",
+    "path": "app/ydata/models.py",
+    "start_line": 258,
+    "end_line": 260,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/ydata/models.py",
+    "start_line": 198,
+    "end_line": 200,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "lib/markdown/__init__.py",
+    "start_line": 185,
+    "end_line": 189,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/wiki/views.py",
+    "start_line": 432,
+    "end_line": 436,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "app/wiki/utils.py",
+    "start_line": 18,
+    "end_line": 18,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "templates/wiki/topic.html",
+    "start_line": 53,
+    "end_line": 55,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "templates/wiki/topic.html",
+    "start_line": 58,
+    "end_line": 60,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/ydata/views.py",
+    "start_line": 86,
+    "end_line": 86,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/ydata/models.py",
+    "start_line": 407,
+    "end_line": 408,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/ydata/models.py",
+    "start_line": 443,
+    "end_line": 444,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "app/wiki/utils.py",
+    "start_line": 18,
+    "end_line": 18,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-003",
+    "path": "app/account/urls.py",
+    "start_line": 8,
+    "end_line": 8,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-003",
+    "path": "app/account/views.py",
+    "start_line": 100,
+    "end_line": 102,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-003",
+    "path": "app/account/views.py",
+    "start_line": 205,
+    "end_line": 208,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "settings.py",
+    "start_line": 164,
+    "end_line": 166,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 39,
+    "end_line": 45,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 60,
+    "end_line": 69,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "lib/ylinux_xmlrpc.py",
+    "start_line": 168,
+    "end_line": 181,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-001",
+    "path": "app/wiki/views.py",
+    "start_line": 447,
+    "end_line": 460,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-001",
+    "path": "app/wiki/views.py",
+    "start_line": 277,
+    "end_line": 278,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-002",
+    "path": "app/ylab/urls.py",
+    "start_line": 8,
+    "end_line": 8,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-002",
+    "path": "app/ylab/views.py",
+    "start_line": 37,
+    "end_line": 48,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "settings.py",
+    "start_line": 98,
+    "end_line": 104,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "app/wiki/views.py",
+    "start_line": 421,
+    "end_line": 436,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 364,
+    "end_line": 369,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/models.py",
+    "start_line": 424,
+    "end_line": 430,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "app/account/views.py",
+    "start_line": 210,
+    "end_line": 219,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/models.py",
+    "start_line": 62,
+    "end_line": 65,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-002",
+    "path": "app/account/models.py",
+    "start_line": 228,
+    "end_line": 234,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-001",
+    "path": "settings.py",
+    "start_line": 18,
+    "end_line": 19,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-001",
+    "path": "urls.py",
+    "start_line": 59,
+    "end_line": 63,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-002",
+    "path": "settings.py",
+    "start_line": 78,
+    "end_line": 79,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-002",
+    "path": "app/sessions/backends/base.py",
+    "start_line": 86,
+    "end_line": 90,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-003",
+    "path": "settings.py",
+    "start_line": 42,
+    "end_line": 49,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "app/ydata/views.py",
+    "start_line": 78,
+    "end_line": 84,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIRECT-001",
+    "path": "app/account/views.py",
+    "start_line": 42,
+    "end_line": 45,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIRECT-001",
+    "path": "app/account/views.py",
+    "start_line": 58,
+    "end_line": 60,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "EMAIL-001",
+    "path": "app/home/views.py",
+    "start_line": 34,
+    "end_line": 48,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "DESER-001",
+    "path": "app/sessions/backends/base.py",
+    "start_line": 86,
+    "end_line": 90,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "DESER-001",
+    "path": "app/sessions/backends/base.py",
+    "start_line": 92,
+    "end_line": 102,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-004",
+    "path": "app/ylab/views.py",
+    "start_line": 31,
+    "end_line": 34,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-004",
+    "path": "app/ydata/views.py",
+    "start_line": 91,
+    "end_line": 95,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-003",
+    "path": "app/ydata/views.py",
+    "start_line": 101,
+    "end_line": 105,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-003",
+    "path": "app/ydata/views.py",
+    "start_line": 117,
+    "end_line": 126,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-004",
+    "path": "app/ydata/models.py",
+    "start_line": 51,
+    "end_line": 52,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-004",
+    "path": "app/ydata/models.py",
+    "start_line": 91,
+    "end_line": 101,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-004",
+    "path": "app/wiki/views.py",
+    "start_line": 81,
+    "end_line": 90,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "ACCESS-004",
+    "path": "app/bbs/views.py",
+    "start_line": 44,
+    "end_line": 56,
+    "ok": true,
+    "detail": "match"
+  }
+]

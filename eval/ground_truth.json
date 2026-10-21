@@ -1,0 +1,1278 @@
+{
+ "target": "https://github.com/gwind/ylinux_old",
+ "commit": "8a7316deec88287d020eca21c38dad921b623ffc",
+ "notes": "由开发助手（Claude，独立于被测 Agent 的会话）逐条打开源码标注，再由另一个独立子代理盲审交叉核对（见 ground_truth_crosscheck.json），未经人类安全工程师复核。issues 计入召回；optional 命中算真阳性但漏报不扣分；false_positive_traps 是已知会被误判的位置，按精确行（不加容差）匹配，满足 wrong_* 任一条件即判为误报。SESSION_ENGINE 未设置，生产 fcgi 读取仓库外的 ylinux.ysettings。",
+ "issues": [
+  {
+   "id": "GT-01",
+   "severity": "high",
+   "category": "xss",
+   "title": "主题正文 Markdown 未开 safe_mode，经 |safe 输出（存储型 XSS）",
+   "locations": [
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 196,
+     "end_line": 200
+    },
+    {
+     "path": "templates/wiki/topic.html",
+     "start_line": 54,
+     "end_line": 54
+    },
+    {
+     "path": "templates/bbs/topic.html",
+     "start_line": 23,
+     "end_line": 23
+    },
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 97,
+     "end_line": 98
+    },
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 126,
+     "end_line": 127
+    }
+   ]
+  },
+  {
+   "id": "GT-02",
+   "severity": "high",
+   "category": "xss",
+   "title": "回帖正文 Markdown 未开 safe_mode，经 |safe / POST_HTML 输出（存储型 XSS）",
+   "locations": [
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 258,
+     "end_line": 261
+    },
+    {
+     "path": "app/wiki/utils.py",
+     "start_line": 18,
+     "end_line": 18
+    },
+    {
+     "path": "templates/wiki/topic.html",
+     "start_line": 59,
+     "end_line": 59
+    },
+    {
+     "path": "templates/wiki/post.html",
+     "start_line": 12,
+     "end_line": 12
+    },
+    {
+     "path": "templates/wiki/replayAJAX.html",
+     "start_line": 16,
+     "end_line": 16
+    },
+    {
+     "path": "templates/wiki/editPostAJAX.html",
+     "start_line": 19,
+     "end_line": 19
+    },
+    {
+     "path": "templates/bbs/topic.html",
+     "start_line": 30,
+     "end_line": 30
+    },
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 46,
+     "end_line": 46
+    }
+   ]
+  },
+  {
+   "id": "GT-03",
+   "severity": "medium",
+   "category": "xss",
+   "title": "ylinux_text_filter 把附件名/主题名未转义拼进 HTML",
+   "locations": [
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 408,
+     "end_line": 408
+    },
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 426,
+     "end_line": 426
+    },
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 444,
+     "end_line": 444
+    }
+   ]
+  },
+  {
+   "id": "GT-04",
+   "severity": "medium",
+   "category": "xss",
+   "title": "注册/重置链接中的 key 原样写进 HttpResponseForbidden（反射型 XSS）",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 102,
+     "end_line": 102
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 208,
+     "end_line": 208
+    }
+   ]
+  },
+  {
+   "id": "GT-05",
+   "severity": "low",
+   "category": "xss",
+   "title": "上传响应把文件名拼进 <script>",
+   "locations": [
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 91,
+     "end_line": 92
+    },
+    {
+     "path": "app/ylab/views.py",
+     "start_line": 32,
+     "end_line": 33
+    }
+   ],
+   "also_categories": [
+    "file_access"
+   ]
+  },
+  {
+   "id": "GT-06",
+   "severity": "high",
+   "category": "access_control",
+   "title": "editPostAJAX 不校验帖子归属（IDOR）",
+   "locations": [
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 447,
+     "end_line": 460
+    }
+   ],
+   "also_categories": [
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-07",
+   "severity": "high",
+   "category": "access_control",
+   "title": "XML-RPC 任意认证用户可删除/编辑任意主题乃至全部主题",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 39,
+     "end_line": 45
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 53,
+     "end_line": 55
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 66,
+     "end_line": 66
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 174,
+     "end_line": 181
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 199,
+     "end_line": 205
+    },
+    {
+     "path": "settings.py",
+     "start_line": 164,
+     "end_line": 171
+    }
+   ],
+   "also_categories": [
+    "xml"
+   ]
+  },
+  {
+   "id": "GT-08",
+   "severity": "medium",
+   "category": "access_control",
+   "title": "受限目录只在写入时检查 has_access，读取路径不检查",
+   "locations": [
+    {
+     "path": "app/ydata/models.py",
+     "start_line": 91,
+     "end_line": 101
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 82,
+     "end_line": 103
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 120,
+     "end_line": 128
+    },
+    {
+     "path": "app/bbs/views.py",
+     "start_line": 31,
+     "end_line": 56
+    },
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 116,
+     "end_line": 149
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 136,
+     "end_line": 136
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 149,
+     "end_line": 149
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 105,
+     "end_line": 117
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 319,
+     "end_line": 320
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 368,
+     "end_line": 388
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 161,
+     "end_line": 161
+    }
+   ],
+   "also_categories": [
+    "auth",
+    "sensitive_data"
+   ]
+  },
+  {
+   "id": "GT-09",
+   "severity": "low",
+   "category": "access_control",
+   "title": "编辑主题可把主题移进无权访问的目录",
+   "locations": [
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 109,
+     "end_line": 109
+    },
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 123,
+     "end_line": 123
+    }
+   ],
+   "also_categories": [
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-10",
+   "severity": "high",
+   "category": "crypto",
+   "title": "激活/重置 key 只有 5 位十六进制随机盐，可暴力枚举",
+   "locations": [
+    {
+     "path": "app/account/models.py",
+     "start_line": 364,
+     "end_line": 367
+    },
+    {
+     "path": "app/account/models.py",
+     "start_line": 427,
+     "end_line": 430
+    }
+   ],
+   "also_categories": [
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-11",
+   "severity": "medium",
+   "category": "auth",
+   "title": "重置接口接受字面量 key ALREADY_ACTIVATED",
+   "locations": [
+    {
+     "path": "app/account/models.py",
+     "start_line": 383,
+     "end_line": 383
+    },
+    {
+     "path": "app/account/models.py",
+     "start_line": 392,
+     "end_line": 392
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 205,
+     "end_line": 212
+    }
+   ],
+   "also_categories": [
+    "access_control"
+   ]
+  },
+  {
+   "id": "GT-12",
+   "severity": "medium",
+   "category": "auth",
+   "title": "重置 key 不过期、用后不失效",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 217,
+     "end_line": 221
+    }
+   ]
+  },
+  {
+   "id": "GT-13",
+   "severity": "high",
+   "category": "csrf",
+   "title": "全站没有 CSRF 中间件",
+   "locations": [
+    {
+     "path": "settings.py",
+     "start_line": 98,
+     "end_line": 104
+    }
+   ]
+  },
+  {
+   "id": "GT-14",
+   "severity": "medium",
+   "category": "csrf",
+   "title": "删除/重启/推送等状态变更接受 GET",
+   "locations": [
+    {
+     "path": "app/admin/views.py",
+     "start_line": 133,
+     "end_line": 133
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 191,
+     "end_line": 191
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 256,
+     "end_line": 256
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 353,
+     "end_line": 353
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 362,
+     "end_line": 363
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 410,
+     "end_line": 427
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 431,
+     "end_line": 481
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 247,
+     "end_line": 250
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 280,
+     "end_line": 280
+    },
+    {
+     "path": "app/admin/urls.py",
+     "start_line": 16,
+     "end_line": 52
+    }
+   ],
+   "also_categories": [
+    "access_control",
+    "other"
+   ]
+  },
+  {
+   "id": "GT-15",
+   "severity": "low",
+   "category": "access_control",
+   "title": "/lab/update_post_profile 匿名批量改写全部帖子",
+   "locations": [
+    {
+     "path": "app/ylab/views.py",
+     "start_line": 37,
+     "end_line": 46
+    }
+   ],
+   "also_categories": [
+    "auth",
+    "other"
+   ]
+  },
+  {
+   "id": "GT-16",
+   "severity": "medium",
+   "category": "config",
+   "title": "DEBUG=True 且 static serve 开启目录列表",
+   "locations": [
+    {
+     "path": "settings.py",
+     "start_line": 18,
+     "end_line": 19
+    },
+    {
+     "path": "settings.py",
+     "start_line": 162,
+     "end_line": 162
+    },
+    {
+     "path": "urls.py",
+     "start_line": 59,
+     "end_line": 62
+    }
+   ],
+   "also_categories": [
+    "sensitive_data"
+   ]
+  },
+  {
+   "id": "GT-17",
+   "severity": "medium",
+   "category": "sensitive_data",
+   "title": "SECRET_KEY 与数据库密码硬编码入库",
+   "locations": [
+    {
+     "path": "settings.py",
+     "start_line": 79,
+     "end_line": 79
+    },
+    {
+     "path": "settings.py",
+     "start_line": 49,
+     "end_line": 49
+    }
+   ],
+   "also_categories": [
+    "config",
+    "crypto"
+   ]
+  },
+  {
+   "id": "GT-18",
+   "severity": "medium",
+   "category": "crypto",
+   "title": "口令哈希为单轮 SHA-1 + 20 位随机盐",
+   "locations": [
+    {
+     "path": "app/account/models.py",
+     "start_line": 231,
+     "end_line": 234
+    }
+   ],
+   "also_categories": [
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-19",
+   "severity": "low",
+   "category": "crypto",
+   "title": "接受无盐 MD5 旧口令，非常量时间比较",
+   "locations": [
+    {
+     "path": "app/account/models.py",
+     "start_line": 243,
+     "end_line": 244
+    },
+    {
+     "path": "app/account/models.py",
+     "start_line": 76,
+     "end_line": 76
+    },
+    {
+     "path": "app/account/models.py",
+     "start_line": 55,
+     "end_line": 60
+    }
+   ],
+   "also_categories": [
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-20",
+   "severity": "medium",
+   "category": "redirect",
+   "title": "登录后跳转到 next 参数，无同源校验",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 38,
+     "end_line": 38
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 44,
+     "end_line": 44
+    }
+   ]
+  },
+  {
+   "id": "GT-21",
+   "severity": "low",
+   "category": "redirect",
+   "title": "注销后跳转到 next 参数",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 58,
+     "end_line": 60
+    }
+   ]
+  },
+  {
+   "id": "GT-22",
+   "severity": "low",
+   "category": "redirect",
+   "title": "后台登录与 del_* 跳转到 Referer",
+   "locations": [
+    {
+     "path": "app/admin/views.py",
+     "start_line": 62,
+     "end_line": 65
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 134,
+     "end_line": 134
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 192,
+     "end_line": 192
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 257,
+     "end_line": 257
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 354,
+     "end_line": 354
+    }
+   ]
+  },
+  {
+   "id": "GT-23",
+   "severity": "medium",
+   "category": "file_access",
+   "title": "上传不限制类型，存放在可直接访问的媒体目录",
+   "locations": [
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 78,
+     "end_line": 90
+    }
+   ],
+   "also_categories": [
+    "xss"
+   ]
+  },
+  {
+   "id": "GT-24",
+   "severity": "low",
+   "category": "other",
+   "title": "匿名联系表单可向任意地址发信",
+   "locations": [
+    {
+     "path": "app/home/views.py",
+     "start_line": 43,
+     "end_line": 46
+    }
+   ],
+   "also_categories": [
+    "auth",
+    "access_control",
+    "injection"
+   ]
+  },
+  {
+   "id": "GT-25",
+   "severity": "low",
+   "category": "auth",
+   "title": "注册/重置/登录可枚举用户",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 79,
+     "end_line": 81
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 177,
+     "end_line": 180
+    }
+   ],
+   "also_categories": [
+    "sensitive_data",
+    "other"
+   ]
+  },
+  {
+   "id": "GT-26",
+   "severity": "low",
+   "category": "auth",
+   "title": "无暴力破解防护，XML-RPC multicall 放大尝试次数",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 155,
+     "end_line": 155
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 24,
+     "end_line": 40
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 228,
+     "end_line": 246
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 48,
+     "end_line": 62
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 39,
+     "end_line": 45
+    }
+   ],
+   "also_categories": [
+    "xml",
+    "other"
+   ]
+  },
+  {
+   "id": "GT-27",
+   "severity": "low",
+   "category": "sensitive_data",
+   "title": "XML-RPC 请求体（含口令）打印到 stdout",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 82,
+     "end_line": 83
+    },
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 97,
+     "end_line": 97
+    },
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 124,
+     "end_line": 124
+    }
+   ],
+   "also_categories": [
+    "config"
+   ]
+  },
+  {
+   "id": "GT-28",
+   "severity": "low",
+   "category": "config",
+   "title": "会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP",
+   "locations": [
+    {
+     "path": "app/sessions/middleware.py",
+     "start_line": 37,
+     "end_line": 41
+    },
+    {
+     "path": "app/account/views.py",
+     "start_line": 191,
+     "end_line": 191
+    },
+    {
+     "path": "app/account/models.py",
+     "start_line": 419,
+     "end_line": 419
+    }
+   ],
+   "also_categories": [
+    "sensitive_data",
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-29",
+   "severity": "low",
+   "category": "access_control",
+   "title": "后台编辑用户表单暴露口令哈希并可提权为超级用户",
+   "locations": [
+    {
+     "path": "app/admin/forms.py",
+     "start_line": 103,
+     "end_line": 103
+    },
+    {
+     "path": "app/admin/forms.py",
+     "start_line": 115,
+     "end_line": 115
+    }
+   ],
+   "also_categories": [
+    "sensitive_data",
+    "auth"
+   ]
+  },
+  {
+   "id": "GT-30",
+   "severity": "low",
+   "category": "other",
+   "title": "信任 X-Forwarded-For，并向所有用户展示发帖 IP",
+   "locations": [
+    {
+     "path": "app/ydata/util.py",
+     "start_line": 169,
+     "end_line": 169
+    },
+    {
+     "path": "templates/wiki/add_post.html",
+     "start_line": 25,
+     "end_line": 25
+    }
+   ],
+   "also_categories": [
+    "sensitive_data",
+    "auth",
+    "config"
+   ]
+  },
+  {
+   "id": "GT-31",
+   "severity": "medium",
+   "category": "auth",
+   "title": "XML-RPC 认证不检查 is_active，被禁用的账户仍可调用删除接口",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 39,
+     "end_line": 45
+    },
+    {
+     "path": "app/account/backends.py",
+     "start_line": 19,
+     "end_line": 25
+    }
+   ],
+   "also_categories": [
+    "access_control",
+    "xml"
+   ]
+  },
+  {
+   "id": "GT-32",
+   "severity": "low",
+   "category": "access_control",
+   "title": "上传附件不校验主题归属，可挂到任意主题",
+   "locations": [
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 46,
+     "end_line": 50
+    },
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 72,
+     "end_line": 75
+    },
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 86,
+     "end_line": 88
+    }
+   ],
+   "also_categories": [
+    "file_access"
+   ]
+  }
+ ],
+ "optional": [
+  {
+   "id": "OPT-01",
+   "severity": "low",
+   "category": "xml",
+   "title": "XML-RPC 解析可能受实体膨胀 DoS 影响（取决于 expat 版本）",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 87,
+     "end_line": 87
+    }
+   ]
+  },
+  {
+   "id": "OPT-02",
+   "severity": "low",
+   "category": "xss",
+   "title": "后台推送邮件把主题名、回帖摘要未转义拼进 HTML",
+   "locations": [
+    {
+     "path": "app/admin/views.py",
+     "start_line": 444,
+     "end_line": 444
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 454,
+     "end_line": 454
+    },
+    {
+     "path": "app/admin/views.py",
+     "start_line": 478,
+     "end_line": 478
+    }
+   ],
+   "also_categories": [
+    "injection"
+   ]
+  },
+  {
+   "id": "OPT-03",
+   "severity": "info",
+   "category": "other",
+   "title": "GET /xmlrpc/ 匿名列出全部方法签名",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 94,
+     "end_line": 118
+    }
+   ],
+   "also_categories": [
+    "xml",
+    "sensitive_data"
+   ]
+  },
+  {
+   "id": "OPT-04",
+   "severity": "info",
+   "category": "sensitive_data",
+   "title": "运维脚本在命令行传 MySQL 口令、打印用户口令",
+   "locations": [
+    {
+     "path": "scripts/back_web.sh",
+     "start_line": 9,
+     "end_line": 9
+    },
+    {
+     "path": "scripts/back_web.sh",
+     "start_line": 27,
+     "end_line": 27
+    },
+    {
+     "path": "scripts/ylinux-client.py",
+     "start_line": 197,
+     "end_line": 197
+    }
+   ],
+   "also_categories": [
+    "config"
+   ]
+  },
+  {
+   "id": "OPT-05",
+   "severity": "info",
+   "category": "deserialization",
+   "title": "自定义 pickle 会话后端未启用（SESSION_ENGINE 未设置），且数据存服务端",
+   "locations": [
+    {
+     "path": "app/sessions/backends/base.py",
+     "start_line": 92,
+     "end_line": 98
+    },
+    {
+     "path": "app/sessions/models.py",
+     "start_line": 60,
+     "end_line": 67
+    }
+   ],
+   "also_categories": [
+    "crypto"
+   ]
+  },
+  {
+   "id": "OPT-06",
+   "severity": "low",
+   "category": "xss",
+   "title": "重置页把引号本地部分的 email 未转义输出（依赖 Django 1.2 EmailField 正则，未在真实框架中验证）",
+   "locations": [
+    {
+     "path": "app/account/views.py",
+     "start_line": 213,
+     "end_line": 213
+    }
+   ]
+  },
+  {
+   "id": "OPT-07",
+   "severity": "low",
+   "category": "access_control",
+   "title": "XML-RPC new_topic 不检查目录 has_access",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 199,
+     "end_line": 205
+    }
+   ],
+   "also_categories": [
+    "xml"
+   ]
+  },
+  {
+   "id": "OPT-08",
+   "severity": "low",
+   "category": "access_control",
+   "title": "隐藏/回收站主题只在 wiki 目录列表过滤，其他入口照常可读",
+   "locations": [
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 81,
+     "end_line": 103
+    },
+    {
+     "path": "app/bbs/views.py",
+     "start_line": 40,
+     "end_line": 40
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 32,
+     "end_line": 34
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 149,
+     "end_line": 149
+    }
+   ],
+   "also_categories": [
+    "sensitive_data"
+   ]
+  },
+  {
+   "id": "OPT-09",
+   "severity": "info",
+   "category": "sensitive_data",
+   "title": "XML-RPC 把异常原文返回给调用方",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 140,
+     "end_line": 141
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 152,
+     "end_line": 153
+    },
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 184,
+     "end_line": 185
+    }
+   ],
+   "also_categories": [
+    "xml",
+    "other"
+   ]
+  }
+ ],
+ "false_positive_traps": [
+  {
+   "id": "FP-01",
+   "title": "reboot 里的 os.system 没有请求数据参与，不是命令注入",
+   "locations": [
+    {
+     "path": "app/admin/views.py",
+     "start_line": 362,
+     "end_line": 363
+    }
+   ],
+   "wrong_categories": [
+    "injection"
+   ]
+  },
+  {
+   "id": "FP-02",
+   "title": "get_group_permissions 的 % 只拼标识符常量，用户 id 走参数化",
+   "locations": [
+    {
+     "path": "app/account/backends.py",
+     "start_line": 43,
+     "end_line": 57
+    }
+   ],
+   "wrong_categories": [
+    "injection"
+   ]
+  },
+  {
+   "id": "FP-03",
+   "title": "pickle 会话后端未启用且数据存服务端，不能评为中危以上",
+   "locations": [
+    {
+     "path": "app/sessions/backends/base.py",
+     "start_line": 92,
+     "end_line": 98
+    },
+    {
+     "path": "app/sessions/models.py",
+     "start_line": 60,
+     "end_line": 67
+    }
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "FP-04",
+   "title": "login() 已 cycle_key，会话固定已处理",
+   "locations": [
+    {
+     "path": "app/account/__init__.py",
+     "start_line": 66,
+     "end_line": 73
+    }
+   ]
+  },
+  {
+   "id": "FP-05",
+   "title": "上传文件名经 UploadedFile 取 basename，不存在路径穿越",
+   "locations": [
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 78,
+     "end_line": 78
+    }
+   ],
+   "wrong_cwes": [
+    "CWE-22",
+    "CWE-23",
+    "CWE-73"
+   ]
+  },
+  {
+   "id": "FP-06",
+   "title": "AddPostForm 附件文件名由整数生成",
+   "locations": [
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 62,
+     "end_line": 64
+    }
+   ]
+  },
+  {
+   "id": "FP-07",
+   "title": "XML-RPC new_media 因 settings 未导入而不可用",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 105,
+     "end_line": 127
+    }
+   ],
+   "wrong_min_severity": "medium"
+  },
+  {
+   "id": "FP-08",
+   "title": "未注册的 Blogger API 函数不可达",
+   "locations": [
+    {
+     "path": "lib/ylinux_xmlrpc.py",
+     "start_line": 218,
+     "end_line": 251
+    }
+   ]
+  },
+  {
+   "id": "FP-09",
+   "title": "handle_xmlrpc 的 csrf_exempt 不是额外问题",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 73,
+     "end_line": 73
+    }
+   ]
+  },
+  {
+   "id": "FP-10",
+   "title": "test_xmlrpc 未注册",
+   "locations": [
+    {
+     "path": "lib/django_xmlrpc/views.py",
+     "start_line": 68,
+     "end_line": 71
+    }
+   ]
+  },
+  {
+   "id": "FP-12",
+   "title": "replayAJAX 的 ajaxFunc 来自 \\d+ 且自动转义",
+   "locations": [
+    {
+     "path": "templates/wiki/replayAJAX.html",
+     "start_line": 25,
+     "end_line": 25
+    }
+   ],
+   "wrong_categories": [
+    "xss"
+   ]
+  },
+  {
+   "id": "FP-15",
+   "title": "Feed 内容由 feedgenerator 转义",
+   "locations": [
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 295,
+     "end_line": 320
+    }
+   ],
+   "wrong_categories": [
+    "xss"
+   ]
+  },
+  {
+   "id": "FP-17",
+   "title": "manage_topic / del_post 有归属校验",
+   "locations": [
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 240,
+     "end_line": 246
+    },
+    {
+     "path": "app/wiki/views.py",
+     "start_line": 275,
+     "end_line": 279
+    }
+   ],
+   "wrong_categories": [
+    "access_control"
+   ]
+  },
+  {
+   "id": "FP-18",
+   "title": "AddTopicForm.save 使用 URL 里的 catalog",
+   "locations": [
+    {
+     "path": "app/ydata/forms.py",
+     "start_line": 91,
+     "end_line": 91
+    }
+   ],
+   "wrong_categories": [
+    "access_control"
+   ]
+  },
+  {
+   "id": "FP-19",
+   "title": "remove_attachment 不删除任何东西",
+   "locations": [
+    {
+     "path": "app/ydata/views.py",
+     "start_line": 109,
+     "end_line": 114
+    }
+   ],
+   "wrong_categories": [
+    "access_control",
+    "file_access"
+   ]
+  },
+  {
+   "id": "FP-20",
+   "title": "static.serve 会规范化路径，不存在穿越",
+   "locations": [
+    {
+     "path": "urls.py",
+     "start_line": 59,
+     "end_line": 62
+    }
+   ],
+   "wrong_cwes": [
+    "CWE-22",
+    "CWE-23"
+   ]
+  },
+  {
+   "id": "FP-21",
+   "title": "account/tokens.py 没有任何 URL 使用",
+   "locations": [
+    {
+     "path": "app/account/tokens.py",
+     "start_line": 1,
+     "end_line": 66
+    }
+   ]
+  },
+  {
+   "id": "FP-22",
+   "title": "_CheckLogin 只拼同站路径",
+   "locations": [
+    {
+     "path": "app/account/decorators.py",
+     "start_line": 80,
+     "end_line": 82
+    }
+   ],
+   "wrong_categories": [
+    "redirect"
+   ]
+  }
+ ]
+}

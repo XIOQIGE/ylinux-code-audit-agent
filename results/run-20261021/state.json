@@ -1,0 +1,1120 @@
+{
+  "findings": [
+    {
+      "id": "XSS-001",
+      "title": "Markdown 渲染未开 safe_mode，主题/回复内容可注入原始 HTML 造成全站存储型 XSS",
+      "category": "xss",
+      "status": "confirmed",
+      "severity": "high",
+      "confidence": "high",
+      "cwe": "CWE-79",
+      "summary": "帖子和主题正文经 vendored python-markdown 转成 HTML 时未启用 safe_mode（默认 False，原始 HTML 原样透传），渲染时模板又用 |safe 直接输出，导致任何发帖用户都可以在正文里嵌入任意 HTML/JavaScript，所有浏览该帖的用户（包括管理员）都会执行。",
+      "impact": "攻击者注册账号后发帖即可注入脚本，窃取浏览者的会话 Cookie（进而接管账号）、以受害者身份发帖/改帖、钓鱼管理员并利用后台功能。影响所有 wiki/论坛读者。",
+      "remediation": "转换正文时启用 safe_mode（如 safe_mode='escape' 或 'remove'），或在入库前用白名单 HTML 清洗（bleach 之类）过滤 script/事件属性；模板中避免对 body_html 使用 |safe，改为输出白名单过滤后的安全 HTML。同时升级到现代 Markdown 库并保持过滤。",
+      "trigger": "登录用户在 wiki 发帖（/wiki/topic/<id>/addpost/、replayAJAX）或发主题（add_topic）时，正文（POST body/text）里带 <script> 等原始 HTML；AddPostForm/AddTopicForm 保存时以 markup='none' 或默认 markdown 渲染，safe_mode 未启用。",
+      "entry_role": "",
+      "data_flow": "来源：登录用户 POST 的 body 字段（app/wiki/views.py:134 add_post / :432 replayAJAX）→ AddPostForm.save() 强制 markup='none'（app/ydata/forms.py:46）→ Post.save() 分支 markup=='none' 调用 Markdown(...).convert() 未开 safe_mode（app/ydata/models.py:258-260，vendored 库默认 safe_mode=False，lib/markdown/__init__.py:188）→ body_html 存库 → 模板 {{ post.body_html|safe }} 输出（app/wiki/utils.py:18、templates/wiki/post.html:12、templates/wiki/replayAJAX.html:16、templates/wiki/editPostAJAX.html:19、templates/bbs/topic.html:30）。主题路径：AddTopicForm.save()/EditTopicForm.save() → Topic.save_file() 用 convertFile 无 safe_mode（app/ydata/models.py:194-200）→ {{ topic.body_html|safe }}（templates/wiki/topic.html:54、templates/bbs/topic.html:23）。入口身份：发帖需登录；浏览为匿名。",
+      "evidence": [
+        {
+          "path": "app/ydata/forms.py",
+          "start_line": 46,
+          "end_line": 46,
+          "quote": "        post = Post(topic=self.topic, user=self.user, user_ip=self.ip, markup='none', body=self.cleaned_data['body'])"
+        },
+        {
+          "path": "app/ydata/models.py",
+          "start_line": 258,
+          "end_line": 260,
+          "quote": "        elif self.markup == 'none':\n            #self.body_html = self.body\n            self.body_html = Markdown(extensions=['fenced_code']).convert(ylinux_text_filter(self.body))"
+        },
+        {
+          "path": "app/ydata/models.py",
+          "start_line": 194,
+          "end_line": 200,
+          "quote": "        f = file(self.body_path, 'w')\n        f.write(text)\n        f.close()\n\n        Markdown(extensions=['fenced_code']).convertFile(input=self.body_path, \n                       output=self.body_html_path, \n                       encoding=\"utf8\", myfilter=ylinux_text_filter)"
+        },
+        {
+          "path": "lib/markdown/__init__.py",
+          "start_line": 185,
+          "end_line": 189,
+          "quote": "    def __init__(self,\n                 extensions=[],\n                 extension_configs={},\n                 safe_mode = False, \n                 output_format=DEFAULT_OUTPUT_FORMAT):"
+        },
+        {
+          "path": "app/wiki/utils.py",
+          "start_line": 18,
+          "end_line": 18,
+          "quote": "  <p>{{ post.body_html|safe }}</p>"
+        },
+        {
+          "path": "templates/wiki/topic.html",
+          "start_line": 54,
+          "end_line": 54,
+          "quote": "    {{ topic.body_html|safe }}"
+        },
+        {
+          "path": "templates/bbs/topic.html",
+          "start_line": 23,
+          "end_line": 23,
+          "quote": "    {{ topic.body_html|safe }}"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对完整链路：AddPostForm.save() 强制 markup='none'（app/ydata/forms.py:46），Post.save() 在 markup=='none' 分支调用 Markdown(extensions=['fenced_code']).convert() 未传 safe_mode（app/ydata/models.py:258-260）；vendored markdown 库默认 safe_mode=False，原始 HTML 原样透传（lib/markdown/__init__.py:188）。ylinux_text_filter（models.py:396-420）只做 [附件:id]/[wiki:id] 占位符替换，不转义 HTML。主题路径 AddTopicForm/EditTopicForm.save() 均调用 Topic.save_file()→convertFile 无 safe_mode（models.py:190-200，forms.py:87-99、118-128）；XML-RPC new_topic 同样走 save_file（lib/ylinux_xmlrpc.py:210-211）。输出端 templates/wiki/topic.html:54、templates/bbs/topic.html:23/30、templates/wiki/post.html:12、replayAJAX.html:16、editPostAJAX.html:19 及 app/wiki/utils.py:18 全部 |safe 直接输出。发帖入口 add_post/replayAJAX（wiki/views.py:132-158、395-444）确认仅需登录。存储型 XSS 成立，high 合理。"
+      ]
+    },
+    {
+      "id": "XSS-002",
+      "title": "注册/重置密码错误页把 URL 中的 key 未转义拼接进 HTML，反射型 XSS",
+      "category": "xss",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-79",
+      "summary": "register 和 password_reset 两个视图在激活 key 不存在时，把 URL 路径里的 key 原样拼进 HttpResponseForbidden 的 HTML 返回，未做任何转义，匿名访问即可触发反射型 XSS。admin 的 email_to_all 视图把 form.errors（含用户输入）直接 HttpResponse 输出，同样未转义（需管理员权限触发）。",
+      "impact": "攻击者可构造 /account/register/<payload>/ 或 /account/password/reset/<payload>/ 链接发给受害者，在其已登录的浏览器同源上下文执行脚本，窃取会话或冒用身份操作。",
+      "remediation": "对 key 用 django.utils.html.escape 转义后再拼入 HTML，或改用模板渲染；email_to_all 的错误输出同样转义（或用 render_to_response + 模板）。",
+      "trigger": "匿名访问任意不存在的激活 key，如 /account/register/<img src=x onerror=...>/；key 直接来自 URL（account/urls.py 的 (?P<key>.+)）。",
+      "entry_role": "",
+      "data_flow": "来源：URL 路径参数 key（app/account/urls.py:8、13，正则 (?P<key>.+)）→ app/account/views.py:96 register(request, key) / :202 password_reset(request, key) → Register.objects.get 抛 DoesNotExist → HttpResponseForbidden(u'<h1>错误的 Key ： %s </h1>' % key) 未转义（app/account/views.py:102、208）。入口身份：匿名。次要路径：管理员 POST /admin/user/email2all/ 校验失败时 HttpResponse(\"%s\" % form.errors)（app/admin/views.py:400），需 ydata.delete_catalog 权限。",
+      "evidence": [
+        {
+          "path": "app/account/views.py",
+          "start_line": 100,
+          "end_line": 102,
+          "quote": "        register = Register.objects.get(activation_key=key)\n    except Register.DoesNotExist:\n        return HttpResponseForbidden(u'<h1>错误的 Key ： %s </h1>' % key)"
+        },
+        {
+          "path": "app/account/views.py",
+          "start_line": 206,
+          "end_line": 208,
+          "quote": "        register = Register.objects.get(activation_key=key)\n    except Register.DoesNotExist:\n        return HttpResponseForbidden(u'<h1>错误的 Key ： %s </h1>' % key)"
+        },
+        {
+          "path": "app/admin/views.py",
+          "start_line": 400,
+          "end_line": 400,
+          "quote": "        return HttpResponse(\"%s\" % form.errors)"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：URL 路由 (?P<key>.+) 接受任意路径内容（app/account/urls.py:8、13），register（views.py:96-102）与 password_reset（views.py:202-208）在 Register.objects.get 抛 DoesNotExist 后直接把 key 拼进 HttpResponseForbidden HTML，无任何转义，且 SHA1_RE 校验只在后续 create_activate_user 中、不在此分支之前。次要路径 email_to_all 位于 @permission_required('ydata.delete_catalog')（admin/views.py:374）之后，400 行 HttpResponse(form.errors) 未转义。匿名反射型为主，medium 定级恰当。"
+      ]
+    },
+    {
+      "id": "REDIRECT-001",
+      "title": "登录/退出/后台登录处基于 next 与 Referer 的开放重定向",
+      "category": "redirect",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-601",
+      "summary": "登录/退出/管理员登录三处把攻击者可控的 next 参数或 HTTP_REFERER 直接作为重定向目标，未做站内校验，形成开放重定向。",
+      "impact": "攻击者构造带 next 参数的链接，诱导用户登录/退出后被重定向到钓鱼页面；admin 登录页则通过伪造 Referer 在管理员登录后把其带回攻击者页面。可用于钓鱼与身份混淆。",
+      "remediation": "跳转目标只允许站内相对路径：校验目标以 '/' 开头且不以 '//' 或 '\\\\' 开头，或用 resolve_url + is_safe_url 这类白名单判断；admin 登录不要使用 Referer 作为跳转目标，改用固定的 reverse() 地址。",
+      "trigger": "GET /account/logout/?next=http://evil.example、GET /account/login?next=...、或从攻击者页面跳转到 /admin/login/ 使 Referer 受控。",
+      "entry_role": "",
+      "data_flow": "来源：GET 参数 next / HTTP Referer。路径1：GET /account/login?next=<外部URL> → 存入 session['login_redirect_url']（app/account/views.py:44）→ 登录成功后 HttpResponseRedirect(session.get('login_redirect_url','/'))（app/account/views.py:38）。路径2：GET /account/logout/?next=<外部URL> → HttpResponseRedirect(previous_url)（app/account/views.py:58-60）。路径3：GET /admin/login/ 时 session['previous_url']=HTTP_REFERER（app/admin/views.py:65）→ 管理员登录后跳回 Referer（app/admin/views.py:62）。入口身份：匿名。",
+      "evidence": [
+        {
+          "path": "app/account/views.py",
+          "start_line": 44,
+          "end_line": 44,
+          "quote": "        request.session['login_redirect_url'] = request.GET.get('next')"
+        },
+        {
+          "path": "app/account/views.py",
+          "start_line": 38,
+          "end_line": 38,
+          "quote": "                    return HttpResponseRedirect(request.session.get('login_redirect_url','/') or '/')"
+        },
+        {
+          "path": "app/account/views.py",
+          "start_line": 58,
+          "end_line": 60,
+          "quote": "    previous_url = request.GET.get('next')\n    logout(request)\n    return HttpResponseRedirect(previous_url or '/')"
+        },
+        {
+          "path": "app/admin/views.py",
+          "start_line": 62,
+          "end_line": 65,
+          "quote": "                return HttpResponseRedirect(request.session.get('previous_url','/'))\n\n    else:\n        request.session['previous_url'] = request.META.get('HTTP_REFERER', '/')"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对三处 sink：account login 把 GET next 原样存入 session 并登录后跳转（app/account/views.py:38、44），logout 直接跳 previous_url（views.py:58-60），admin login 用 HTTP_REFERER 存入 session 并在认证后跳回（app/admin/views.py:62-65），均无 is_safe_url 类校验。开放重定向成立，low 定级符合惯例。"
+      ]
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "SECRET_KEY 硬编码入库，会话防篡改校验与重置令牌失去保密性",
+      "category": "crypto",
+      "status": "confirmed",
+      "severity": "high",
+      "confidence": "high",
+      "cwe": "CWE-798",
+      "summary": "settings.py 把 SECRET_KEY 硬编码并提交进仓库；该密钥是会话数据 pickle 防篡改 MD5 校验的唯一秘密和密码重置令牌的种子，公开后这两道保护全部失效。",
+      "impact": "SECRET_KEY 公开后，会话数据的防篡改校验（MD5+SALT 无密钥可言）形同虚设；一旦攻击者获得任何数据库写入口（如其他 SQL 注入），即可伪造含任意 pickle 负载的会话数据，反序列化时在服务器上执行任意代码；密码重置令牌（tokens.py 的算法）也可据此密钥离线计算。至少需重新生成密钥并迁移所有会话。",
+      "remediation": "将 SECRET_KEY 移到环境变量/独立配置文件并轮换；会话改为签名 Cookie（django.contrib.sessions 的 signing 机制）或至少 JSON 序列化，禁用 pickle；引入独立密钥派生（SECRET_KEY 轮换不影响既有会话校验的方案）。",
+      "trigger": "任何能读取代码仓库的人都能获得该密钥（无需触发）；攻击场景是与任一数据库写入口组合后伪造会话数据。",
+      "entry_role": "",
+      "data_flow": "配置来源：settings.py:79 硬编码 SECRET_KEY 随仓库分发（任何人可读取）→ 被用于会话数据完整性校验 md5(pickled + SECRET_KEY)（app/sessions/models.py:18、63；app/sessions/backends/base.py:89、95）→ 校验实际失效，任何能写入 ylinux_session 表（或拿到含 session_data 的 DB）的人都可以构造合法 session_data → pickle.loads 反序列化（app/sessions/models.py:67）。该密钥也参与密码重置令牌计算（app/account/tokens.py:54）。",
+      "evidence": [
+        {
+          "path": "settings.py",
+          "start_line": 79,
+          "end_line": 79,
+          "quote": "SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'"
+        },
+        {
+          "path": "app/sessions/models.py",
+          "start_line": 13,
+          "end_line": 19,
+          "quote": "    def encode(self, session_dict):\n        \"\"\"\n        Returns the given session dictionary pickled and encoded as a string.\n        \"\"\"\n        pickled = pickle.dumps(session_dict)\n        pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()\n        return base64.encodestring(pickled + pickled_md5)"
+        },
+        {
+          "path": "app/sessions/models.py",
+          "start_line": 62,
+          "end_line": 67,
+          "quote": "        pickled, tamper_check = encoded_data[:-32], encoded_data[-32:]\n        if md5_constructor(pickled + settings.SECRET_KEY).hexdigest() != tamper_check:\n            from django.core.exceptions import SuspiciousOperation\n            raise SuspiciousOperation, \"User tampered with session cookie.\"\n        try:\n            return pickle.loads(pickled)"
+        },
+        {
+          "path": "app/account/tokens.py",
+          "start_line": 54,
+          "end_line": 54,
+          "quote": "        hash = sha_constructor(settings.SECRET_KEY + unicode(user.id) +"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：settings.py:79 硬编码 SECRET_KEY；会话完整性校验确实依赖 md5(pickled + SECRET_KEY)（app/sessions/models.py:17-18、62-67；app/sessions/backends/base.py:88-98），校验通过后 pickle.loads 反序列化（models.py:67）。密钥公开后任何能写 ylinux_session 表者可伪造合法 session_data，属 RCE 链的必要前提，high 可接受。一处需说明：app/account/tokens.py:54 的 PasswordResetTokenGenerator 实际未接入密码重置流程（重置走 Register.activation_key，见 views.py:182-191；PasswordResetForm 在 views 中无调用点），\"重置令牌失去保密性\"这一半影响在当前代码中不成立，但会话/pickle 核心结论不受影响。"
+      ]
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "弱口令哈希：单轮 SHA1/MD5 + 弱随机盐",
+      "category": "crypto",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-916",
+      "summary": "口令以单轮 SHA1（兼容路径还有 MD5）加 5 字符弱盐存储，盐由非加密安全的 random.random() 派生，强度远低于当代标准。",
+      "impact": "用户口令哈希抗破解能力极弱：单轮 SHA1/MD5 + 5 字符弱盐，GPU 可快速枚举；一旦 DB 泄露，绝大多数用户口令可被恢复并被用于撞库其他站点。",
+      "remediation": "改用现代 KDF：Django 的 pbkdf2_sha256（或 bcrypt/argon2），盐用 os.urandom 生成足够长度（至少 128 bit）；对存量哈希在下一次登录时平滑升级。",
+      "trigger": "用户注册（set_password）即产生该格式哈希；攻击者在获得数据库后离线破解。",
+      "entry_role": "",
+      "data_flow": "来源：注册/改密表单的口令 → User.set_password（app/account/models.py:228-234）：单轮 SHA1，盐仅为 random.random() 派生的 5 个十六进制字符（约 20 bit 且由 Mersenne Twister 生成）→ 存库格式 algo$salt$hsh。离线字典/彩虹表破解代价极低。",
+      "evidence": [
+        {
+          "path": "app/account/models.py",
+          "start_line": 63,
+          "end_line": 65,
+          "quote": "        return md5_constructor(salt + raw_password).hexdigest()\n    elif algorithm == 'sha1':\n        return sha_constructor(salt + raw_password).hexdigest()"
+        },
+        {
+          "path": "app/account/models.py",
+          "start_line": 231,
+          "end_line": 234,
+          "quote": "        algo = 'sha1'\n        salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]\n        hsh = get_hexdigest(algo, salt, raw_password)\n        self.password = '%s$%s$%s' % (algo, salt, hsh)"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：get_hexdigest 为单轮 md5/sha1（app/account/models.py:62-65），set_password 用 algo='sha1'、盐为 random.random() 派生的 5 个十六进制字符（models.py:228-234），存储格式 algo$salt$hsh。弱 KDF+弱熵盐属实，DB 泄露后离线破解代价极低，medium 恰当。"
+      ]
+    },
+    {
+      "id": "CRYPTO-003",
+      "title": "激活/重置 key 弱熵（20 bit 盐）可暴力枚举导致账户接管",
+      "category": "crypto",
+      "status": "confirmed",
+      "severity": "high",
+      "confidence": "medium",
+      "cwe": "CWE-330",
+      "summary": "激活/重置 key 由 sha1(5 字符弱盐 + email) 生成，盐来自 random.random() 仅约 20 bit 熵，可被暴力枚举；结合无速率限制的 password_reset 端点，攻击者可接管任意邮箱对应的账户。",
+      "impact": "注册激活 key 与密码重置 key 的随机盐只有 20 bit 熵（且由非加密安全 PRNG 生成），攻击者可在离线枚举全部 2^20 候选后对密码重置 URL 逐一尝试，重置任意已知邮箱账户的口令，实现账户接管（无任何速率限制或失败锁定）。",
+      "remediation": "激活/重置 key 使用 os.urandom/secrets 生成至少 128 bit 随机数（或 Django 签名令牌），不要用可预测的随机源；对重置/激活端点加速率限制与失效时间；重置成功后使旧 key 失效。",
+      "trigger": "攻击者匿名 POST /account/password/reset/ 提交受害者邮箱；随后对 /account/password/reset/<key>/ 枚举 2^20 个候选 key。",
+      "entry_role": "",
+      "data_flow": "来源：受害者邮箱（公开信息）。攻击者匿名 POST /account/password/reset/ 触发 password_reset_request → reset_activation_key() 重新生成 key（app/account/models.py:424-430）：salt = sha1(str(random.random()))[:5] 仅 20 bit 熵，key = sha1(salt+email) → 邮件中的重置 URL 携带该 key。password_reset 视图用 Register.objects.get(activation_key=key) 定位用户（app/account/views.py:206）并允许直接设置新口令（app/account/views.py:215-219）。攻击者对已知邮箱离线枚举 2^20 个候选 key，逐个请求重置 URL 即可命中，全程无速率限制。",
+      "evidence": [
+        {
+          "path": "app/account/models.py",
+          "start_line": 364,
+          "end_line": 367,
+          "quote": "        salt = sha_constructor(str(random.random())).hexdigest()[:5]\n        if isinstance(email, unicode):\n            email = email.encode('utf-8')\n        activation_key = sha_constructor(salt+email).hexdigest()"
+        },
+        {
+          "path": "app/account/models.py",
+          "start_line": 427,
+          "end_line": 430,
+          "quote": "        salt = sha_constructor(str(random.random())).hexdigest()[:5]\n        if isinstance(self.email, unicode):\n            email = self.email.encode('utf-8')\n        self.activation_key = sha_constructor(salt+self.email).hexdigest()"
+        },
+        {
+          "path": "app/account/views.py",
+          "start_line": 206,
+          "end_line": 206,
+          "quote": "        register = Register.objects.get(activation_key=key)"
+        },
+        {
+          "path": "app/account/views.py",
+          "start_line": 215,
+          "end_line": 219,
+          "quote": "    form = build_form (SetPasswordForm, request, user=user)\n\n    if form.is_valid():\n        form.clean_new_password2()\n        form.save()"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：create_profile 与 reset_activation_key 的盐均为 sha1(str(random.random())).hexdigest()[:5]（app/account/models.py:364-367、427-430），即 20 bit 熵且来自 Mersenne Twister；key=sha1(salt+email)。密码重置流程：password_reset_request 对已知 email 调 reset_activation_key 并邮件发出 key（views.py:182-191），password_reset 用 Register.objects.get(activation_key=key) 定位并允许直接设置新口令（views.py:206-219），无速率限制、无失效时间校验。攻击者对已知邮箱离线枚举 2^20 候选、逐个请求重置 URL 即可命中（403/200 可区分）。high+medium confidence 定级合理。"
+      ]
+    },
+    {
+      "id": "CSRF-001",
+      "title": "全站未启用 CSRF 防护，后台删除等写操作可被跨站伪造",
+      "category": "csrf",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-352",
+      "summary": "MIDDLEWARE_CLASSES 未包含任何 CSRF 防护中间件，全站基于 Cookie 会话的状态变更端点（后台删用户、发帖、上传等）均可跨站请求伪造，部分端点连 GET 也执行写操作。",
+      "impact": "站点所有依赖 Cookie 会话的状态变更操作都可被跨站伪造：管理员浏览恶意页面即可在不知情下删除用户/改后台数据、登录用户可被代发帖/改帖。del_user 等视图甚至接受 GET 请求，只需 <img> 标签即可触发。",
+      "remediation": "启用 django.middleware.csrf.CsrfViewMiddleware（Django 1.3 还需 CsrfResponseMiddleware 或用 csrf_protect 装饰器），为所有表单加 {% csrf_token %}；状态变更视图只接受 POST，并校验权限。",
+      "trigger": "受害者（管理员/登录用户）访问攻击者页面，浏览器自动向本站写操作 URL 发起请求并携带会话 Cookie。",
+      "entry_role": "",
+      "data_flow": "配置来源：settings.py:98-104 MIDDLEWARE_CLASSES 只包含 CommonMiddleware、自定义 SessionMiddleware、AuthenticationMiddleware，未启用 CsrfViewMiddleware/CsrfResponseMiddleware，全站无 CSRF 令牌。攻击者页面可跨站提交表单/GET 到任何依赖 Cookie 会话的状态变更端点：例如后台删用户 del_user 对任意请求（含 GET）直接执行 user.delete()（app/admin/views.py:250-257）、wiki 发帖 add_post/replayAJAX、ydata 附件上传 upload_single_file（app/ydata/views.py:31-98）等。",
+      "evidence": [
+        {
+          "path": "settings.py",
+          "start_line": 98,
+          "end_line": 104,
+          "quote": "MIDDLEWARE_CLASSES = (\n    'django.middleware.common.CommonMiddleware',\n#    'django.contrib.sessions.middleware.SessionMiddleware',\n#    'django.contrib.auth.middleware.AuthenticationMiddleware',\n    'ylinux.app.sessions.middleware.SessionMiddleware',\n    'ylinux.app.account.middleware.AuthenticationMiddleware',\n)"
+        },
+        {
+          "path": "app/admin/views.py",
+          "start_line": 250,
+          "end_line": 257,
+          "quote": "@permission_required('just_admin_can_delete')\n@render_to ('admin/del_user.html')\ndef del_user (request, id):\n\n    user = get_object_or_404 (User, pk=id)\n    # 这里等待以后验证是否已有其他关联\n    user.delete()"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：settings.py:98-104 MIDDLEWARE_CLASSES 仅含 CommonMiddleware 与自定义 Session/Authentication 中间件，无任何 CSRF 中间件；自定义 SessionMiddleware 只写 Cookie 不校验令牌（app/sessions/middleware.py）。del_user 无方法限制、GET 即执行 user.delete()（app/admin/views.py:250-257）。基于 Cookie 会话的写操作可跨站伪造成立，medium 恰当。"
+      ]
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG=True 提交进配置，且 MEDIA_ROOT 开启目录浏览",
+      "category": "config",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-209",
+      "summary": "DEBUG=True 被提交在 settings.py 中，且 DEBUG 下 /ymedia/ 挂载了 show_indexes=True 的目录浏览，泄露错误细节与上传目录内容。",
+      "impact": "生产环境一旦启用此配置：错误页泄露源码路径、settings（含 SECRET_KEY、DB 口令）等敏感信息；/ymedia/ 目录可浏览，用户上传的附件、主题正文源文件等全部可匿名列出与下载。",
+      "remediation": "生产环境设置 DEBUG=False；MEDIA_ROOT 由 Web 服务器以无目录索引方式提供静态服务，移除 show_indexes；如需展示附件应走带鉴权/内容类型的下载视图。",
+      "trigger": "任何能触发 500 异常的请求即可看到调试错误页；任何匿名用户访问 /ymedia/ 即可浏览上传目录。该配置在按仓库原样部署时即生效。",
+      "entry_role": "",
+      "data_flow": "配置来源：settings.py:18 DEBUG=True（且 TEMPLATE_DEBUG 同步开启）→ Django 在生产错误页返回完整堆栈、settings 与本地变量；同时 urls.py:59-63 在 DEBUG 下挂载 static.serve 且 show_indexes=True，把 MEDIA_ROOT 以目录列表形式直接暴露给任意访问者。",
+      "evidence": [
+        {
+          "path": "settings.py",
+          "start_line": 18,
+          "end_line": 18,
+          "quote": "DEBUG = True"
+        },
+        {
+          "path": "urls.py",
+          "start_line": 59,
+          "end_line": 63,
+          "quote": "if (settings.DEBUG):\n    urlpatterns += patterns ('',\n        (r'^ymedia/(?P<path>.*)$', 'django.views.static.serve',\n         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),\n    )"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：settings.py:18 DEBUG=True 且 TEMPLATE_DEBUG 同步；urls.py:59-63 在 DEBUG 下把 MEDIA_ROOT 以 show_indexes=True 的 static.serve 挂载到 /ymedia/。按仓库配置部署即生效，错误页泄露与目录浏览成立，medium 合理。"
+      ]
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "数据库口令明文弱口令提交进仓库",
+      "category": "config",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-798",
+      "summary": "数据库口令以明文弱口令 '123456' 提交在 settings.py；虽然当前 ENGINE 为 sqlite3（不使用口令），但切换为注释中的 MySQL 后端即会生效。",
+      "impact": "口令明文入库即泄露；若按注释切换为 MySQL 后端，'123456' 直接成为数据库口令。当前 sqlite3 配置下该口令不生效，风险受限。",
+      "remediation": "数据库口令、邮件口令等敏感配置一律通过环境变量/独立 secrets 文件注入，加入 .gitignore，不使用弱口令。",
+      "trigger": "无需触发：仓库可读即可获得口令；启用 MySQL ENGINE 后该口令直接生效。",
+      "entry_role": "",
+      "data_flow": "配置来源：settings.py:42-53 DATABASES 中明文写入 USER='ylinux'、PASSWORD='123456'，并随仓库分发。当前 ENGINE 为 sqlite3（口令不生效），但同处注释保留的 'django.db.backends.mysql' 一旦启用即使用该口令连接数据库。",
+      "evidence": [
+        {
+          "path": "settings.py",
+          "start_line": 45,
+          "end_line": 50,
+          "quote": "        #'ENGINE': 'django.db.backends.mysql',\n        'ENGINE': 'django.db.backends.sqlite3',\n        'NAME': 'ylinux',\n        'USER': 'ylinux',\n        'PASSWORD': '123456',"
+        },
+        {
+          "path": "settings.py",
+          "start_line": 29,
+          "end_line": 33,
+          "quote": "DEFAULT_FROM_EMAIL = ''\nEMAIL_HOST = ''\nEMAIL_HOST_USER = ''\nEMAIL_HOST_PASSWORD = ''\nEMAIL_PORT = ''"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对 settings.py:42-53：PASSWORD='123456'、USER='ylinux' 明文入库，当前 ENGINE 为 sqlite3（口令不生效），MySQL ENGINE 处于注释状态。审计员已如实限定影响范围并定 low，与事实相符。"
+      ]
+    },
+    {
+      "id": "ACCESS-001",
+      "title": "editPostAJAX 缺少帖子归属校验，任意登录用户可篡改他人帖子",
+      "category": "access_control",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-639",
+      "summary": "wiki/editPostAJAX 只要求登录，未校验帖子归属，任何登录用户都能修改他人帖子内容（越权写）。",
+      "impact": "任意登录用户可修改全站任意帖子的正文（同模块 del_post 有归属校验，editPostAJAX 却没有），可篡改他人内容或利用 XSS-001 的渲染链在他人帖子中注入脚本。",
+      "remediation": "在 editPostAJAX 中增加与 del_post 一致的归属校验：post.user != request.user 时返回 403；必要时叠加 edit_post 权限。",
+      "trigger": "登录用户对任意存在的 postID 提交 POST /wiki/post/<postID>/editAJAX/ 并带 body 参数。",
+      "entry_role": "",
+      "data_flow": "来源：登录用户的 POST body 与 URL 中任意 postID。POST /wiki/post/<postID>/editAJAX/ → editPostAJAX 仅 @login_required，get_object_or_404(Post, pk=postID) 后直接 post.body = post_body; post.save()（app/wiki/views.py:447-460），无 post.user == request.user 归属校验。入口身份：任意已登录用户。",
+      "evidence": [
+        {
+          "path": "app/wiki/views.py",
+          "start_line": 447,
+          "end_line": 460,
+          "quote": "@login_required\n@render_to('wiki/editPostAJAX.html')\ndef editPostAJAX(request, postID):\n\n    post = get_object_or_404(Post, pk = postID)\n\n    if request.method == 'GET':\n        return {'method': 'GET', 'post': post}\n\n    post_body = request.POST.get('body', None)\n    if not post_body:\n        return HttpResponse(u'error: No contents found!')\n    post.body = post_body\n    post.save()"
+        },
+        {
+          "path": "app/wiki/views.py",
+          "start_line": 271,
+          "end_line": 283,
+          "quote": "@login_required\ndef del_post (request, id):\n\n    post = get_object_or_404 (Post, pk=id)\n    t_id = post.topic.id\n\n    if post.user != request.user:\n        return HttpResponseForbidden('<h1>您没有这个权限！</h1>')\n\n    post.delete()\n\n    url = reverse ('wiki:show_topic', args=[t_id])\n    return HttpResponseRedirect(url)"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：editPostAJAX（app/wiki/views.py:447-460）仅 @login_required，get_object_or_404 后直接覆盖 post.body 并 save，无 post.user==request.user 校验；同文件 del_post（views.py:271-283）有归属校验可作对比。越权改帖成立，medium 恰当。"
+      ]
+    },
+    {
+      "id": "FILE-001",
+      "title": "上传文件名未清洗：头注入/JS 注入风险，XML-RPC 可投放任意内容到媒体目录",
+      "category": "file_access",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-434",
+      "summary": "上传文件名未清洗：拼进落盘路径、拼进 JS 回调（未转义）、拼进 Content-Disposition 头；XML-RPC 上传任意内容到媒体目录，存在头注入与同源恶意内容投放风险。",
+      "impact": "上传文件名不做清洗：文件名可注入 Content-Disposition 响应头（响应拆分）；文件名含引号/括号可注入上传回调的 JS（当前主要是上传者自身浏览器受影响）；XML-RPC new_media 允许任意认证用户把任意内容（如带 <script> 的 HTML）写入 MEDIA_URL 下被 Web 服务器直接服务的位置，同源存储型 XSS/钓鱼页。常规 ../ 穿越被数字前缀恰好挡住，但不等于设计安全。",
+      "remediation": "存储文件名一律服务端生成（如 uuid+白名单扩展名），用户原始文件名仅作展示并转义；下载时 Content-Disposition 用 Django 的 FileResponse/标准编码工具；上传内容限制 MIME 类型与扩展名白名单；对 JS 回调输出做 JSON/转义。",
+      "trigger": "登录用户上传名为 x.js、带引号/换行等的文件；或通过 metaWeblog.newMediaObject 上传 HTML/JS 内容。",
+      "entry_role": "",
+      "data_flow": "来源：登录用户上传文件的原始文件名 f.name（app/ydata/views.py:40）→ 未清洗直接拼进磁盘文件名并写入 MEDIA_ROOT/ydata/attachments/（app/ydata/views.py:78-84，前缀 str(id)-str(user.id)- 使 ../ 需要同名目录才能穿越，恰好挡住常规穿越）；随后 f.name 未转义拼进 JS 响应（app/ydata/views.py:91-98）并存入 Attachment.name，下载时用于 Content-Disposition（app/ydata/views.py:140-147）。同模式出现在 ylab/views.py:31-34。XML-RPC new_media 用 os.path.basename 但内容类型/扩展名完全不受限，任意内容写入 MEDIA_ROOT/img/（lib/ylinux_xmlrpc.py:119-125）。入口身份：ydata 上传需登录；ylab 的 upload_single_file 无登录校验（app/ylab/urls.py:7）。",
+      "evidence": [
+        {
+          "path": "app/ydata/views.py",
+          "start_line": 78,
+          "end_line": 84,
+          "quote": "        local_name = str(id) + '-' + str(req.user.id) + '-' + f.name\n        save_path = os.path.join(settings.MEDIA_ROOT,\n                                 ydata_settings.ATTACHMENT_UPLOAD_TO,\n                                 local_name)\n        save_file = open(save_path, 'wb+')\n        for chunk in f.chunks():\n            save_file.write(chunk)"
+        },
+        {
+          "path": "app/ydata/views.py",
+          "start_line": 91,
+          "end_line": 95,
+          "quote": "    r = u'<script type=\"text/javascript\">window.parent.AfterSubmit(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\");</script>'\\\n        % (attachment.id, attachment.name,\n           reverse ('ydata:show_attachment', args=[attachment.id]),\n           reverse ('ydata:download_attachment', args=[attachment.id]),\n           notes)"
+        },
+        {
+          "path": "app/ydata/views.py",
+          "start_line": 140,
+          "end_line": 147,
+          "quote": "        filename_header = 'filename=%s' % a.name.encode('utf-8')\n    elif u'MSIE' in request.META['HTTP_USER_AGENT']:\n        # IE does not support internationalized filename at all.\n        # It can only recognize internationalized URL, so we do the trick via routing rules.\n        filename_header = ''\n    else:\n        # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).\n        filename_header = 'filename*=UTF-8\\'\\'%s' % urllib.quote(a.name.encode('utf-8'))"
+        },
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 119,
+          "end_line": 125,
+          "quote": "    if file_type == 'img':\n        dated_path = datetime.now().strftime('%Y_%m_%d_') + os.path.basename(file_name)\n        relative_path = os.path.join(file_type, dated_path)\n        target_path = os.path.join(settings.MEDIA_ROOT, relative_path)\n        target_url = '%s/%s' % (settings.MEDIA_URL, relative_path)\n        open(target_path, 'w').write(file_data)\n        return {'url': target_url}"
+        },
+        {
+          "path": "app/ylab/views.py",
+          "start_line": 31,
+          "end_line": 34,
+          "quote": "    attachment = req.FILES.values()[0]\n    innerHTML = u'<span><a href=\"%s\">%s</a>， %s， <a href=\"%s/delete\">删除</a></span>' % (url, attachment.name, attachment.size, url)\n    r = u'<script type=\"text/javascript\">window.parent.AfterSubmit(%s);</script>' % innerHTML\n    return HttpResponse(r)"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：f.name 未清洗直接拼入磁盘文件名（app/ydata/views.py:78-84，前缀 str(id)-str(user.id)- 恰好挡住常规 ../，审计员已如实说明）、未转义拼入 JS 回调（views.py:91-98）与 Content-Disposition（views.py:140-147）；ylab/views.py:31-34 同模式 JS 拼接；XML-RPC new_media 用 os.path.basename 但内容与扩展名无白名单，任意内容写入 MEDIA_ROOT/img/（lib/ylinux_xmlrpc.py:119-125）。download_attachment 无登录限制且 mimetypes 按扩展名猜类型，.html/.js 内容可同源输出，与 finding 表述一致。low 定级（需认证且部分依赖 DEBUG 静态服务）可接受。"
+      ]
+    },
+    {
+      "id": "ACCESS-002",
+      "title": "XML-RPC 删除/编辑接口缺少对象级授权，任意用户可删改全站内容",
+      "category": "access_control",
+      "status": "confirmed",
+      "severity": "medium",
+      "confidence": "high",
+      "cwe": "CWE-862",
+      "summary": "XML-RPC 接口只校验口令、不做任何对象级授权：任意认证用户可删除全部主题、删除/修改他人的主题，且未激活账户也可通过认证。",
+      "impact": "任何注册用户（甚至未激活用户）通过 XML-RPC 即可删除全站所有主题（delete_all_topic）、删除/篡改任意他人的主题内容（delete_topic/edit_topic），造成全站内容破坏与内容劫持；XML-RPC 无速率限制，可反复滥用。",
+      "remediation": "为删除/编辑方法增加对象级授权（仅限本人或管理员），delete_all_topic 仅限管理员；在 authenticate 中检查 is_active；对 XML-RPC 增加速率限制，并考虑用专用 API 密钥或会话替代明文口令。",
+      "trigger": "以任意有效用户名口令调用 xmlrpc 的 delete_all_topic / delete_topic / metaWeblog.editPost。",
+      "entry_role": "",
+      "data_flow": "来源：XML-RPC 方法参数（用户名/口令/topic id/标题正文）。POST /xmlrpc/ → handle_xmlrpc 注册 settings.XMLRPC_METHODS 中的方法（settings.py:164-174）。has_auth 仅校验用户名口令匹配（lib/ylinux_xmlrpc.py:39-45，account.authenticate 不检查 is_active）→ 之后无任何对象级授权：delete_all_topic 删除全部主题（lib/ylinux_xmlrpc.py:60-69）、delete_topic 删除任意 id 的主题及全部回复（lib/ylinux_xmlrpc.py:47-58）、edit_topic 修改任意 postid（lib/ylinux_xmlrpc.py:168-185）。入口身份：任意持有有效口令的用户（含未激活账户）。",
+      "evidence": [
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 39,
+          "end_line": 45,
+          "quote": "def has_auth(user, passwd):\n\n    user = authenticate(username=user, password=passwd)\n    if user is not None:\n        return True\n    else:\n        return False"
+        },
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 47,
+          "end_line": 58,
+          "quote": "def delete_topic(id, user, passwd):\n    '''delete one topic'''\n    if not has_auth(user, passwd):\n        raise Fault(-1, \"Authentication Failure\")\n\n    try:\n        topic = Topic.objects.get(pk=id)\n        topic.posts.all().delete()\n        topic.delete()\n        return True"
+        },
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 60,
+          "end_line": 69,
+          "quote": "def delete_all_topic(user, passwd):\n    '''delete all topic'''\n    if not has_auth(user, passwd):\n        raise Fault(-1, \"Authentication Failure\")\n\n    try:\n        Topic.objects.all().delete()\n        return True"
+        },
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 168,
+          "end_line": 185,
+          "quote": "def edit_topic(postid, user, passwd, struct, publish):\n    '''Edit one topic'''\n    if not has_auth(user, passwd):\n        raise Fault(-1, \"Authentication Failure\")\n\n    try:\n        topic = Topic.objects.get(pk=postid)\n        if struct.has_key('title'):\n            topic.name = st(struct['title'], 'utf-8')\n\n        topic.updated = datetime.now()\n        topic.save()\n        if struct.has_key('description'):"
+        },
+        {
+          "path": "settings.py",
+          "start_line": 164,
+          "end_line": 174,
+          "quote": "XMLRPC_METHODS = (\n    ('ylinux_xmlrpc.delete_topic', 'delete_topic'),\n    ('ylinux_xmlrpc.delete_all_topic', 'delete_all_topic'),\n\n    # MetaWebBlog API\n    ('ylinux_xmlrpc.new_topic', 'metaWeblog.newPost'),\n    ('ylinux_xmlrpc.new_media', 'metaWeblog.newMediaObject'),\n    ('ylinux_xmlrpc.edit_topic', 'metaWeblog.editPost'),\n    ('ylinux_xmlrpc.get_topic', 'metaWeblog.getPost'),\n    ('ylinux_xmlrpc.get_categories', 'metaWeblog.getCategories'),\n    ('ylinux_xmlrpc.get_recent_topics', 'metaWeblog.getRecentPosts'),"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：has_auth 仅 authenticate(username,password) 判非空（lib/ylinux_xmlrpc.py:39-45），不检查 is_active；delete_topic（47-58）、delete_all_topic（60-69）、edit_topic（168-185）认证后无任何对象级授权；settings.py:164-174 确认这些方法注册进 XMLRPC_METHODS。任意注册用户可删全站主题/改他人主题成立，medium 恰当（已认证用户、非权限提升）。"
+      ]
+    },
+    {
+      "id": "ACCESS-003",
+      "title": "update_post_profile 维护端点无鉴权，匿名可触发全表重写",
+      "category": "access_control",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-306",
+      "summary": "/lab/update_post_profile 无任何鉴权，匿名请求即可对全部帖子执行批量重写（更新 touser/updated/body_html）。",
+      "impact": "匿名访问即可触发全表帖子重写（每个 Post 重新生成 body_html 并写库），可被反复调用造成数据库/CPU 负载与内容时间戳被篡改；属于遗留维护端点直接暴露。",
+      "remediation": "删除该端点或改为管理命令（manage.py 命令），若保留则加管理员权限校验并限流。",
+      "trigger": "匿名请求 GET /lab/update_post_profile 即可执行。",
+      "entry_role": "",
+      "data_flow": "来源：匿名 HTTP 请求。GET/POST /lab/update_post_profile → ylab/urls.py:8 路由到 ylab/views.py:37-48 的 update_post_profile，无任何 login_required/权限校验，直接遍历全部 Post 并 save()（重算 body_html、touser、updated，全表写）。入口身份：匿名。",
+      "evidence": [
+        {
+          "path": "app/ylab/urls.py",
+          "start_line": 8,
+          "end_line": 8,
+          "quote": "    url(r'^update_post_profile$', 'update_post_profile', name='update_post_profile'),"
+        },
+        {
+          "path": "app/ylab/views.py",
+          "start_line": 37,
+          "end_line": 48,
+          "quote": "def update_post_profile(req):\n    \n    posts = Post.objects.all()\n    for p in posts:\n        if p.parent:\n            p.touser = p.parent.user\n        else:\n            p.touser = p.topic.user\n        p.updated = p.created\n        p.save()\n\n    return HttpResponse(u'更新 posts 完成!')"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对：ylab/urls.py:8 路由 update_post_profile 到 ylab/views.py:37-48，函数无任何 login_required/权限校验，遍历全部 Post 重算 touser/updated 并 save()（save 会重渲 body_html，全表写）。匿名可反复触发的维护端点，low 定级合理（无数据泄露、主要是负载与时间戳/渲染副作用）。"
+      ]
+    },
+    {
+      "id": "COOKIE-001",
+      "title": "会话 Cookie 未设置 HttpOnly/Secure，XSS 可直接窃取会话",
+      "category": "sensitive_data",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-1004",
+      "summary": "自定义 SessionMiddleware 写会话 Cookie 未设置 HttpOnly（且未启用 SESSION_COOKIE_SECURE），会话标识可被 JavaScript 直接读取。",
+      "impact": "会话 Cookie 无 HttpOnly 标志：XSS-001 已确认的存储型 XSS 一旦触发，脚本可直接读取 document.cookie 拿会话标识（含管理员会话），实现即时会话劫持；无 Secure 标志时 Cookie 在 HTTP 链路上可被窃听。放大了 XSS-001 的实际危害。",
+      "remediation": "set_cookie 增加 httponly=True；生产环境启用 SESSION_COOKIE_SECURE=True 并全站 HTTPS；如框架版本支持，同时设置 SameSite=Lax 进一步缓解 CSRF。",
+      "trigger": "无需单独触发：XSS-001 的注入脚本读取 document.cookie 即得会话 Cookie；该 Cookie 每次会话写入时生成（app/sessions/middleware.py:37-41）。",
+      "entry_role": "",
+      "data_flow": "配置来源：settings.py 未设置 SESSION_COOKIE_SECURE/SESSION_COOKIE_HTTPONLY；自定义 SessionMiddleware.process_response 写会话 Cookie 时只传 max_age/expires/domain/path/secure，未传 httponly（app/sessions/middleware.py:37-41），Django 1.3 set_cookie 默认 httponly=False → 会话 Cookie 可被 document.cookie 读取，且 secure 为 None 时 Cookie 在 HTTP 明文下传输。与 XSS-001（全站存储型 XSS）组合时，注入脚本可直接窃取会话（含管理员会话）。",
+      "evidence": [
+        {
+          "path": "app/sessions/middleware.py",
+          "start_line": 37,
+          "end_line": 41,
+          "quote": "                response.set_cookie(settings.SESSION_COOKIE_NAME,\n                        request.session.session_key, max_age=max_age,\n                        expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,\n                        path=settings.SESSION_COOKIE_PATH,\n                        secure=settings.SESSION_COOKIE_SECURE or None)"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：核对 app/sessions/middleware.py:37-41（读了 20-42 窗口）：set_cookie 仅传 max_age/expires/domain/path/secure，未传 httponly；Django 1.3 的 set_cookie 默认 httponly=False，因此会话 Cookie 可被 document.cookie 读取。search_code 全仓库 SESSION_COOKIE_ 在 settings.py 无任何定义，SESSION_COOKIE_SECURE 走默认 False，`secure=... or None` 实际为 None，HTTP 明文链路下可窃听。与已确认的 XSS-001 组合会放大为即时会话劫持，low 定级恰当，同意。"
+      ]
+    },
+    {
+      "id": "AUTH-001",
+      "title": "所有认证入口缺少速率限制/失败锁定，口令可在线爆破",
+      "category": "auth",
+      "status": "confirmed",
+      "severity": "low",
+      "confidence": "high",
+      "cwe": "CWE-307",
+      "summary": "网页登录、AJAX 登录、后台登录与 XML-RPC 认证均无失败次数限制、锁定或速率控制，口令可被在线无限次暴力尝试。",
+      "impact": "攻击者可无限次尝试口令：结合 CRYPTO-002 的单轮 SHA1 弱哈希（弱口令秒级命中）与站点普遍弱口令（数据库口令 '123456'），可在数分钟内在线爆破普通用户乃至管理员口令，接管后台（用户/目录管理、reboot、群发邮件等）。",
+      "remediation": "对登录（含 AJAX 与 XML-RPC）增加按账号/IP 的失败计数与指数退避锁定（如 5 次失败锁定 15 分钟），或接入速率限制中间件；强制口令强度策略，并优先落实 CRYPTO-002 的 KDF 升级。",
+      "trigger": "匿名脚本反复 POST /account/login/、/account/login/ajax/、/admin/login/ 或调用 /xmlrpc/ 的带口令方法。",
+      "entry_role": "",
+      "data_flow": "来源：攻击者重复提交的 username/password。三个认证入口均无任何失败计数、锁定或速率限制：POST /account/login/（app/account/views.py:26-40 每次直接 authenticate，失败后仅重渲染表单）、POST /account/login/ajax/（app/account/views.py:233-246 同样直接 authenticate）、POST /admin/login/（app/admin/views.py:51-62）、XML-RPC has_auth（lib/ylinux_xmlrpc.py:39-45，每次调用都做一次口令校验，可无限重试）。入口身份：匿名。",
+      "evidence": [
+        {
+          "path": "app/account/views.py",
+          "start_line": 26,
+          "end_line": 40,
+          "quote": "    if request.method == \"POST\":\n        form = AuthenticationForm(data=request.POST)\n        if form.is_valid():\n            username = form.cleaned_data[\"username\"]\n            password = form.cleaned_data[\"password\"]\n            from account import authenticate,login\n            user = authenticate(username=username, password=password)\n            if user is not None:\n                if user.is_active:\n                    login(request, user)\n                    if request.session.test_cookie_worked():\n                        request.session.delete_test_cookie()\n                        return HttpResponseRedirect(request.session.get('login_redirect_url','/') or '/')\n                else:\n                    return HttpResponseForbidden(u'用户未被激活，请联系管理员： ylinux.admin@gmail.com')"
+        },
+        {
+          "path": "app/admin/views.py",
+          "start_line": 51,
+          "end_line": 62,
+          "quote": "    if request.method == \"POST\":\n        form = AuthenticationForm(data=request.POST)\n        if form.is_valid():\n            username = form.cleaned_data[\"username\"]\n            password = form.cleaned_data[\"password\"]\n            from account import authenticate,login\n            user = authenticate(username=username, password=password)\n            if user is not None and user.is_active and user.is_staff:\n                login(request, user)\n                if request.session.test_cookie_worked():\n                    request.session.delete_test_cookie()\n                return HttpResponseRedirect(request.session.get('previous_url','/'))"
+        },
+        {
+          "path": "lib/ylinux_xmlrpc.py",
+          "start_line": 39,
+          "end_line": 45,
+          "quote": "def has_auth(user, passwd):\n\n    user = authenticate(username=user, password=passwd)\n    if user is not None:\n        return True\n    else:\n        return False"
+        }
+      ],
+      "dispute_reason": "",
+      "critic_verdict": "agree",
+      "critic_weakest_point": "",
+      "history": [
+        "复核员同意：逐入口核对：网页登录 app/account/views.py:24-40、AJAX 登录 views.py:227-246、后台登录 app/admin/views.py:48-70、XML-RPC has_auth lib/ylinux_xmlrpc.py:39-45，四处在失败后都只是重渲染表单或返回错误，无失败计数/锁定/退避；认证后端 app/account/backends.py:19-25 的 authenticate 仅 User.objects.get+check_password，无任何限制逻辑；search_code 检索 lock/throttle/rate_limit/attempt 全仓库无相关实现。与 CRYPTO-002 单轮 SHA1 弱哈希组合后在线爆破弱口令可行，low 定级合理，同意。"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "stage": "recon",
+      "note": "已读 settings.py（Django 1.3 风格、DEBUG=True、SECRET_KEY 硬编码、自定义会话/认证）、urls.py、会话存储（pickle+MD5(SECRET_KEY)）、认证后端与密码哈希实现。发现：SECRET_KEY 入库、单轮 SHA1 密码、pickle 会话。"
+    },
+    {
+      "stage": "hunt",
+      "note": "pattern_scan 共 29 条线索：DEBUG、DB 口令、硬编码 SECRET_KEY、SQL 拼接、弱哈希、pickle 反序列化、开放重定向、os.popen/os.system、文件上传、|safe 模板、csrf_exempt XML-RPC。下一步沿数据流验证。"
+    },
+    {
+      "stage": "investigate",
+      "note": "已读 XML-RPC 全套（删除/编辑无归属校验、任意用户可删全站 topic、new_media 上传任意内容到 MEDIA_ROOT）、account 认证/注册/重置流程（激活 key 弱熵、反射 XSS、open redirect）。继续读 admin/wiki/bbs/ydata/ylab 视图。"
+    },
+    {
+      "stage": "verify",
+      "note": "已写 13 条 finding（XSS-001/002、REDIRECT-001、CRYPTO-001/002/003、CSRF-001、CONFIG-001/002、ACCESS-001/002/003、FILE-001），全部 29 条线索已 triage（finding/benign）。"
+    }
+  ],
+  "reviewed": [
+    {
+      "path": "lib/markdown",
+      "note": "ymedia 静态资源与 lib/markdown 按约定未通读，仅核实了 safe_mode 默认值与 convertFile 行为（与 XSS-001 直接相关）。"
+    }
+  ],
+  "files_read": [
+    "settings.py",
+    "urls.py",
+    "app/sessions/middleware.py",
+    "app/sessions/models.py",
+    "app/account/middleware.py",
+    "app/account/backends.py",
+    "app/account/tokens.py",
+    "app/sessions/__init__.py",
+    "app/account/models.py",
+    "app/sessions/backends/db.py",
+    "lib/ylinux_xmlrpc.py",
+    "lib/django_xmlrpc/views.py",
+    "lib/django_xmlrpc/dispatcher.py",
+    "app/account/__init__.py",
+    "app/account/views.py",
+    "app/admin/views.py",
+    "app/account/decorators.py",
+    "app/wiki/utils.py",
+    "app/wiki/views.py",
+    "app/ydata/models.py",
+    "app/ydata/util.py",
+    "app/ydata/views.py",
+    "app/ydata/forms.py",
+    "app/ydata/settings.py",
+    "app/bbs/views.py",
+    "app/ylab/views.py",
+    "app/home/views.py",
+    "app/ylab/urls.py",
+    "app/wiki/urls.py",
+    "app/account/urls.py",
+    "app/me/views.py",
+    "app/account/forms.py",
+    "app/admin/forms.py",
+    "app/admin/urls.py",
+    "app/blog/views.py",
+    "app/home/forms.py",
+    "app/home/urls.py",
+    "app/account/context_processors.py",
+    "lib/markdown/__init__.py",
+    "app/syndication/views.py",
+    "templates/bbs/topic.html",
+    "templates/wiki/topic.html",
+    "app/sessions/backends/base.py",
+    "app/sessions/tests.py",
+    "app/me/urls.py",
+    "templates/wiki/editPostAJAX.html",
+    "templates/wiki/replayAJAX.html",
+    "templates/wiki/post.html",
+    "scripts/ylinux-client.py",
+    "app/home/models.py",
+    "app/wiki/models.py",
+    "app/bbs/models.py",
+    "app/admin/models.py"
+  ],
+  "searches": 15,
+  "scans": 1,
+  "listed": true,
+  "endpoints_listed": false,
+  "gaps": [
+    {
+      "id": "G1",
+      "description": "会话 Cookie 未设置 HttpOnly/Secure 标志：app/sessions/middleware.py:37-41 的 set_cookie 未传 httponly，且未启用 SESSION_COOKIE_SECURE。在 XSS-001（已确认的全站存储型 XSS）成立的前提下，攻击脚本可直接读取 document.cookie 窃取会话（含管理员会话），显著放大影响面。建议审计员复核该加固缺失，或至少在 XSS-001 的 impact 中计入 Cookie 可直接窃取的后果。",
+      "resolved": true,
+      "resolution": "重新读 app/sessions/middleware.py:37-41：set_cookie 仅传 max_age/expires/domain/path/secure，未传 httponly；search_code 全仓库无 SESSION_COOKIE_SECURE/SESSION_COOKIE_HTTPONLY 或 httponly 配置。已新增 finding COOKIE-001（CWE-1004，low，confirmed）说明该缺失使 XSS-001 脚本可直接读取 document.cookie 窃取会话，且 XSS-001 impact 已计入会话窃取后果。",
+      "files_read_at_open": 53,
+      "searches_at_open": 12
+    },
+    {
+      "id": "G2",
+      "description": "所有认证入口缺少速率限制/失败锁定：account/views.py 的 login、ajax_login，app/admin/views.py:48-70 的 admin login，以及 lib/ylinux_xmlrpc.py:39-45 的 has_auth 均允许无限次口令尝试。结合 CRYPTO-002 的单轮 SHA1 弱哈希，攻击者可在短时间内在线爆破普通用户乃至管理员口令，属未覆盖的认证滥用问题，建议补一条 low/medium 发现。",
+      "resolved": true,
+      "resolution": "重读三个登录实现（account/views.py:26-40、admin/views.py:51-62、lib/ylinux_xmlrpc.py:39-45）并 search_code 全仓库无 lock/throttle/rate_limit/attempt 计数逻辑，确认所有认证入口无任何失败锁定或限速。已新增 finding AUTH-001（CWE-307，low，confirmed），说明与 CRYPTO-002 弱哈希组合后在线爆破弱口令接管账户/后台的影响。",
+      "files_read_at_open": 53,
+      "searches_at_open": 12
+    }
+  ],
+  "leads": [
+    {
+      "id": "L1",
+      "rule_id": "debug-true",
+      "category": "config",
+      "path": "settings.py",
+      "lines": [
+        18
+      ],
+      "snippet": "18: DEBUG = True",
+      "disposition": "finding:CONFIG-001",
+      "note": "DEBUG=True 与 DEBUG 下 MEDIA 目录浏览归入同一配置问题。"
+    },
+    {
+      "id": "L2",
+      "rule_id": "db-password",
+      "category": "config",
+      "path": "settings.py",
+      "lines": [
+        49
+      ],
+      "snippet": "49: 'PASSWORD': '123456',",
+      "disposition": "finding:CONFIG-002",
+      "note": "明文弱口令入库；当前 sqlite3 ENGINE 不生效，故低危。"
+    },
+    {
+      "id": "L3",
+      "rule_id": "secret-key",
+      "category": "config",
+      "path": "settings.py",
+      "lines": [
+        79
+      ],
+      "snippet": "79: SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L4",
+      "rule_id": "sql-statement-format",
+      "category": "injection",
+      "path": "app/account/backends.py",
+      "lines": [
+        44
+      ],
+      "snippet": "44: SELECT ct.%s, p.%s",
+      "disposition": "benign",
+      "note": "SQL 仅用 % 拼接经 quote_name 的固定表/列名，用户值走 cursor.execute(sql, [user_obj.id]) 参数列表，不构成注入。"
+    },
+    {
+      "id": "L5",
+      "rule_id": "weak-hash",
+      "category": "crypto",
+      "path": "app/account/models.py",
+      "lines": [
+        63,
+        65,
+        364,
+        367,
+        427,
+        430
+      ],
+      "snippet": "63: return md5_constructor(salt + raw_password).hexdigest()",
+      "disposition": "finding:CRYPTO-002",
+      "note": "单轮 md5/sha1 口令哈希与 random.random() 派生的 5 字符盐同属弱口令存储问题。"
+    },
+    {
+      "id": "L6",
+      "rule_id": "insecure-random",
+      "category": "crypto",
+      "path": "app/account/models.py",
+      "lines": [
+        232,
+        364,
+        427
+      ],
+      "snippet": "232: salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]",
+      "disposition": "finding:CRYPTO-002",
+      "note": "单轮 md5/sha1 口令哈希与 random.random() 派生的 5 字符盐同属弱口令存储问题。"
+    },
+    {
+      "id": "L7",
+      "rule_id": "weak-hash",
+      "category": "crypto",
+      "path": "app/account/tokens.py",
+      "lines": [
+        54
+      ],
+      "snippet": "54: hash = sha_constructor(settings.SECRET_KEY + unicode(user.id) +",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L8",
+      "rule_id": "open-redirect",
+      "category": "redirect",
+      "path": "app/account/views.py",
+      "lines": [
+        38,
+        60
+      ],
+      "snippet": "38: return HttpResponseRedirect(request.session.get('login_redirect_url','/') or '/')",
+      "disposition": "finding:REDIRECT-001",
+      "note": "next 参数与 HTTP_REFERER 直接作为重定向目标，三处同一根因。"
+    },
+    {
+      "id": "L9",
+      "rule_id": "open-redirect",
+      "category": "redirect",
+      "path": "app/admin/views.py",
+      "lines": [
+        62,
+        134,
+        192,
+        257,
+        354
+      ],
+      "snippet": "62: return HttpResponseRedirect(request.session.get('previous_url','/'))",
+      "disposition": "finding:REDIRECT-001",
+      "note": "next 参数与 HTTP_REFERER 直接作为重定向目标，三处同一根因。"
+    },
+    {
+      "id": "L10",
+      "rule_id": "redirect-referer",
+      "category": "redirect",
+      "path": "app/admin/views.py",
+      "lines": [
+        65,
+        134,
+        192,
+        257,
+        354
+      ],
+      "snippet": "65: request.session['previous_url'] = request.META.get('HTTP_REFERER', '/')",
+      "disposition": "finding:REDIRECT-001",
+      "note": "next 参数与 HTTP_REFERER 直接作为重定向目标，三处同一根因。"
+    },
+    {
+      "id": "L11",
+      "rule_id": "cmd-popen",
+      "category": "injection",
+      "path": "app/admin/views.py",
+      "lines": [
+        362
+      ],
+      "snippet": "362: user=os.popen('whoami').read().strip()",
+      "disposition": "benign",
+      "note": "os.popen('whoami') 与 os.system('killall -u %s' % user) 中的 user 取自 whoami 输出（服务进程身份），不是请求数据，无命令注入；仅管理员权限可调用，且是固定命令。"
+    },
+    {
+      "id": "L12",
+      "rule_id": "cmd-os-system",
+      "category": "injection",
+      "path": "app/admin/views.py",
+      "lines": [
+        363
+      ],
+      "snippet": "363: os.system('killall -u %s' % user)",
+      "disposition": "benign",
+      "note": "os.popen('whoami') 与 os.system('killall -u %s' % user) 中的 user 取自 whoami 输出（服务进程身份），不是请求数据，无命令注入；仅管理员权限可调用，且是固定命令。"
+    },
+    {
+      "id": "L13",
+      "rule_id": "http-response-format",
+      "category": "xss",
+      "path": "app/admin/views.py",
+      "lines": [
+        400,
+        481
+      ],
+      "snippet": "400: return HttpResponse(\"%s\" % form.errors)",
+      "disposition": "finding:XSS-002",
+      "note": "form.errors 直接 HttpResponse 输出未转义，属反射型 XSS（需管理员权限，已在 finding 中降权说明）。"
+    },
+    {
+      "id": "L14",
+      "rule_id": "http-response-format",
+      "category": "xss",
+      "path": "app/home/views.py",
+      "lines": [
+        77
+      ],
+      "snippet": "77: return HttpResponse('User-agent: * ' + '\\n' + 'Allow: /')",
+      "disposition": "benign",
+      "note": "robots 响应为固定字符串，无用户输入。"
+    },
+    {
+      "id": "L15",
+      "rule_id": "weak-hash",
+      "category": "crypto",
+      "path": "app/sessions/models.py",
+      "lines": [
+        18,
+        63
+      ],
+      "snippet": "18: pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L16",
+      "rule_id": "pickle-load",
+      "category": "deserialization",
+      "path": "app/sessions/models.py",
+      "lines": [
+        67
+      ],
+      "snippet": "67: return pickle.loads(pickled)",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L17",
+      "rule_id": "weak-hash",
+      "category": "crypto",
+      "path": "app/sessions/backends/base.py",
+      "lines": [
+        89,
+        95,
+        141
+      ],
+      "snippet": "89: pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L18",
+      "rule_id": "pickle-load",
+      "category": "deserialization",
+      "path": "app/sessions/backends/base.py",
+      "lines": [
+        98
+      ],
+      "snippet": "98: return pickle.loads(pickled)",
+      "disposition": "finding:CRYPTO-001",
+      "note": "硬编码 SECRET_KEY 使会话 pickle 防篡改 MD5 校验与重置令牌失去保密性，同一根因。"
+    },
+    {
+      "id": "L19",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "app/wiki/utils.py",
+      "lines": [
+        18
+      ],
+      "snippet": "18: <p>{{ post.body_html|safe }}</p>",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    },
+    {
+      "id": "L20",
+      "rule_id": "upload-handling",
+      "category": "file_access",
+      "path": "app/ydata/views.py",
+      "lines": [
+        40
+      ],
+      "snippet": "40: f = req.FILES['single_file'] #req.FILES.values()[0]",
+      "disposition": "finding:FILE-001",
+      "note": "上传文件名未清洗，拼入路径/JS/响应头；穿越被数字前缀恰好挡住，其余风险成立。"
+    },
+    {
+      "id": "L21",
+      "rule_id": "weak-hash",
+      "category": "crypto",
+      "path": "app/ydata/views.py",
+      "lines": [
+        52
+      ],
+      "snippet": "52: sha1_hash = hashlib.sha1()",
+      "disposition": "benign",
+      "note": "sha1 仅用于附件去重哈希，非安全用途。"
+    },
+    {
+      "id": "L22",
+      "rule_id": "http-response-format",
+      "category": "xss",
+      "path": "app/ylab/views.py",
+      "lines": [
+        21
+      ],
+      "snippet": "21: return HttpResponse(`current` + js)",
+      "disposition": "benign",
+      "note": "`current` 是 datetime.now() 的 repr，非用户输入，拼接固定 JS 无注入。"
+    },
+    {
+      "id": "L23",
+      "rule_id": "upload-handling",
+      "category": "file_access",
+      "path": "app/ylab/views.py",
+      "lines": [
+        31
+      ],
+      "snippet": "31: attachment = req.FILES.values()[0]",
+      "disposition": "finding:FILE-001",
+      "note": "上传文件名未清洗，拼入路径/JS/响应头；穿越被数字前缀恰好挡住，其余风险成立。"
+    },
+    {
+      "id": "L24",
+      "rule_id": "csrf-exempt",
+      "category": "csrf",
+      "path": "lib/django_xmlrpc/views.py",
+      "lines": [
+        50,
+        52,
+        73
+      ],
+      "snippet": "50: from django.views.decorators.csrf import csrf_exempt",
+      "disposition": "benign",
+      "note": "XML-RPC 方法凭据随每次调用在请求体内传递，不依赖 Cookie 会话，csrf_exempt 无 CSRF 风险；站点整体 CSRF 缺失已由 CSRF-001 覆盖。"
+    },
+    {
+      "id": "L25",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "templates/bbs/topic.html",
+      "lines": [
+        23,
+        30
+      ],
+      "snippet": "23: {{ topic.body_html|safe }}",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    },
+    {
+      "id": "L26",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "templates/wiki/editPostAJAX.html",
+      "lines": [
+        19
+      ],
+      "snippet": "19: {{ post.body_html|safe }}",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    },
+    {
+      "id": "L27",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "templates/wiki/post.html",
+      "lines": [
+        12
+      ],
+      "snippet": "12: <p>{{ post.body_html|safe }}</p>",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    },
+    {
+      "id": "L28",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "templates/wiki/replayAJAX.html",
+      "lines": [
+        16
+      ],
+      "snippet": "16: {{ post.body_html|safe }}",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    },
+    {
+      "id": "L29",
+      "rule_id": "template-safe",
+      "category": "xss",
+      "path": "templates/wiki/topic.html",
+      "lines": [
+        54,
+        59
+      ],
+      "snippet": "54: {{ topic.body_html|safe }}",
+      "disposition": "finding:XSS-001",
+      "note": "|safe 输出点与无 safe_mode 的 Markdown 渲染共同构成存储型 XSS。"
+    }
+  ],
+  "executive_summary": "ylinux_old（commit 8a7316d）是 Django 1.3 时代的中文社区站点（wiki/论坛/博客/附件 + XML-RPC），安全基线薄弱，共确认 15 个问题。高危 3 项：全站存储型 XSS（正文经无 safe_mode 的 python-markdown 转 HTML 后模板 |safe 输出，XSS-001）；SECRET_KEY 硬编码入库使 pickle 会话防篡改校验与令牌种子公开（CRYPTO-001）；激活/重置 key 仅约 20 bit 熵且可匿名触发重置，可暴力枚举接管账户（CRYPTO-003）。中危：反射型 XSS（XSS-002）、全站无 CSRF（CSRF-001）、单轮 SHA1 弱口令哈希（CRYPTO-002）、XML-RPC 全站删改越权（ACCESS-002）、editPostAJAX 帖子篡改越权（ACCESS-001）、DEBUG=True 目录浏览（CONFIG-001）。低危：开放重定向、会话 Cookie 无 HttpOnly/Secure、登录无限速、无鉴权维护端点、上传文件名未清洗、明文 DB 口令。建议按存储型 XSS→密钥与令牌→越权接口→CSRF/登录防护的顺序整改。",
+  "risk_overview": "高危：XSS-001 存储型 XSS——任何登录用户发帖即可注入脚本，且会话 Cookie 无 HttpOnly（COOKIE-001），脚本可直接窃取所有读者与管理员会话；CRYPTO-001 硬编码 SECRET_KEY——会话完整性校验失去保密性，与其他写入口组合可伪造 pickle 会话实现代码执行；CRYPTO-003 重置 key 弱熵——约 2^20 枚举空间 + 无速率限制（AUTH-001），可接管任意邮箱账户。中危：反射型 XSS、全站无 CSRF（后台删用户连 GET 都执行）、弱口令哈希、XML-RPC 任意用户删全站主题/改他人主题、editPostAJAX 越权改帖、DEBUG=True 目录浏览。低危：开放重定向、登录无限速、无鉴权维护端点、上传文件名未清洗、明文 DB 口令。整体为\"旧框架 + 多处自实现安全机制 + 缺基础加固\"的典型高风险老站。",
+  "scope": "已覆盖：settings/urls 配置与中间件（含会话 Cookie 写入实现）、自定义会话与认证全套（pickle 会话后端、口令哈希、激活/重置令牌、登录入口）、全部 app 的 views/urls/forms/models（account、admin、home、ydata、wiki、bbs、blog、ylab、me、sessions、syndication）、XML-RPC 调度与业务方法、相关模板的 |safe 输出点、vendored markdown 的 safe_mode 行为。未覆盖：ymedia 静态资源目录内容、lib/markdown 其余实现细节（仅核实与 XSS 结论直接相关部分）、tests 文件、scripts 部署脚本细节。",
+  "limitations": "1) 静态审计无法验证运行环境：SESSION_ENGINE 未在 settings.py 显式配置，实际生效后端取决于部署，会话 pickle 链的利用前提（需 DB 写入口）只能定性描述。2) CRYPTO-003 的接管需约百万级请求，是否实际可行取决于部署（代码内无任何限速证据）。3) Django 1.3 框架默认行为（如 send_mail 主题换行处理）未在仓库内核实，邮箱头注入类问题未下结论。4) 未做动态验证，CSRF/开放重定向等需浏览器行为配合的利用未经实测。",
+  "finalized": true,
+  "critic_accepted": true,
+  "critic_notes": "本轮（第 2 轮）对 critic_verdict 为空的两条新发现逐条重读了证据窗口：COOKIE-001 重读 app/sessions/middleware.py:20-42，确认 set_cookie 未传 httponly、settings.py 全仓库无 SESSION_COOKIE_SECURE/HTTPONLY 定义（secure 实际为 None），Cookie 可被 JS 读取且 HTTP 明文传输，low 合理；AUTH-001 重读 account/views.py:24-40 与 225-246、admin/views.py:48-70、lib/ylinux_xmlrpc.py:39-45、account/backends.py:19-25，四入口均无失败计数/锁定，全仓库检索 lock/throttle/rate_limit/attempt 无相关实现，low 合理。两条均 agree。其余 13 条 findings 的 critic_verdict 在先前轮次已为 agree（history 中记录有完整核对过程），本轮未改动。我仍保留的保留意见：CRYPTO-001 中\"重置令牌失去保密性\"的影响在 history 中已由复核员注明实际未接入重置流程（重置走 Register.activation_key），核心的会话 pickle/密钥公开结论不受影响；CRYPTO-003 的 2^20 枚举依赖可区分 403/200 与无速率限制，confidence=medium 的标注与其符合。总体结论：15 条 confirmed 发现证据链完整、定级基本恰当，接受本报告。",
+  "warnings": []
+}

@@ -1,0 +1,286 @@
+{
+  "reported": 15,
+  "true_positive_findings": 15,
+  "false_positive_trap_findings": 0,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 1.0,
+  "recall": 0.562,
+  "high_recall": 1.0,
+  "severity_weighted_recall": 0.625,
+  "missed": [
+    "GT-03",
+    "GT-05",
+    "GT-09",
+    "GT-11",
+    "GT-12",
+    "GT-20",
+    "GT-23",
+    "GT-24",
+    "GT-25",
+    "GT-26",
+    "GT-27",
+    "GT-28",
+    "GT-29",
+    "GT-30"
+  ],
+  "found": [
+    "GT-01",
+    "GT-02",
+    "GT-04",
+    "GT-06",
+    "GT-07",
+    "GT-08",
+    "GT-10",
+    "GT-13",
+    "GT-14",
+    "GT-15",
+    "GT-16",
+    "GT-17",
+    "GT-18",
+    "GT-19",
+    "GT-21",
+    "GT-22",
+    "GT-31",
+    "GT-32"
+  ],
+  "optional_found": [
+    "OPT-08"
+  ],
+  "traps_hit": [],
+  "findings": [
+    {
+      "id": "XSS-001",
+      "title": "wiki 主题与回复正文存在存储型 XSS（Markdown 未启用 safe_mode，body_html 以 |safe 渲染）",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-01",
+        "GT-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-002",
+      "title": "account.views.register / password_reset 激活 key 未转义反射型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-04"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "FILE-001",
+      "title": "ydata 附件上传文件名未校验导致路径穿越任意文件写入",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "file_access",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-32"
+      ],
+      "traps": [],
+      "trap_notes": [
+        "FP-05"
+      ],
+      "severity_fit": "over",
+      "expected_severity": "low"
+    },
+    {
+      "id": "ACCESS-002",
+      "title": "editPostAJAX 越权编辑他人帖子（水平越权）",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-001",
+      "title": "XML-RPC 删除/编辑主题接口缺少所有权与权限校验",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-07",
+        "GT-31"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "全站缺少 CSRF 防护且状态变更端点可被 GET 触发",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "csrf",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-13",
+        "GT-14"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "用户口令使用单轮 SHA1 + 弱盐存储",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-18",
+        "GT-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "密码重置令牌熵过低且无过期/防爆破机制",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG=True 生产配置泄露堆栈、设置与媒体目录",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "SECRET_KEY 硬编码入仓库致会话完整性校验可被伪造",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [
+        "FP-03"
+      ],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "REDIR-001",
+      "title": "logout 与管理登录存在开放重定向",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-21",
+        "GT-22"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "FILE-002",
+      "title": "附件下载缺少鉴权与目录权限校验",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "MISC-001",
+      "title": "ylab update_post_profile 匿名批量改写帖子数据",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "CONFIG-003",
+      "title": "数据库口令硬编码提交仓库（当前 sqlite 未生效）",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "ACCESS-003",
+      "title": "受限目录的读取路径未做组权限校验（读侧越权）",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    }
+  ]
+}
