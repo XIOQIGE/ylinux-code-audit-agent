@@ -259,6 +259,7 @@ def run_audit(
     except Exception as exc:
         state.warnings.append(f"run interrupted: {exc}")
         trace.write({"role": "runner", "step": 0, "kind": "error", "text": str(exc)[:2000]})
+        verification = verify_state(sandbox, state)
         raise
     finally:
         meta = build_meta(state, trace, usage, target_url, commit, llm, started, budgets, rounds, critic_llm)

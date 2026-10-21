@@ -70,7 +70,7 @@ class OpenAICompatible:
             except openai.APIStatusError as exc:
                 if _is_context_error(exc):
                     raise ContextTooLong(str(exc)) from exc
-                if exc.status_code not in RETRYABLE_STATUS or attempt == 4:
+                if exc.status_code not in RETRYABLE_STATUS or _is_quota_error(exc) or attempt == 4:
                     raise
             time.sleep(delay)
             delay *= 2
@@ -114,6 +114,12 @@ class OpenAICompatible:
             reasoning_tokens=int(getattr(details, "reasoning_tokens", 0) or 0),
             cached_tokens=int(getattr(prompt_details, "cached_tokens", 0) or getattr(usage, "prompt_cache_hit_tokens", 0) or 0),
         )
+
+
+def _is_quota_error(exc: Exception) -> bool:
+    # Some gateways report an empty balance as 429; waiting will not refill it.
+    text = str(exc).lower()
+    return any(token in text for token in ("insufficient_quota", "exceeded_current_quota", "insufficient balance", "credit balance"))
 
 
 def _is_context_error(exc: Exception) -> bool:

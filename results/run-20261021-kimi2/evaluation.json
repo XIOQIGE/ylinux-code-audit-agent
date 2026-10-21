@@ -1,0 +1,252 @@
+{
+  "reported": 13,
+  "true_positive_findings": 12,
+  "false_positive_trap_findings": 1,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 0.923,
+  "recall": 0.5,
+  "high_recall": 1.0,
+  "severity_weighted_recall": 0.568,
+  "missed": [
+    "GT-03",
+    "GT-04",
+    "GT-08",
+    "GT-09",
+    "GT-11",
+    "GT-12",
+    "GT-14",
+    "GT-22",
+    "GT-24",
+    "GT-25",
+    "GT-26",
+    "GT-27",
+    "GT-28",
+    "GT-29",
+    "GT-30",
+    "GT-32"
+  ],
+  "found": [
+    "GT-01",
+    "GT-02",
+    "GT-05",
+    "GT-06",
+    "GT-07",
+    "GT-10",
+    "GT-13",
+    "GT-15",
+    "GT-16",
+    "GT-17",
+    "GT-18",
+    "GT-19",
+    "GT-20",
+    "GT-21",
+    "GT-23",
+    "GT-31"
+  ],
+  "optional_found": [],
+  "traps_hit": [
+    "FP-03"
+  ],
+  "findings": [
+    {
+      "id": "XSS-001",
+      "title": "Markdown 渲染不转义 HTML 且模板用 |safe 输出，导致存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-01",
+        "GT-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-001",
+      "title": "editPostAJAX 缺少属主校验，任意登录用户可篡改他人帖子",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "密码重置激活密钥熵值过低，可在线枚举实现任意账号接管",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-002",
+      "title": "XML-RPC 接口缺少权限/属主校验，普通账号可删除或改写全站内容",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-07",
+        "GT-31"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "全站缺少 CSRF 防护，状态变更接口可被跨站请求触发",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "csrf",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-13"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "ACCESS-003",
+      "title": "维护端点 update_post_profile 无认证，匿名 GET 即可全表改写帖子数据",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG=True 硬编码且静态目录开启目录索引，泄露目录结构与调试信息",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-002",
+      "title": "SECRET_KEY 硬编码进仓库，会话完整性校验可被伪造",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-003",
+      "title": "数据库弱口令明文提交进仓库",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "config",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-002",
+      "title": "口令使用弱哈希（单轮 SHA1 + 5 字符盐）存储",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-18",
+        "GT-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "REDIRECT-001",
+      "title": "登录/退出/后台登录存在开放重定向",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-20",
+        "GT-21"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "DESER-001",
+      "title": "会话数据使用 pickle 反序列化且完整性密钥公开，存在伪造会话风险",
+      "status": "needs_review",
+      "severity": "medium",
+      "category": "deserialization",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "FP-03"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    },
+    {
+      "id": "XSS-002",
+      "title": "附件上传不校验类型，DEBUG 静态服务下可投递同源存储型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "GT-05",
+        "GT-23"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    }
+  ]
+}

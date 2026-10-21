@@ -1,0 +1,350 @@
+{
+  "reported": 19,
+  "true_positive_findings": 17,
+  "false_positive_trap_findings": 2,
+  "unmatched_findings": 0,
+  "precision_lower_bound": 0.895,
+  "recall": 0.833,
+  "high_recall": 0.923,
+  "severity_weighted_recall": 0.856,
+  "missed": [
+    "NV-13",
+    "NV-18",
+    "NV-21",
+    "NV-23"
+  ],
+  "found": [
+    "NV-01",
+    "NV-02",
+    "NV-03",
+    "NV-04",
+    "NV-05",
+    "NV-06",
+    "NV-07",
+    "NV-08",
+    "NV-09",
+    "NV-10",
+    "NV-11",
+    "NV-12",
+    "NV-14",
+    "NV-15",
+    "NV-16",
+    "NV-17",
+    "NV-19",
+    "NV-20",
+    "NV-22",
+    "NV-24"
+  ],
+  "optional_found": [
+    "NVO-02"
+  ],
+  "traps_hit": [
+    "NVFP-01",
+    "NVFP-02",
+    "NVFP-13"
+  ],
+  "findings": [
+    {
+      "id": "RCE-001",
+      "title": "上传文件名拼接进 os.system 导致 shell 命令注入（未授权 RCE）",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "injection",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-02",
+        "NV-07",
+        "NV-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "SQLI-001",
+      "title": "upload 视图用字符串格式化拼接原始 SQL，存在 SQL 注入",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "injection",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-07",
+        "NV-08"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "DESER-001",
+      "title": "硬编码 SECRET_KEY + signed_cookies + PickleSerializer 可伪造会话并反序列化 RCE",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "deserialization",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "AUTHZ-001",
+      "title": "profile_by_id 未授权 IDOR：匿名可改任意用户密码（账户接管）",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-02",
+        "NV-05",
+        "NV-10",
+        "NV-24"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "AUTHZ-002",
+      "title": "manage_groups POST 分支缺少权限检查，普通用户可提权到 admin_g",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-06"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "AUTHZ-003",
+      "title": "任务/笔记/项目/文件接口普遍 IDOR：匿名可改删任意数据并下载文件",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-09",
+        "NV-11",
+        "NV-12",
+        "NV-14"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-001",
+      "title": "任务标题/描述 |safe 渲染导致匿名可触发的存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-09"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-002",
+      "title": "username 经 |safe 渲染，配合未授权改名构成存储型 XSS",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-10"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "high"
+    },
+    {
+      "id": "XSS-003",
+      "title": "搜索参数 q |safe 渲染导致反射型 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-15"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "XSS-004",
+      "title": "settings 视图用 |safe 渲染 request.META：信息泄露 + 请求头反射 XSS",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "xss",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-17"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "REDIR-001",
+      "title": "logout 开放重定向（redirect 参数未校验）",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "redirect",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-16"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "AUTH-001",
+      "title": "弱随机密码重置令牌 + 无速率限制，可暴力枚举重置任意账号口令",
+      "status": "confirmed",
+      "severity": "high",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-20"
+      ],
+      "traps": [],
+      "trap_notes": [
+        "NVFP-02"
+      ],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CRYPTO-001",
+      "title": "使用 MD5PasswordHasher 存储口令哈希，且默认账号哈希随仓库公开",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "crypto",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-03",
+        "NV-19"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "CONFIG-001",
+      "title": "DEBUG/TEMPLATE_DEBUG 开启且 ALLOWED_HOSTS 为空，错误页泄露配置与堆栈",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "config",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "NVFP-13"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    },
+    {
+      "id": "INFO-001",
+      "title": "登录接口用户名枚举（错误文案可区分账号是否存在）",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "sensitive_data",
+      "verdict": "true_positive_optional",
+      "truth": [
+        "NVO-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    },
+    {
+      "id": "CSRF-001",
+      "title": "多个口令相关端点被 csrf_exempt 豁免 CSRF 防护",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "csrf",
+      "verdict": "false_positive_trap",
+      "truth": [],
+      "traps": [
+        "NVFP-01",
+        "NVFP-02"
+      ],
+      "trap_notes": [],
+      "severity_fit": "",
+      "expected_severity": ""
+    },
+    {
+      "id": "AUTHZ-004",
+      "title": "注册表单 mass assignment：匿名可自助注册 is_superuser 超级用户",
+      "status": "confirmed",
+      "severity": "critical",
+      "category": "access_control",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-04"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "critical"
+    },
+    {
+      "id": "FILE-001",
+      "title": "任意文件（含 HTML/JS）落盘 Web 可服务目录并可同源访问",
+      "status": "confirmed",
+      "severity": "medium",
+      "category": "file_access",
+      "verdict": "true_positive",
+      "truth": [
+        "NV-01",
+        "NV-08",
+        "NV-22"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "medium"
+    },
+    {
+      "id": "AUTH-002",
+      "title": "登录接口无速率限制/锁定，可无限在线爆破口令",
+      "status": "confirmed",
+      "severity": "low",
+      "category": "auth",
+      "verdict": "true_positive_optional",
+      "truth": [
+        "NVO-02"
+      ],
+      "traps": [],
+      "trap_notes": [],
+      "severity_fit": "ok",
+      "expected_severity": "low"
+    }
+  ]
+}

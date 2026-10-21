@@ -6,10 +6,12 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `run-20261020` | 7 | 6 | 1 | 0 | 0.857 | 0.188 | 0.5 | 0.227 |
 | `run-20261021` | 15 | 15 | 0 | 0 | 1.0 | 0.688 | 1.0 | 0.727 |
-| `run-20261021-kimi` | 19 | 18 | 1 | 0 | 0.947 | 0.625 | 1.0 | 0.693 |
 | `run-20261021-r1` | 15 | 15 | 0 | 0 | 1.0 | 0.562 | 1.0 | 0.625 |
 | `run-20261021-r2` | 12 | 11 | 1 | 0 | 0.917 | 0.531 | 1.0 | 0.602 |
 | `run-20261021-r3` | 16 | 15 | 1 | 0 | 0.938 | 0.625 | 1.0 | 0.682 |
+| `run-20261021-kimi` | 19 | 18 | 1 | 0 | 0.947 | 0.625 | 1.0 | 0.693 |
+| `run-20261021-kimi2` | 13 | 12 | 1 | 0 | 0.923 | 0.5 | 1.0 | 0.568 |
+| `run-20261021-kimi3` | 15 | 14 | 1 | 0 | 0.933 | 0.531 | 1.0 | 0.602 |
 
 “未匹配”可能是误报，也可能是真值里没收录的真问题，要人工看，所以精确率只给下限。“附带陷阱”指发现本身命中了真值，但有一部分证据或影响描述落在已知的误判上，也就是问题找对了、影响说过头了。
 
@@ -90,49 +92,6 @@
 - GT-27 [low] XML-RPC 请求体（含口令）打印到 stdout
 - GT-29 [low] 后台编辑用户表单暴露口令哈希并可提权为超级用户
 - GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
-
-## `run-20261021-kimi`
-
-| 发现 | 状态 | 严重性 | 判定 | 对应真值 | 严重性偏差 |
-| --- | --- | --- | --- | --- | --- |
-| `XSS-001` 知识库/论坛帖子与主题正文存在存储型 XSS（Markdown 未启用 safe_mode 且模板 |safe 输出） | confirmed | high | true_positive | GT-01, GT-02 | ok |
-| `XSS-002` 附件文件名注入帖子渲染 HTML 导致存储型 XSS | confirmed | high | true_positive | GT-02, GT-03, GT-23 | ok |
-| `XSS-003` 注册/密码重置视图将 URL key 未转义回显导致反射型 XSS | confirmed | medium | true_positive | GT-04 | ok |
-| `AUTHZ-001` XML-RPC 接口认证后无授权检查：任意注册用户可删除全站主题或篡改他人主题 | confirmed | high | true_positive | GT-07, GT-31 | ok |
-| `ACCESS-001` editPostAJAX 缺少属主校验：登录用户可篡改任意他人帖子 | confirmed | medium | true_positive | GT-06 | ok |
-| `ACCESS-002` /lab/update_post_profile 匿名可触发全站帖子批量改写 | confirmed | medium | true_positive | GT-15 | ok |
-| `CSRF-001` 全站缺少 CSRF 防护，Cookie 会话下的所有写操作可被跨站伪造 | confirmed | medium | true_positive | GT-13 | ok |
-| `CRYPTO-001` 密码重置/激活密钥仅 20 位熵且无尝试限制，可枚举实现账户接管 | confirmed | high | true_positive | GT-10 | ok |
-| `CRYPTO-002` 弱口令哈希（单轮 SHA1/MD5、弱盐）且登录接口无限速 | confirmed | medium | true_positive | GT-18, GT-19 | ok |
-| `CONFIG-001` DEBUG=True 随仓库提交，且媒体目录带目录索引对外服务 | confirmed | medium | true_positive | GT-16 | ok |
-| `CONFIG-002` SECRET_KEY 硬编码提交进公开仓库，会话签名与令牌生成失效 | confirmed | medium | true_positive | GT-17 | ok |
-| `CONFIG-003` 数据库口令 '123456' 明文提交进仓库 | confirmed | low | true_positive | GT-17 | ok |
-| `FILE-001` 附件上传文件名直接拼入保存路径（依赖框架 basename 清洗的纵深防御项） | needs_review | low | false_positive_trap | FP-05 | — |
-| `REDIRECT-001` 登录/退出 next 参数未校验导致开放重定向 | confirmed | low | true_positive | GT-20, GT-21 | ok |
-| `EMAIL-001` 联系表单可被匿名滥用为任意收件人的邮件中继 | confirmed | low | true_positive | GT-24 | ok |
-| `DESER-001` 会话数据 pickle 反序列化 + 公开 SECRET_KEY 的 MD5 签名（潜在 RCE） | needs_review | low | true_positive_optional | OPT-05 | ok |
-| `XSS-004` 上传响应将文件名未转义拼入 HTML/JS 导致 self-XSS | confirmed | low | true_positive | GT-05, GT-23 | ok |
-| `ACCESS-003` 附件查看/下载端点无访问控制（权限模型不一致的加固项） | confirmed | low | true_positive | GT-08 | ok |
-| `ACCESS-004` 版块组权限未在阅读路径强制：受限版块主题/帖子/附件匿名可读 | confirmed | medium | true_positive | GT-08 | ok |
-
-踩中的误报陷阱：
-
-- FP-05 上传文件名经 UploadedFile 取 basename，不存在路径穿越
-
-漏报：
-
-- GT-09 [low] 编辑主题可把主题移进无权访问的目录
-- GT-11 [medium] 重置接口接受字面量 key ALREADY_ACTIVATED
-- GT-12 [medium] 重置 key 不过期、用后不失效
-- GT-14 [medium] 删除/重启/推送等状态变更接受 GET
-- GT-22 [low] 后台登录与 del_* 跳转到 Referer
-- GT-25 [low] 注册/重置/登录可枚举用户
-- GT-26 [low] 无暴力破解防护，XML-RPC multicall 放大尝试次数
-- GT-27 [low] XML-RPC 请求体（含口令）打印到 stdout
-- GT-28 [low] 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP
-- GT-29 [low] 后台编辑用户表单暴露口令哈希并可提权为超级用户
-- GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
-- GT-32 [low] 上传附件不校验主题归属，可挂到任意主题
 
 ## `run-20261021-r1`
 
@@ -250,6 +209,132 @@
 - GT-28 [low] 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP
 - GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
 
+## `run-20261021-kimi`
+
+| 发现 | 状态 | 严重性 | 判定 | 对应真值 | 严重性偏差 |
+| --- | --- | --- | --- | --- | --- |
+| `XSS-001` 知识库/论坛帖子与主题正文存在存储型 XSS（Markdown 未启用 safe_mode 且模板 |safe 输出） | confirmed | high | true_positive | GT-01, GT-02 | ok |
+| `XSS-002` 附件文件名注入帖子渲染 HTML 导致存储型 XSS | confirmed | high | true_positive | GT-02, GT-03, GT-23 | ok |
+| `XSS-003` 注册/密码重置视图将 URL key 未转义回显导致反射型 XSS | confirmed | medium | true_positive | GT-04 | ok |
+| `AUTHZ-001` XML-RPC 接口认证后无授权检查：任意注册用户可删除全站主题或篡改他人主题 | confirmed | high | true_positive | GT-07, GT-31 | ok |
+| `ACCESS-001` editPostAJAX 缺少属主校验：登录用户可篡改任意他人帖子 | confirmed | medium | true_positive | GT-06 | ok |
+| `ACCESS-002` /lab/update_post_profile 匿名可触发全站帖子批量改写 | confirmed | medium | true_positive | GT-15 | ok |
+| `CSRF-001` 全站缺少 CSRF 防护，Cookie 会话下的所有写操作可被跨站伪造 | confirmed | medium | true_positive | GT-13 | ok |
+| `CRYPTO-001` 密码重置/激活密钥仅 20 位熵且无尝试限制，可枚举实现账户接管 | confirmed | high | true_positive | GT-10 | ok |
+| `CRYPTO-002` 弱口令哈希（单轮 SHA1/MD5、弱盐）且登录接口无限速 | confirmed | medium | true_positive | GT-18, GT-19 | ok |
+| `CONFIG-001` DEBUG=True 随仓库提交，且媒体目录带目录索引对外服务 | confirmed | medium | true_positive | GT-16 | ok |
+| `CONFIG-002` SECRET_KEY 硬编码提交进公开仓库，会话签名与令牌生成失效 | confirmed | medium | true_positive | GT-17 | ok |
+| `CONFIG-003` 数据库口令 '123456' 明文提交进仓库 | confirmed | low | true_positive | GT-17 | ok |
+| `FILE-001` 附件上传文件名直接拼入保存路径（依赖框架 basename 清洗的纵深防御项） | needs_review | low | false_positive_trap | FP-05 | — |
+| `REDIRECT-001` 登录/退出 next 参数未校验导致开放重定向 | confirmed | low | true_positive | GT-20, GT-21 | ok |
+| `EMAIL-001` 联系表单可被匿名滥用为任意收件人的邮件中继 | confirmed | low | true_positive | GT-24 | ok |
+| `DESER-001` 会话数据 pickle 反序列化 + 公开 SECRET_KEY 的 MD5 签名（潜在 RCE） | needs_review | low | true_positive_optional | OPT-05 | ok |
+| `XSS-004` 上传响应将文件名未转义拼入 HTML/JS 导致 self-XSS | confirmed | low | true_positive | GT-05, GT-23 | ok |
+| `ACCESS-003` 附件查看/下载端点无访问控制（权限模型不一致的加固项） | confirmed | low | true_positive | GT-08 | ok |
+| `ACCESS-004` 版块组权限未在阅读路径强制：受限版块主题/帖子/附件匿名可读 | confirmed | medium | true_positive | GT-08 | ok |
+
+踩中的误报陷阱：
+
+- FP-05 上传文件名经 UploadedFile 取 basename，不存在路径穿越
+
+漏报：
+
+- GT-09 [low] 编辑主题可把主题移进无权访问的目录
+- GT-11 [medium] 重置接口接受字面量 key ALREADY_ACTIVATED
+- GT-12 [medium] 重置 key 不过期、用后不失效
+- GT-14 [medium] 删除/重启/推送等状态变更接受 GET
+- GT-22 [low] 后台登录与 del_* 跳转到 Referer
+- GT-25 [low] 注册/重置/登录可枚举用户
+- GT-26 [low] 无暴力破解防护，XML-RPC multicall 放大尝试次数
+- GT-27 [low] XML-RPC 请求体（含口令）打印到 stdout
+- GT-28 [low] 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP
+- GT-29 [low] 后台编辑用户表单暴露口令哈希并可提权为超级用户
+- GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
+- GT-32 [low] 上传附件不校验主题归属，可挂到任意主题
+
+## `run-20261021-kimi2`
+
+| 发现 | 状态 | 严重性 | 判定 | 对应真值 | 严重性偏差 |
+| --- | --- | --- | --- | --- | --- |
+| `XSS-001` Markdown 渲染不转义 HTML 且模板用 |safe 输出，导致存储型 XSS | confirmed | high | true_positive | GT-01, GT-02 | ok |
+| `ACCESS-001` editPostAJAX 缺少属主校验，任意登录用户可篡改他人帖子 | confirmed | high | true_positive | GT-06 | ok |
+| `CRYPTO-001` 密码重置激活密钥熵值过低，可在线枚举实现任意账号接管 | confirmed | critical | true_positive | GT-10 | ok |
+| `ACCESS-002` XML-RPC 接口缺少权限/属主校验，普通账号可删除或改写全站内容 | confirmed | high | true_positive | GT-07, GT-31 | ok |
+| `CSRF-001` 全站缺少 CSRF 防护，状态变更接口可被跨站请求触发 | confirmed | medium | true_positive | GT-13 | ok |
+| `ACCESS-003` 维护端点 update_post_profile 无认证，匿名 GET 即可全表改写帖子数据 | confirmed | medium | true_positive | GT-15 | ok |
+| `CONFIG-001` DEBUG=True 硬编码且静态目录开启目录索引，泄露目录结构与调试信息 | confirmed | medium | true_positive | GT-16 | ok |
+| `CONFIG-002` SECRET_KEY 硬编码进仓库，会话完整性校验可被伪造 | confirmed | medium | true_positive | GT-17 | ok |
+| `CONFIG-003` 数据库弱口令明文提交进仓库 | confirmed | low | true_positive | GT-17 | ok |
+| `CRYPTO-002` 口令使用弱哈希（单轮 SHA1 + 5 字符盐）存储 | confirmed | medium | true_positive | GT-18, GT-19 | ok |
+| `REDIRECT-001` 登录/退出/后台登录存在开放重定向 | confirmed | low | true_positive | GT-20, GT-21 | ok |
+| `DESER-001` 会话数据使用 pickle 反序列化且完整性密钥公开，存在伪造会话风险 | needs_review | medium | false_positive_trap | FP-03 | — |
+| `XSS-002` 附件上传不校验类型，DEBUG 静态服务下可投递同源存储型 XSS | confirmed | medium | true_positive | GT-05, GT-23 | ok |
+
+踩中的误报陷阱：
+
+- FP-03 pickle 会话后端未启用且数据存服务端，不能评为中危以上
+
+漏报：
+
+- GT-03 [medium] ylinux_text_filter 把附件名/主题名未转义拼进 HTML
+- GT-04 [medium] 注册/重置链接中的 key 原样写进 HttpResponseForbidden（反射型 XSS）
+- GT-08 [medium] 受限目录只在写入时检查 has_access，读取路径不检查
+- GT-09 [low] 编辑主题可把主题移进无权访问的目录
+- GT-11 [medium] 重置接口接受字面量 key ALREADY_ACTIVATED
+- GT-12 [medium] 重置 key 不过期、用后不失效
+- GT-14 [medium] 删除/重启/推送等状态变更接受 GET
+- GT-22 [low] 后台登录与 del_* 跳转到 Referer
+- GT-24 [low] 匿名联系表单可向任意地址发信
+- GT-25 [low] 注册/重置/登录可枚举用户
+- GT-26 [low] 无暴力破解防护，XML-RPC multicall 放大尝试次数
+- GT-27 [low] XML-RPC 请求体（含口令）打印到 stdout
+- GT-28 [low] 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP
+- GT-29 [low] 后台编辑用户表单暴露口令哈希并可提权为超级用户
+- GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
+- GT-32 [low] 上传附件不校验主题归属，可挂到任意主题
+
+## `run-20261021-kimi3`
+
+| 发现 | 状态 | 严重性 | 判定 | 对应真值 | 严重性偏差 |
+| --- | --- | --- | --- | --- | --- |
+| `XSS-001` 主题正文存储型 XSS：Markdown 渲染未启用 safe_mode，原始 HTML 原样输出并经 |safe 渲染 | confirmed | high | true_positive | GT-01 | ok |
+| `XSS-002` 回复正文存储型 XSS：markup='none' 的帖子用无 safe_mode 的 Markdown 渲染并经 |safe 输出 | confirmed | high | true_positive | GT-02 | ok |
+| `XSS-003` 注册/密码重置 key 未转义反射进 403 页面导致反射型 XSS | confirmed | medium | true_positive | GT-04 | ok |
+| `XSS-005` 附件文件名未转义拼入正文 HTML 造成属性注入型存储 XSS | confirmed | medium | true_positive | GT-03 | ok |
+| `ACCESS-001` editPostAJAX 缺少帖子属主校验：任意登录用户可修改任意帖子 | confirmed | medium | true_positive | GT-06 | ok |
+| `ACCESS-002` XML-RPC 仅认证无授权：任意注册用户可删除全站主题、修改任意主题、绕过目录组权限 | confirmed | high | true_positive | GT-07, GT-31 | ok |
+| `ACCESS-003` ylab update_post_profile 匿名批量改写全站帖子数据 | confirmed | low | true_positive | GT-15 | ok |
+| `CSRF-001` 全站未启用 CSRF 中间件，所有 Cookie 会话写操作可被跨站伪造 | confirmed | medium | true_positive | GT-13 | ok |
+| `CRYPTO-001` 弱口令哈希：单轮 SHA1+5字符随机盐，可低成本离线爆破 | confirmed | medium | true_positive | GT-18, GT-19 | ok |
+| `CRYPTO-002` 密码重置/激活令牌熵仅 20bit 且不过期：可枚举重置链接接管账户 | confirmed | medium | true_positive | GT-10 | ok |
+| `SESSION-001` 会话存储使用 pickle 反序列化 + MD5 校验，签名密钥已提交进仓库 | needs_review | medium | false_positive_trap | FP-03 | — |
+| `CONFIG-001` DEBUG=True 提交进仓库并暴露媒体目录列表 | confirmed | medium | true_positive | GT-16 | ok |
+| `CONFIG-002` SECRET_KEY 硬编码并提交进公开仓库 | confirmed | medium | true_positive | GT-17 | ok |
+| `CONFIG-003` 数据库口令 123456 明文提交进仓库 | confirmed | low | true_positive | GT-17 | ok |
+| `REDIRECT-001` 登录/登出/管理员登录基于 next 与 Referer 的开放重定向 | confirmed | medium | true_positive | GT-20, GT-21, GT-22 | ok |
+
+踩中的误报陷阱：
+
+- FP-03 pickle 会话后端未启用且数据存服务端，不能评为中危以上
+
+漏报：
+
+- GT-05 [low] 上传响应把文件名拼进 <script>
+- GT-08 [medium] 受限目录只在写入时检查 has_access，读取路径不检查
+- GT-09 [low] 编辑主题可把主题移进无权访问的目录
+- GT-11 [medium] 重置接口接受字面量 key ALREADY_ACTIVATED
+- GT-12 [medium] 重置 key 不过期、用后不失效
+- GT-14 [medium] 删除/重启/推送等状态变更接受 GET
+- GT-23 [medium] 上传不限制类型，存放在可直接访问的媒体目录
+- GT-24 [low] 匿名联系表单可向任意地址发信
+- GT-25 [low] 注册/重置/登录可枚举用户
+- GT-26 [low] 无暴力破解防护，XML-RPC multicall 放大尝试次数
+- GT-27 [low] XML-RPC 请求体（含口令）打印到 stdout
+- GT-28 [low] 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP
+- GT-29 [low] 后台编辑用户表单暴露口令哈希并可提权为超级用户
+- GT-30 [low] 信任 X-Forwarded-For，并向所有用户展示发帖 IP
+- GT-32 [low] 上传附件不校验主题归属，可挂到任意主题
+
 ## 重复运行的波动
 
 均值 ± 样本标准差（最小 – 最大）。代码、模型、目标都相同，差别只来自模型每次的采样。
@@ -257,6 +342,7 @@
 | 组 | 次数 | 上报数 | 精确率下限 | 召回率 | 高危及以上召回 | 加权召回 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `deepseek-x3` | 3 | 14.333 ± 2.082 (12 – 16) | 0.952 ± 0.043 (0.917 – 1) | 0.573 ± 0.048 (0.531 – 0.625) | 1.0 ± 0.0 (1 – 1) | 0.636 ± 0.041 (0.602 – 0.682) |
+| `kimi-x3` | 3 | 15.667 ± 3.055 (13 – 19) | 0.934 ± 0.012 (0.923 – 0.947) | 0.552 ± 0.065 (0.5 – 0.625) | 1.0 ± 0.0 (1 – 1) | 0.621 ± 0.065 (0.568 – 0.693) |
 
 ### `deepseek-x3`：每条真值被找到的次数
 
@@ -296,3 +382,42 @@
 | GT-21 | low | 注销后跳转到 next 参数 | 3/3 |
 
 每次都找到 15 条，从未找到 10 条，其余 7 条时有时无。
+
+### `kimi-x3`：每条真值被找到的次数
+
+| 真值 | 严重性 | 标题 | 命中 |
+| --- | --- | --- | --- |
+| GT-01 | high | 主题正文 Markdown 未开 safe_mode，经 |safe 输出（存储型 XSS） | 3/3 |
+| GT-02 | high | 回帖正文 Markdown 未开 safe_mode，经 |safe / POST_HTML 输出（存储型 XSS） | 3/3 |
+| GT-06 | high | editPostAJAX 不校验帖子归属（IDOR） | 3/3 |
+| GT-07 | high | XML-RPC 任意认证用户可删除/编辑任意主题乃至全部主题 | 3/3 |
+| GT-10 | high | 激活/重置 key 只有 5 位十六进制随机盐，可暴力枚举 | 3/3 |
+| GT-13 | high | 全站没有 CSRF 中间件 | 3/3 |
+| GT-11 | medium | 重置接口接受字面量 key ALREADY_ACTIVATED | 0/3 |
+| GT-12 | medium | 重置 key 不过期、用后不失效 | 0/3 |
+| GT-14 | medium | 删除/重启/推送等状态变更接受 GET | 0/3 |
+| GT-08 | medium | 受限目录只在写入时检查 has_access，读取路径不检查 | 1/3 |
+| GT-03 | medium | ylinux_text_filter 把附件名/主题名未转义拼进 HTML | 2/3 |
+| GT-04 | medium | 注册/重置链接中的 key 原样写进 HttpResponseForbidden（反射型 XSS） | 2/3 |
+| GT-23 | medium | 上传不限制类型，存放在可直接访问的媒体目录 | 2/3 |
+| GT-16 | medium | DEBUG=True 且 static serve 开启目录列表 | 3/3 |
+| GT-17 | medium | SECRET_KEY 与数据库密码硬编码入库 | 3/3 |
+| GT-18 | medium | 口令哈希为单轮 SHA-1 + 20 位随机盐 | 3/3 |
+| GT-20 | medium | 登录后跳转到 next 参数，无同源校验 | 3/3 |
+| GT-31 | medium | XML-RPC 认证不检查 is_active，被禁用的账户仍可调用删除接口 | 3/3 |
+| GT-09 | low | 编辑主题可把主题移进无权访问的目录 | 0/3 |
+| GT-25 | low | 注册/重置/登录可枚举用户 | 0/3 |
+| GT-26 | low | 无暴力破解防护，XML-RPC multicall 放大尝试次数 | 0/3 |
+| GT-27 | low | XML-RPC 请求体（含口令）打印到 stdout | 0/3 |
+| GT-28 | low | 会话 cookie 未设 HttpOnly/Secure，凭据走明文 HTTP | 0/3 |
+| GT-29 | low | 后台编辑用户表单暴露口令哈希并可提权为超级用户 | 0/3 |
+| GT-30 | low | 信任 X-Forwarded-For，并向所有用户展示发帖 IP | 0/3 |
+| GT-32 | low | 上传附件不校验主题归属，可挂到任意主题 | 0/3 |
+| GT-22 | low | 后台登录与 del_* 跳转到 Referer | 1/3 |
+| GT-24 | low | 匿名联系表单可向任意地址发信 | 1/3 |
+| GT-05 | low | 上传响应把文件名拼进 <script> | 2/3 |
+| GT-15 | low | /lab/update_post_profile 匿名批量改写全部帖子 | 3/3 |
+| GT-19 | low | 接受无盐 MD5 旧口令，非常量时间比较 | 3/3 |
+| GT-21 | low | 注销后跳转到 next 参数 | 3/3 |
+
+每次都找到 14 条，从未找到 11 条，其余 7 条时有时无。

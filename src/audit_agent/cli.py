@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 from audit_agent.agent import run_audit, write_outputs
-from audit_agent.llm import OpenAICompatible, RecordingLLM, ReplayLLM
+from audit_agent.llm import OpenAICompatible, RecordingLLM, ReplayExhausted, ReplayLLM
 from audit_agent.sandbox import Sandbox
 from audit_agent.state import load_state
 from audit_agent.verifier import verify_state
@@ -174,23 +174,30 @@ def _replay(run_dir: Path, target: Path, out: str) -> int:
     rows = ReplayLLM.load(recording)
     out_dir = Path(out) if out else run_dir / "replay"
     budgets = meta.get("budgets") or {}
-    state = run_audit(
-        sandbox=Sandbox(target, meta.get("vendor") or [DEFAULT_VENDOR]),
-        llm=ReplayLLM(rows, "auditor", model=f"replay:{meta.get('model', '')}"),
-        critic_llm=ReplayLLM(rows, "critic", model=f"replay:{meta.get('critic_model', meta.get('model', ''))}"),
-        run_dir=out_dir,
-        commit=meta.get("commit", ""),
-        target_url=meta.get("target_url", ""),
-        auditor_steps=budgets.get("auditor", 80),
-        critic_steps=budgets.get("critic", 40),
-        resume_steps=budgets.get("resume", 40),
-        max_rounds=budgets.get("max_rounds", 3),
-        extra_meta={"target_dir": target.as_posix(), "vendor": meta.get("vendor") or [], "replay_of": run_dir.as_posix()},
-    )
+    interrupted = any(str(item).startswith("run interrupted") for item in meta.get("warnings") or [])
+    try:
+        run_audit(
+            sandbox=Sandbox(target, meta.get("vendor") or [DEFAULT_VENDOR]),
+            llm=ReplayLLM(rows, "auditor", model=f"replay:{meta.get('model', '')}"),
+            critic_llm=ReplayLLM(rows, "critic", model=f"replay:{meta.get('critic_model', meta.get('model', ''))}"),
+            run_dir=out_dir,
+            commit=meta.get("commit", ""),
+            target_url=meta.get("target_url", ""),
+            auditor_steps=budgets.get("auditor", 80),
+            critic_steps=budgets.get("critic", 40),
+            resume_steps=budgets.get("resume", 40),
+            max_rounds=budgets.get("max_rounds", 3),
+            extra_meta={"target_dir": target.as_posix(), "vendor": meta.get("vendor") or [], "replay_of": run_dir.as_posix()},
+        )
+    except ReplayExhausted:
+        # The original stopped at an API error; running out of responses at the same point is a faithful replay.
+        if not (interrupted and not rows):
+            raise
     original = {item["id"]: (item["status"], item["severity"]) for item in json.loads((run_dir / "findings.json").read_text(encoding="utf-8"))}
-    replayed = {item.id: (item.status, item.severity) for item in state.findings.values()}
+    replayed = {item["id"]: (item["status"], item["severity"]) for item in json.loads((out_dir / "findings.json").read_text(encoding="utf-8"))}
     same = original == replayed
-    print(f"replayed into {out_dir}: findings={len(replayed)} identical_to_original={same} unused_responses={len(rows)}")
+    note = " (original run was interrupted; replayed up to the same point)" if interrupted else ""
+    print(f"replayed into {out_dir}: findings={len(replayed)} identical_to_original={same} unused_responses={len(rows)}{note}")
     if not same:
         for key in sorted(set(original) | set(replayed)):
             if original.get(key) != replayed.get(key):

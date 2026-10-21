@@ -32,16 +32,19 @@ python -m audit_agent replay results/run-20261021-r3  # 不需要密钥，用录
 | 运行 | 目标 | 审计员 / 复核员 | 上报 | 精确率下限 | 召回率 | high 及以上召回 | 复核否决 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `run-20261021-r1..r3`（同配置跑 3 次） | ylinux_old | deepseek-v4-pro / 同一模型 | 14.3 ± 2.1 | 0.952 ± 0.043 | **0.573 ± 0.048** | 1.0 ± 0 | 0 / 43 |
-| [`run-20261021-kimi`](results/run-20261021-kimi/report.md) | ylinux_old | deepseek-v4-pro / **kimi-k3** | 19 | 0.947 | 0.625 | 1.0 | **2 / 21** |
+| `run-20261021-kimi..kimi3`（3 次，后两次复核中断） | ylinux_old | deepseek-v4-pro / **kimi-k3** | 15.7 ± 3.1 | 0.934 ± 0.012 | 0.552 ± 0.065 | 1.0 ± 0 | **6 / 43** |
 | [`run-20261021`](results/run-20261021/report.md) | ylinux_old | deepseek-v4-pro / 同一模型（还没加 `list_endpoints` 等） | 15 | 1.0 | 0.688 | 1.0 | 0 / 15 |
 | [`nv-20261021`](results/nv-20261021/report.md) | django.nV | deepseek-v4-pro / 同一模型，代码和提示词不变 | 22 | 1.0 | 0.958 | 0.923 | 0 / 22 |
+| [`nv-20261021-kimi`](results/nv-20261021-kimi/report.md) | django.nV | deepseek-v4-pro / kimi-k3（复核中断） | 19 | 0.895 | 0.833 | 0.923 | 0 / 16 |
 | [`run-20261020`](results/run-20261020/report.md) | ylinux_old | DeepSeek-V3，还没有门禁 | 7 | 0.857 | 0.188 | 0.5 | — |
 
-**召回情况。** ylinux_old 一共标了 32 个真问题。3 次重复运行里，15 个每次都找到了，10 个一次都没找到，剩下 7 个时有时无。单次召回率在 0.53 到 0.69 之间浮动，所以只看一次运行的结果说明不了什么。high 及以上的问题，每次新版运行都找到了。
+**召回情况。** ylinux_old 一共标了 32 个真问题。审计员配置相同的 6 次运行里，13 个每次都找到了，8 个一次都没找到，剩下 11 个时有时无。单次召回率在 0.50 到 0.63 之间浮动，所以只看一次运行的结果说明不了什么。high 及以上的问题，每次新版运行都找到了。
 
 最难的是 GT-11 和 GT-12。它们是重置口令流程里的逻辑漏洞，要把激活和重置两段代码连起来看才能发现。具体分析见 [REPORT.md](REPORT.md#漏掉的两个逻辑漏洞)。
 
-**复核员的表现。** 用 DeepSeek 自己当复核员时，一次都没否决过。换成 Kimi 后否决了 2 条，都是严重性定高了，审计员接受了降级。
+**复核员的表现。** 用 DeepSeek 自己当复核员时，80 次复核一次都没否决过。换成 Kimi 后在 ylinux_old 上否决了 6 次，其中 3 次是审计员每次都会犯的同一个错（把附件上传判成路径穿越），DeepSeek 复核时 3 次都放过去了。另外 Kimi 提的缺口在 django.nV 上补出了一条审计员漏掉的 critical。所以如果有第二个模型的密钥，建议用它做复核员。
+
+用 Kimi 复核的 4 次运行里有 3 次（kimi2、kimi3、nv-kimi）在复核途中因为账户余额用完中断（429），审计员部分完整，报告开头标了中断，没复核到的条目标为“未复核”。
 
 **分数的局限。**
 
@@ -106,8 +109,8 @@ python -m audit_agent run --local --target-dir workspace/django.nV --target-url 
 python -m audit_agent verify results/<运行目录>
 
 # 打分。--group 汇总多次重复运行的均值和标准差，同时给每次运行写一份 REVIEW.md
-python -m audit_agent evaluate results/run-20261021 --group ylinux=results/run-20261021-r1,results/run-20261021-r2,results/run-20261021-r3 --out results/EVALUATION.md
-python -m audit_agent evaluate results/nv-20261021 --truth eval/django_nv_truth.json --out results/EVALUATION-django.nV.md
+python -m audit_agent evaluate results/run-20261020 results/run-20261021 --group deepseek-x3=results/run-20261021-r1,results/run-20261021-r2,results/run-20261021-r3 --group kimi-x3=results/run-20261021-kimi,results/run-20261021-kimi2,results/run-20261021-kimi3 --out results/EVALUATION.md
+python -m audit_agent evaluate results/nv-20261021 results/nv-20261021-kimi --truth eval/django_nv_truth.json --out results/EVALUATION-django.nV.md
 
 # 单元测试，不会调用模型
 pytest
@@ -129,7 +132,7 @@ pytest
 
 ```
 src/audit_agent/   Agent 本体：循环、工具、门禁、报告渲染、打分
-tests/             单元测试，用脚本化的假模型，不调用接口
+tests/             单元测试，用脚本化的假模型，不调用接口；CI 在 .github/workflows/test.yml
 eval/              真值文件和生成脚本
 results/           各次运行的完整输出和打分汇总
 REPORT.md          ylinux_old 审计分析报告

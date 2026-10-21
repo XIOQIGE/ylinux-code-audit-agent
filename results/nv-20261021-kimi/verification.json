@@ -1,0 +1,346 @@
+[
+  {
+    "id": "RCE-001",
+    "path": "taskManager/misc.py",
+    "start_line": 31,
+    "end_line": 39,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "RCE-001",
+    "path": "taskManager/views.py",
+    "start_line": 178,
+    "end_line": 179,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "SQLI-001",
+    "path": "taskManager/views.py",
+    "start_line": 182,
+    "end_line": 185,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "DESER-001",
+    "path": "taskManager/settings.py",
+    "start_line": 24,
+    "end_line": 24,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "DESER-001",
+    "path": "taskManager/settings.py",
+    "start_line": 104,
+    "end_line": 104,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "DESER-001",
+    "path": "taskManager/settings.py",
+    "start_line": 109,
+    "end_line": 110,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "taskManager/views.py",
+    "start_line": 710,
+    "end_line": 712,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "taskManager/views.py",
+    "start_line": 718,
+    "end_line": 719,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-001",
+    "path": "taskManager/views.py",
+    "start_line": 726,
+    "end_line": 727,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-002",
+    "path": "taskManager/views.py",
+    "start_line": 120,
+    "end_line": 124,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-002",
+    "path": "taskManager/views.py",
+    "start_line": 130,
+    "end_line": 138,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-002",
+    "path": "taskManager/views.py",
+    "start_line": 155,
+    "end_line": 155,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-003",
+    "path": "taskManager/views.py",
+    "start_line": 275,
+    "end_line": 276,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-003",
+    "path": "taskManager/views.py",
+    "start_line": 286,
+    "end_line": 289,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-003",
+    "path": "taskManager/views.py",
+    "start_line": 376,
+    "end_line": 380,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-003",
+    "path": "taskManager/views.py",
+    "start_line": 206,
+    "end_line": 213,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "taskManager/views.py",
+    "start_line": 246,
+    "end_line": 247,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "taskManager/views.py",
+    "start_line": 254,
+    "end_line": 261,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "taskManager/templates/taskManager/task_details.html",
+    "start_line": 12,
+    "end_line": 12,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-001",
+    "path": "taskManager/templates/taskManager/task_details.html",
+    "start_line": 48,
+    "end_line": 48,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "taskManager/views.py",
+    "start_line": 718,
+    "end_line": 719,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "taskManager/templates/taskManager/base_backend.html",
+    "start_line": 57,
+    "end_line": 58,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-002",
+    "path": "taskManager/views.py",
+    "start_line": 491,
+    "end_line": 493,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-003",
+    "path": "taskManager/views.py",
+    "start_line": 661,
+    "end_line": 662,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-003",
+    "path": "taskManager/templates/taskManager/search.html",
+    "start_line": 14,
+    "end_line": 14,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-004",
+    "path": "taskManager/views.py",
+    "start_line": 837,
+    "end_line": 841,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "XSS-004",
+    "path": "taskManager/templates/taskManager/settings.html",
+    "start_line": 27,
+    "end_line": 28,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "REDIR-001",
+    "path": "taskManager/views.py",
+    "start_line": 385,
+    "end_line": 387,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTH-001",
+    "path": "taskManager/views.py",
+    "start_line": 788,
+    "end_line": 796,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTH-001",
+    "path": "taskManager/views.py",
+    "start_line": 739,
+    "end_line": 740,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTH-001",
+    "path": "taskManager/views.py",
+    "start_line": 744,
+    "end_line": 747,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CRYPTO-001",
+    "path": "taskManager/settings.py",
+    "start_line": 100,
+    "end_line": 101,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CONFIG-001",
+    "path": "taskManager/settings.py",
+    "start_line": 27,
+    "end_line": 31,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "INFO-001",
+    "path": "taskManager/views.py",
+    "start_line": 391,
+    "end_line": 395,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "INFO-001",
+    "path": "taskManager/templates/taskManager/login.html",
+    "start_line": 6,
+    "end_line": 15,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "taskManager/views.py",
+    "start_line": 779,
+    "end_line": 780,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "CSRF-001",
+    "path": "taskManager/views.py",
+    "start_line": 813,
+    "end_line": 814,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-004",
+    "path": "taskManager/forms.py",
+    "start_line": 71,
+    "end_line": 75,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTHZ-004",
+    "path": "taskManager/views.py",
+    "start_line": 429,
+    "end_line": 434,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "taskManager/misc.py",
+    "start_line": 26,
+    "end_line": 27,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "taskManager/misc.py",
+    "start_line": 41,
+    "end_line": 41,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "FILE-001",
+    "path": "taskManager/forms.py",
+    "start_line": 78,
+    "end_line": 81,
+    "ok": true,
+    "detail": "match"
+  },
+  {
+    "id": "AUTH-002",
+    "path": "taskManager/views.py",
+    "start_line": 390,
+    "end_line": 401,
+    "ok": true,
+    "detail": "match"
+  }
+]

@@ -7,14 +7,17 @@
 | [`run-20261021-r1`](run-20261021-r1/report.md) | ylinux_old | `deepseek-v4-pro` / 同一模型 | 当前代码，第 1 次 |
 | [`run-20261021-r2`](run-20261021-r2/report.md) | ylinux_old | `deepseek-v4-pro` / 同一模型 | 当前代码，第 2 次 |
 | [`run-20261021-r3`](run-20261021-r3/report.md) | ylinux_old | `deepseek-v4-pro` / 同一模型 | 当前代码，第 3 次；README 里 `replay` 的例子用的就是这次 |
-| [`run-20261021-kimi`](run-20261021-kimi/report.md) | ylinux_old | `deepseek-v4-pro` / `kimi-k3` | 当前代码，复核员换模型 |
+| [`run-20261021-kimi`](run-20261021-kimi/report.md) | ylinux_old | `deepseek-v4-pro` / `kimi-k3` | 当前代码，复核员换模型，3 轮往返完整跑完 |
+| [`run-20261021-kimi2`](run-20261021-kimi2/report.md) | ylinux_old | `deepseek-v4-pro` / `kimi-k3` | 同上，复核第 2 轮时 Moonshot 余额用完中断 |
+| [`run-20261021-kimi3`](run-20261021-kimi3/report.md) | ylinux_old | `deepseek-v4-pro` / `kimi-k3` | 同上，复核第 1 轮中断 |
 | [`nv-20261021`](nv-20261021/report.md) | django.nV | `deepseek-v4-pro` / 同一模型 | 泛化测试，代码和提示词都没改 |
+| [`nv-20261021-kimi`](nv-20261021-kimi/report.md) | django.nV | `deepseek-v4-pro` / `kimi-k3` | 复核第 2 轮中断 |
 | [`run-20261021`](run-20261021/report.md) | ylinux_old | `deepseek-v4-pro` / 同一模型 | 加 `list_endpoints`、`entry_role`、`weakest_point` 之前的版本。后来用 `verify` 按新格式重新生成了报告。那时还没有录制功能，所以没有 `llm_responses.jsonl` |
 | [`run-20261020`](run-20261020/report.md) | ylinux_old | SiliconFlow `DeepSeek-V3` | 第一版，还没有门禁。原样保留用来对比，报告是旧格式，也没有录制 |
 
 打分汇总：
 
-- [`EVALUATION.md`](EVALUATION.md)：ylinux_old，包含 r1–r3 的均值、标准差，以及每条真值被找到的次数。
+- [`EVALUATION.md`](EVALUATION.md)：ylinux_old，分两组（DeepSeek 复核的 r1–r3、Kimi 复核的 kimi1–3）给出均值、标准差，以及每条真值被找到的次数。
 - [`EVALUATION-django.nV.md`](EVALUATION-django.nV.md)：django.nV。
 
 每个运行目录里的文件：
@@ -32,5 +35,7 @@
 | `verification.json` | 每条引用是否真的出现在它声称的行号上 |
 | `meta.json` | 两个角色各自用的模型和接口，以及 commit、预算、token、完整工具序列。不含密钥 |
 | `evaluation.json` | 逐条判定，机器可读格式 |
+
+中断的运行没有 `accept_report`，报告开头会注明，没复核到的条目在总表里标“未复核”。引用核对和打分照常做。
 
 注意：引用对得上，不代表分类就是对的。误判、漏报以及原因写在 [DESIGN.md](../DESIGN.md)。

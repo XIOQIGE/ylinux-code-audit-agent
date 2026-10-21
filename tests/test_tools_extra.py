@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from audit_agent.agent import run_audit
 from audit_agent.cli import _replay
 from audit_agent.endpoints import list_endpoints
@@ -181,3 +183,67 @@ def test_run_writes_appendix_decisions_and_replays(tmp_path: Path):
     assert meta["critic_reviews"] == 1 and meta["critic_disputes"] == 0
     assert _replay(run_dir, repo, str(tmp_path / "replay")) == 0
     assert json.loads((tmp_path / "replay" / "findings.json").read_text(encoding="utf-8"))[0]["id"] == "SQLI-001"
+
+
+class _Broke:
+    model = "broke"
+
+    def complete(self, messages, tools):
+        raise RuntimeError("Error code: 429 - exceeded_current_quota_error")
+
+
+def test_interrupted_critic_still_writes_verified_report(tmp_path: Path):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    sandbox = _repo(repo)
+    run_dir = tmp_path / "run"
+    plan = _plan()
+    with pytest.raises(RuntimeError):
+        run_audit(sandbox, _Script({"auditor": plan["auditor"]}), run_dir, "abc", "https://example.invalid", auditor_steps=5, critic_llm=_Broke())
+    report = (run_dir / "report.md").read_text(encoding="utf-8")
+    assert "中途中断" in report and "未复核" in report
+    assert json.loads((run_dir / "verification.json").read_text(encoding="utf-8"))
+
+
+def test_quota_429_is_not_retried(monkeypatch):
+    import httpx
+    import openai
+
+    from audit_agent.llm import OpenAICompatible
+
+    client = OpenAICompatible(api_key="x", base_url="https://example.invalid", model="m")
+    calls = []
+    request = httpx.Request("POST", "https://example.invalid")
+
+    def fail(messages, tools):
+        calls.append(1)
+        body = {"error": {"type": "exceeded_current_quota_error"}}
+        raise openai.RateLimitError("Error code: 429 - exceeded_current_quota_error", response=httpx.Response(429, request=request), body=body)
+
+    monkeypatch.setattr(client, "_once", fail)
+    monkeypatch.setattr("audit_agent.llm.time.sleep", lambda _s: None)
+    with pytest.raises(openai.RateLimitError):
+        client.complete([], [])
+    assert len(calls) == 1
+
+
+def test_interrupted_run_replays_to_the_same_point(tmp_path: Path):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    sandbox = _repo(repo)
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    recording = run_dir / "llm_responses.jsonl"
+    plan = _plan()
+    with pytest.raises(RuntimeError):
+        run_audit(
+            sandbox,
+            RecordingLLM(_Script({"auditor": plan["auditor"]}), recording, "auditor"),
+            run_dir,
+            "abc",
+            "https://example.invalid",
+            auditor_steps=5,
+            critic_llm=RecordingLLM(_Broke(), recording, "critic"),
+            extra_meta={"target_dir": repo.as_posix(), "vendor": []},
+        )
+    assert _replay(run_dir, repo, str(tmp_path / "replay")) == 0

@@ -2,7 +2,7 @@
 
 审计对象是 [gwind/ylinux_old](https://github.com/gwind/ylinux_old)，commit `8a7316deec88287d020eca21c38dad921b623ffc`，一个 2010–2011 年写的 Django 1.2 / Python 2 社区站点（论坛 + Wiki + 附件 + XML-RPC 发帖接口）。
 
-我用当前版本的 Agent 跑了 5 次：3 次同配置重复（r1–r3）、1 次复核员换成 Kimi、1 次是加 `list_endpoints` 之前的版本。下面把 5 次的发现合并，每条都回到源码看过，再对照 `eval/ground_truth.json` 统计 Agent 找到了几次。单次运行的完整报告在 `results/<运行>/report.md`。
+我用当前版本的 Agent 跑了 7 次：3 次同配置重复（r1–r3）、3 次复核员换成 Kimi（其中 2 次复核中途因余额用完中断，审计员部分完整）、1 次是加 `list_endpoints` 之前的版本。下面把 7 次的发现合并，每条都回到源码看过，再对照 `eval/ground_truth.json` 统计 Agent 找到了几次。单次运行的完整报告在 `results/<运行>/report.md`。
 
 ## 结论
 
@@ -13,7 +13,7 @@
 - 重置口令的 key 只有 20 bit 随机量，知道对方邮箱就能枚举出重置链接，接管账号。
 - 全站没有 CSRF 防护，后台的删除操作还接受 GET。
 
-这 4 类问题 5 次运行都找到了。Agent 一直没找到的，是重置流程里要把两段代码连起来看才能发现的两个逻辑漏洞，还有一些 low 级的信息泄露类问题。
+这 4 类问题 7 次运行都找到了。Agent 一直没找到的，是重置流程里要把两段代码连起来看才能发现的两个逻辑漏洞，还有一些 low 级的信息泄露类问题。
 
 ## 高危问题
 
@@ -80,39 +80,39 @@ def editPostAJAX(request, postID):
 
 ## 全部问题和 Agent 的命中次数
 
-“命中”指 5 次运行里有几次找到了。编号对应 `eval/ground_truth.json`。
+“命中”指 7 次运行里有几次找到了。编号对应 `eval/ground_truth.json`。
 
-**5 次里找到 4 次以上（16 条）**
+**7 次里找到 6 次以上（15 条）**
 
 | 编号 | 严重性 | 问题 | 位置 | 命中 |
 | --- | --- | --- | --- | --- |
-| GT-01 | high | 主题正文 Markdown 未开 safe_mode，经 `\|safe` 输出 | `app/ydata/models.py:196` | 5 |
-| GT-02 | high | 回帖正文同上 | `app/ydata/models.py:258` | 5 |
-| GT-06 | high | editPostAJAX 不校验帖子归属 | `app/wiki/views.py:447` | 5 |
-| GT-07 | high | XML-RPC 任意认证用户可删改任意主题 | `lib/ylinux_xmlrpc.py:39` | 5 |
-| GT-10 | high | 激活/重置 key 只有 20 bit | `app/account/models.py:364` | 5 |
-| GT-13 | high | 全站没有 CSRF 中间件 | `settings.py:98` | 5 |
-| GT-04 | medium | 注册/重置页把 URL 里的 key 原样拼进 HTML（反射型 XSS） | `app/account/views.py:102` | 5 |
-| GT-16 | medium | DEBUG=True，静态目录开了目录列表 | `settings.py:18` | 5 |
-| GT-17 | medium | SECRET_KEY 和数据库口令写在仓库里 | `settings.py:79` | 5 |
-| GT-18 | medium | 口令哈希是单轮 SHA-1 + 20 bit 盐 | `app/account/models.py:231` | 5 |
-| GT-31 | medium | XML-RPC 认证不检查 is_active | `app/account/backends.py:19` | 5 |
-| GT-15 | low | `/lab/update_post_profile` 匿名可批量改写全部帖子 | `app/ylab/views.py:37` | 5 |
-| GT-19 | low | 兼容无盐 MD5 旧口令，比较不是常量时间 | `app/account/models.py:243` | 5 |
-| GT-21 | low | 注销后跳转到 next 参数 | `app/account/views.py:58` | 5 |
+| GT-01 | high | 主题正文 Markdown 未开 safe_mode，经 `\|safe` 输出 | `app/ydata/models.py:196` | 7 |
+| GT-02 | high | 回帖正文同上 | `app/ydata/models.py:258` | 7 |
+| GT-06 | high | editPostAJAX 不校验帖子归属 | `app/wiki/views.py:447` | 7 |
+| GT-07 | high | XML-RPC 任意认证用户可删改任意主题 | `lib/ylinux_xmlrpc.py:39` | 7 |
+| GT-10 | high | 激活/重置 key 只有 20 bit | `app/account/models.py:364` | 7 |
+| GT-13 | high | 全站没有 CSRF 中间件 | `settings.py:98` | 7 |
+| GT-04 | medium | 注册/重置页把 URL 里的 key 原样拼进 HTML（反射型 XSS） | `app/account/views.py:102` | 6 |
+| GT-16 | medium | DEBUG=True，静态目录开了目录列表 | `settings.py:18` | 7 |
+| GT-17 | medium | SECRET_KEY 和数据库口令写在仓库里 | `settings.py:79` | 7 |
+| GT-18 | medium | 口令哈希是单轮 SHA-1 + 20 bit 盐 | `app/account/models.py:231` | 7 |
+| GT-31 | medium | XML-RPC 认证不检查 is_active | `app/account/backends.py:19` | 7 |
+| GT-15 | low | `/lab/update_post_profile` 匿名可批量改写全部帖子 | `app/ylab/views.py:37` | 7 |
+| GT-19 | low | 兼容无盐 MD5 旧口令，比较不是常量时间 | `app/account/models.py:243` | 7 |
+| GT-21 | low | 注销后跳转到 next 参数 | `app/account/views.py:58` | 7 |
+| GT-20 | medium | 登录后跳转到 next 参数，没有同源校验 | `app/account/views.py:38` | 6 |
+
+**时有时无（11 条）**
+
+| 编号 | 严重性 | 问题 | 位置 | 命中 |
+| --- | --- | --- | --- | --- |
 | GT-14 | medium | 删除、重启等状态变更接受 GET | `app/admin/views.py:133` | 4 |
-| GT-20 | medium | 登录后跳转到 next 参数，没有同源校验 | `app/account/views.py:38` | 4 |
-
-**时有时无（10 条）**
-
-| 编号 | 严重性 | 问题 | 位置 | 命中 |
-| --- | --- | --- | --- | --- |
-| GT-23 | medium | 上传不限类型，存到可直接访问的媒体目录 | `app/ydata/views.py:78` | 3 |
-| GT-05 | low | 上传响应把文件名拼进 `<script>` | `app/ydata/views.py:91` | 3 |
-| GT-22 | low | 后台登录和 del_* 跳转到 Referer | `app/admin/views.py:62` | 3 |
+| GT-23 | medium | 上传不限类型，存到可直接访问的媒体目录 | `app/ydata/views.py:78` | 4 |
+| GT-05 | low | 上传响应把文件名拼进 `<script>` | `app/ydata/views.py:91` | 4 |
+| GT-22 | low | 后台登录和 del_* 跳转到 Referer | `app/admin/views.py:62` | 4 |
 | GT-32 | low | 上传附件不校验主题归属 | `app/ydata/views.py:46` | 3 |
 | GT-08 | medium | 受限版块只在写入时检查 has_access，读取时不检查 | `app/ydata/models.py:91` | 2 |
-| GT-03 | medium | ylinux_text_filter 把附件名、主题名不转义拼进 HTML | `app/ydata/models.py:408` | 1 |
+| GT-03 | medium | ylinux_text_filter 把附件名、主题名不转义拼进 HTML | `app/ydata/models.py:408` | 2 |
 | GT-24 | low | 匿名联系表单可以往任意地址发信 | `app/home/views.py:43` | 1 |
 | GT-26 | low | 没有防暴力破解，XML-RPC multicall 还能放大尝试次数 | `lib/django_xmlrpc/views.py:155` | 1 |
 | GT-28 | low | 会话 cookie 没设 HttpOnly/Secure | `app/sessions/middleware.py:37` | 1 |
@@ -153,28 +153,33 @@ Agent 每次都读到了这几个文件，也找到了“key 熵太低”（GT-1
 
 ## 误报
 
-5 次运行里没有一条落在真值之外的发现，唯一反复出现的误判是附件上传的“路径穿越”（陷阱 FP-05）：
+7 次运行里没有一条落在真值之外的发现。反复出现的误判有两处。
+
+第一处是附件上传的“路径穿越”（陷阱 FP-05）：
 
 ```python
 # app/ydata/views.py:78
 local_name = str(id) + '-' + str(req.user.id) + '-' + f.name
 ```
 
-Django 的 `UploadedFile` 在设置 `name` 时已经做过 `os.path.basename`，`f.name` 里不会有 `../`。r1、r2、r3 都把它判成 high 级的“任意文件写入”，同一个模型做复核员时三次都同意了。换成 Kimi 复核后，它读到 basename 处理就否决了这条，审计员把它降为 needs_review / low。
+Django 的 `UploadedFile` 在设置 `name` 时已经做过 `os.path.basename`，`f.name` 里不会有 `../`。新版 6 次运行里审计员每次都报了这条，5 次定成 high。DeepSeek 做复核员时三次都同意；Kimi 做复核员时三次都否决，理由都是 basename 处理。被否决后审计员一次降为 needs_review / low，一次直接撤回，一次因为复核中断停在“已否决”。
 
 这条在 r1 里同时覆盖了真问题 GT-32（附件可挂到任意主题），所以那一次算命中，只是严重性偏高。
+
+第二处是会话的 pickle 反序列化（陷阱 FP-03）。`settings.py` 没有设置 `SESSION_ENGINE`，项目里自带的那套 pickle 会话后端没有被用上，而且会话数据存在服务端。kimi2、kimi3 把它报成 medium，这两条都是在复核中断后没轮到复核的。
 
 ## 这些结果有多可信
 
 | 运行 | 上报 | 精确率下限 | 召回率 | high 召回 |
 | --- | --- | --- | --- | --- |
-| r1–r3 均值 ± 标准差 | 14.3 ± 2.1 | 0.952 ± 0.043 | 0.573 ± 0.048 | 1.0 |
-| 换 Kimi 复核 | 19 | 0.947 | 0.625 | 1.0 |
+| r1–r3（DeepSeek 复核）均值 ± 标准差 | 14.3 ± 2.1 | 0.952 ± 0.043 | 0.573 ± 0.048 | 1.0 |
+| kimi1–3（Kimi 复核）均值 ± 标准差 | 15.7 ± 3.1 | 0.934 ± 0.012 | 0.552 ± 0.065 | 1.0 |
 
 - 6 条 high 每次都能找到，这部分结论比较稳。
-- 召回率在 0.53–0.69 之间波动，单跑一次不能说明问题，至少要看几次的均值。
+- 召回率在 0.50–0.69 之间波动，单跑一次不能说明问题，至少要看几次的均值。两组的差别在波动范围内，召回主要取决于审计员。
+- 换模型复核的作用主要在精确性上：它能拦住审计员反复犯的同一个错，DeepSeek 自己复核拦不住。
 - 真值是我用 Claude 标注、再开独立会话交叉核对出来的，没有经过安全工程师复核。标注模型和被测模型（DeepSeek）不是同一个，但仍有可能共享同样的盲点。
-- 提示词和门禁是在 ylinux_old 上调出来的，这里的分数偏乐观。泛化测试用的是 django.nV，召回率 0.958，但那个项目的源码里有提示漏洞位置的注释，难度偏低。
+- 提示词和门禁是在 ylinux_old 上调出来的，这里的分数偏乐观。泛化测试用的是 django.nV，召回率 0.83–0.96，但那个项目的源码里有提示漏洞位置的注释，难度偏低。
 
 打分方法和真值的来历写在 [DESIGN.md](DESIGN.md#怎么确认结果准确)。逐条判定见 [results/EVALUATION.md](results/EVALUATION.md)。
 

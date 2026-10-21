@@ -50,9 +50,10 @@ def render_report(state: AuditState, meta: dict, verification: list[dict], event
         f"- 统计：已确认 {counts.get('confirmed', 0)}，待再确认 {counts.get('needs_review', 0)}，已排除 {counts.get('rejected', 0)}；"
         f"引用核对 {len(verification)} 条，未通过 {len(failed)} 条",
         "",
-        "## 发现总表",
-        "",
     ]
+    if any(warning.startswith("run interrupted") for warning in state.warnings):
+        lines.extend(["> 这次运行中途中断（原因见文末“运行警告”），复核没有做完，标“未复核”的条目只经过审计员判断。", ""])
+    lines.extend(["## 发现总表", ""])
     reported = sorted(
         (item for item in state.findings.values() if item.status in {"confirmed", "needs_review", "disputed"}),
         key=lambda item: (SEVERITY_ORDER.get(item.severity, 9), item.status != "confirmed", item.id),
