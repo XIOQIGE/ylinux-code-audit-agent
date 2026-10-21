@@ -71,12 +71,12 @@ def render_report(state: AuditState, meta: dict, verification: list[dict], event
     lines.extend(
         [
             "",
-            "发现列表来自 Agent 写入并经过引用核对的结构化结果。审计员综述写于复核之前，单条发现的状态以复核之后为准。"
-            "线索处置、读过的文件、阶段记录、工具序列和逐条引用核对见 `appendix.md`；关键决策摘要见 `decisions.md`。",
+            "下面的发现由 Agent 写入，每条引用都回到源码核对过。审计员综述写在复核之前，单条发现的状态以复核后为准。"
+            "线索处置、读过的文件、阶段记录、工具序列和引用核对见 `appendix.md`，关键决策见 `decisions.md`。",
             "",
             "## 审计员综述",
             "",
-            state.executive_summary or "（审计员没有成功提交综述。）",
+            state.executive_summary or "（审计员没有提交综述。）",
             "",
             "## 风险概览",
             "",
@@ -96,7 +96,7 @@ def render_report(state: AuditState, meta: dict, verification: list[dict], event
         for finding in items:
             lines.extend(_finding_block(finding))
     lines.extend(["## 范围", "", state.scope or "（无）", "", "## 局限", "", state.limitations or "（无）", ""])
-    lines.extend(["## 复核意见", "", state.critic_notes or "（复核员没有留下接受说明。）", "", "## 复核缺口", ""])
+    lines.extend(["## 复核意见", "", state.critic_notes or "（复核员没有留下说明。）", "", "## 复核缺口", ""])
     if not state.gaps:
         lines.extend(["无。", ""])
     else:
@@ -149,7 +149,7 @@ def render_appendix(state: AuditState, meta: dict, verification: list[dict], eve
     lines.extend([f"- `{stage['stage']}`：{stage['note']}" for stage in state.stages] or ["无。"])
     lines.extend(["", "## D. 读过的文件", ""])
     lines.extend(f"- `{path}`" for path in state.files_read)
-    lines.extend(["", "## E. 工具调用序列", "", "完整参数和观察见 `trajectory.md` 与 `trace.jsonl`。顺序是模型每次返回的 tool call，不是脚本写死的。前缀 a = 审计员，c = 复核员。", ""])
+    lines.extend(["", "## E. 工具调用序列", "", "完整参数和返回见 `trajectory.md` 和 `trace.jsonl`。顺序就是模型每次返回的 tool call，代码里没有预设。a = 审计员，c = 复核员。", ""])
     sequence = [f"{(event.get('role') or '')[:1]}:{event['name']}" for event in events if event.get("kind") == "tool"]
     lines.append(" → ".join(f"`{name}`" for name in sequence) if sequence else "（没有工具调用。）")
     lines.extend(["", "## F. 引用核对", ""])
@@ -212,7 +212,7 @@ def render_decisions(events: list[dict]) -> str:
             gaps.append(f"- {where} `{name}` {args.get('id') or out.get('id', '')}：{str(text)[:400]}{flag}")
         elif name == "triage_leads" and args.get("disposition") == "benign" and ok:
             triage.append(f"- {where} {', '.join(map(str, args.get('ids') or []))} 判为无害：{str(args.get('note', ''))[:240]}")
-    lines = ["# 关键决策", "", "从 `trace.jsonl` 自动抽取。完整上下文见 `trajectory.md`。", ""]
+    lines = ["# 关键决策", "", "从 `trace.jsonl` 里抽出来的关键节点，完整过程见 `trajectory.md`。", ""]
     for title, rows in (
         ("门禁", gates),
         ("发现的写入被拒与改判", rewrites),
@@ -227,7 +227,7 @@ def render_decisions(events: list[dict]) -> str:
 
 
 def render_trajectory(events: list[dict]) -> str:
-    lines = ["# Agent 工具调用轨迹", "", "每一行对应模型的一次选择。观察内容是工具返回的前 2500 个字符。", ""]
+    lines = ["# Agent 工具调用轨迹", "", "每一节是模型的一次调用。工具返回只保留前 2500 个字符。", ""]
     for event in events:
         if event.get("kind") == "assistant":
             tools = ", ".join(event.get("tools") or []) or "（无）"
@@ -252,7 +252,7 @@ def render_trajectory(events: list[dict]) -> str:
             lines.append(_pretty(event.get("arguments")))
             lines.append("```")
             lines.append("")
-            lines.append("观察：")
+            lines.append("返回：")
             lines.append("")
             lines.append("```")
             lines.append(event.get("preview") or "")

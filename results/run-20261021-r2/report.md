@@ -23,7 +23,7 @@
 | low | [`LAB-001`](#finding-lab-001) | lab 调试端点未授权暴露：匿名批量改写帖子与测试上传 | 匿名 | confirmed | 同意 | `app/ylab/urls.py:5` |
 | low | [`REDIR-001`](#finding-redir-001) | logout/login 的 next 与 admin Referer 重定向未校验（开放重定向） | 匿名 | confirmed | 同意 | `app/account/views.py:55` |
 
-发现列表来自 Agent 写入并经过引用核对的结构化结果。审计员综述写于复核之前，单条发现的状态以复核之后为准。线索处置、读过的文件、阶段记录、工具序列和逐条引用核对见 `appendix.md`；关键决策摘要见 `decisions.md`。
+下面的发现由 Agent 写入，每条引用都回到源码核对过。审计员综述写在复核之前，单条发现的状态以复核后为准。线索处置、读过的文件、阶段记录、工具序列和引用核对见 `appendix.md`，关键决策见 `decisions.md`。
 
 ## 审计员综述
 

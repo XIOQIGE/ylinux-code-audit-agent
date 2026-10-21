@@ -181,9 +181,9 @@ traps = [
 truth = {
     "target": "https://github.com/gwind/ylinux_old",
     "commit": "8a7316deec88287d020eca21c38dad921b623ffc",
-    "notes": "由开发助手（Claude，独立于被测 Agent 的会话）逐条打开源码标注，再由另一个独立子代理盲审交叉核对（见 ground_truth_crosscheck.json），"
-             "未经人类安全工程师复核。issues 计入召回；optional 命中算真阳性但漏报不扣分；false_positive_traps 是已知会被误判的位置，"
-             "按精确行（不加容差）匹配，满足 wrong_* 任一条件即判为误报。SESSION_ENGINE 未设置，生产 fcgi 读取仓库外的 ylinux.ysettings。",
+    "notes": "我借助 Claude（与被测 Agent 不同的模型和会话）逐条打开源码标注，再另开一个会话只给仓库和清单做交叉核对（见 ground_truth_crosscheck.json），"
+             "最后我对着源码抽查了高危条目；没有经过安全工程师复核。issues 计入召回；optional 命中算真阳性，漏报不扣分；false_positive_traps 是已知容易误判的位置，"
+             "按精确行号（不加容差）匹配，满足任一 wrong_* 条件即判为误报。SESSION_ENGINE 未设置；生产环境的 fcgi 读取仓库外的 ylinux.ysettings。",
     "issues": issues,
     "optional": optional,
     "false_positive_traps": traps,

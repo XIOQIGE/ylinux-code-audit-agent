@@ -1,6 +1,6 @@
 # 关键决策
 
-从 `trace.jsonl` 自动抽取。完整上下文见 `trajectory.md`。
+从 `trace.jsonl` 里抽出来的关键节点，完整过程见 `trajectory.md`。
 
 ## 门禁
 

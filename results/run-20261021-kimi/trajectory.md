@@ -1,6 +1,6 @@
 # Agent 工具调用轨迹
 
-每一行对应模型的一次选择。观察内容是工具返回的前 2500 个字符。
+每一节是模型的一次调用。工具返回只保留前 2500 个字符。
 
 ## auditor step 1
 
@@ -23,7 +23,7 @@ Let me start by exploring the repository structure.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"ok": false, "error": "read the tree or settings.py/urls.py before marking recon"}
@@ -40,7 +40,7 @@ Let me start by exploring the repository structure.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": ".", "count": 166, "truncated": false, "skipped_by_default": "directories named assets/bower_components/site-packages/static/staticfiles/third_party/thirdparty/vendor or ending in 'media', plus lib/markdown", "files": [".gitignore", "manage.py", "README", "settings.py", "urls.py", "__init__.py", "app/.gitignore", "app/__init__.py", "app/account/backends.py", "app/account/context_processors.py", "app/account/decorators.py", "app/account/forms.py", "app/account/middleware.py", "app/account/models.py", "app/account/tests.py", "app/account/tokens.py", "app/account/urls.py", "app/account/views.py", "app/account/__init__.py", "app/admin/forms.py", "app/admin/models.py", "app/admin/tests.py", "app/admin/urls.py", "app/admin/views.py", "app/admin/__init__.py", "app/bbs/models.py", "app/bbs/tests.py", "app/bbs/urls.py", "app/bbs/views.py", "app/bbs/__init__.py", "app/blog/urls.py", "app/blog/views.py", "app/blog/__init__.py", "app/home/forms.py", "app/home/models.py", "app/home/tests.py", "app/home/urls.py", "app/home/views.py", "app/home/__init__.py", "app/me/models.py", "app/me/tests.py", "app/me/urls.py", "app/me/views.py", "app/me/__init__.py", "app/sessions/middleware.py", "app/sessions/models.py", "app/sessions/tests.py", "app/sessions/__init__.py", "app/syndication/feeds.py", "app/syndication/views.py", "app/syndication/__init__.py", "app/wiki/models.py", "app/wiki/tests.py", "app/wiki/urls.py", "app/wiki/utils.py", "app/wiki/views.py", "app/wiki/__init__.py", "app/ydata/forms.py", "app/ydata/models.py", "app/ydata/settings.py", "app/ydata/urls.py", "app/ydata/util.py", "app/ydata/views.py", "app/ydata/__init__.py", "app/ylab/models.py", "app/ylab/tests.py", "app/ylab/urls.py", "app/ylab/views.py", "app/ylab/__init__.py", "doc/.gitignore", "doc/目录结构.txt", "lab/.gitignore", "lib/.gitignore", "lib/ylinux_xmlrpc.py", "lib/__init__.py", "lib/django_xmlrpc/decorators.py", "lib/django_xmlrpc/dispatcher.py", "lib/django_xmlrpc/views.py", "lib/django_xmlrpc/__init__.py", "scripts/.gitignore", "scripts/.htaccess", "scripts/back_web.sh", "scripts/django-admin", "scripts/ylinux-client.py", "scripts/ylinux.fcgi", "templates/.gitignore", "templates/404.html", "templates/500.html", "templates/xmlrpc_get.html", "templates/account/ajax_login.html", "templates/account/base.html", "templates/account/index.html", "templates/account/list_all_user.html", "templates/account/login.html", "templates/account/password_reset.html", "templates/account/password_reset_request.ht
@@ -66,7 +66,7 @@ This is a Django project (ylinux). Let me read the settings.py and urls.py first
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "settings.py", "encoding": "utf-8-sig", "total_lines": 177, "start_line": 1, "end_line": 177, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # Django settings for ylinux project.\n2| # coding: utf-8\n3| \n4| import os.path\n5| import sys \n6| import re\n7| \n8| PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))\n9| \n10| # lib 目录安放第三方软件包\n11| if sys.path.count(PROJECT_ROOT+\"/lib\") == 0:\n12|     sys.path.insert(0,PROJECT_ROOT+\"/lib\")\n13| \n14| # app 目录存放我的project包含的软件包\n15| if sys.path.count(PROJECT_ROOT+\"/app\") == 0:\n16|     sys.path.insert(0,PROJECT_ROOT+\"/app\")\n17| \n18| DEBUG = True\n19| TEMPLATE_DEBUG = DEBUG\n20| DOMAIN = \"127.0.0.1:8000\"\n21| \n22| INTERNAL_IPS = ('127.0.0.1',)\n23| \n24| ADMINS = (\n25|     # ('Your Name', 'your_email@domain.com'),\n26| )\n27| \n28| # 这里填写你的发邮件email账户名和密码\n29| DEFAULT_FROM_EMAIL = ''\n30| EMAIL_HOST = ''\n31| EMAIL_HOST_USER = ''\n32| EMAIL_HOST_PASSWORD = ''\n33| EMAIL_PORT = ''\n34| EMAIL_USE_TLS = True\n35| EMAIL_SUBJECT_PREFIX = '[YLinux]'\n36| \n37| \n38| MANAGERS = ADMINS\n39| \n40| # 数据库\n41| # 示例使用 mysql 数据库\n42| DATABASES = {\n43|     'default': {\n44|         # 可选数据库: postgresql_psycopg2 postgresql mysql sqlite3 oracle\n45|         #'ENGINE': 'django.db.backends.mysql',\n46|         'ENGINE': 'django.db.backends.sqlite3',\n47|         'NAME': 'ylinux',\n48|         'USER': 'ylinux',\n49|         'PASSWORD': '123456',\n50|         'HOST': '',\n51|         'PORT': '',\n52|         }\n53|     }\n54| \n55| \n56| # Local time zone for this installation. Choices can be found here:\n57| # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name\n58| # although not all choices may be available on all operating systems.\n59| # If running in a Windows environment this must be set to the same as your\n60| # system time zone.\n61| TIME_ZONE = 'Asia/Shanghai'\n62| \n63| # Language code for this installation. All choices can be found here:\n64| # http://www.i18nguy.com/unicode/language-identifiers.html\n65| LANGUAGE_CODE = 'zh-cn'\n66| \n67| SITE_ID = 1\n68| \n69| # If you set this to False, Django will make some optimizations so as not\n70| # to load the internationalization machinery.\n71| USE_I18N = True\n72| \n73| \n74| MEDIA_ROOT = PROJECT_ROOT+'/ymedia/'\n75| MEDIA_URL = '/ymedia/'\n76| \n77| \n78| # Make this unique, and don't share it with anybody.\n79| SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'\n80| \n81| \n
@@ -82,7 +82,7 @@ This is a Django project (ylinux). Let me read the settings.py and urls.py first
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "urls.py", "encoding": "utf-8-sig", "total_lines": 64, "start_line": 1, "end_line": 64, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| try:\n4|     import settings\n5| except ImportError:\n6|     import sys\n7|     sys.stderr.write(\"import settting error!\")\n8|     sys.exit(1)\n9| \n10| \n11| from django.conf.urls.defaults import *\n12| from django_xmlrpc.views import handle_xmlrpc\n13| \n14| # Uncomment the next two lines to enable the admin:\n15| # from django.contrib import admin\n16| # admin.autodiscover()\n17| \n18| urlpatterns = patterns('',\n19|     # Example:\n20|     # (r'^ylinux/', include('ylinux.foo.urls')),\n21|     # 注意 '' 和 ^$ 不同！\n22|     # namespace 参考\n23|     # http://docs.djangoproject.com/en/dev/topics/http/urls/#topics-http-defining-url-namespaces\n24|     (r'', include('ylinux.app.home.urls', namespace='home')),\n25|     (r'^admin/', include('ylinux.app.admin.urls', namespace='admin')),\n26|     (r'^account/', include('ylinux.app.account.urls', namespace='account')),\n27|     (r'^wiki/', include('ylinux.app.wiki.urls', namespace='wiki')), \n28|     (r'^blog/', include('ylinux.app.blog.urls', namespace='blog')),\n29|     (r'^bbs/', include('ylinux.app.bbs.urls', namespace='bbs')),\n30|     (r'^ydata/', include('ylinux.app.ydata.urls', namespace='ydata')),\n31|     (r'^lab/', include('ylinux.app.ylab.urls', namespace='lab')),\n32|     (r'^me/', include('ylinux.app.me.urls', namespace='me')),\n33| \n34|     # 静态地址\n35|     (r'^favicon\\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL+'images/favicon.ico'}),\n36| \n37|     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' \n38|     # to INSTALLED_APPS to enable admin documentation:\n39|     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),\n40| \n41|     # Uncomment the next line to enable the admin:\n42|     #(r'^admin/', include(admin.site.urls)),\n43| )\n44| \n45| urlpatterns += patterns('django_xmlrpc.views',\n46| \n47|     url(r'^xmlrpc/$', handle_xmlrpc, {}, name='xmlrpc'),\n48| )\n49| \n50| # 开发使用 django 自带的 web 服务器，需按照下面方法设置静态目录。如果放\n51| # 到公网上，那么需要用你所有的 web 服务器设置静态目录。一般在共享主机的\n52| # 环境里，针对 apache 可以用 .htaccess 实现\n53| \n54| # 另外要注意的是，如果打开 admin 功能，就不要用 static 作为 url 前部分。\n55| \n56| # 如果用 'show_indexes' 打开目录显示功能，可以在定义一个\n57| # static/directory_index.html 模板。\n58| \n59| if (settings.DEBUG):\n60|     urlpatterns += patterns ('',\n6
@@ -123,7 +123,7 @@ Let me check Django version. `django.conf.urls.defaults` suggests Django 1.3 or 
 {}
 ```
 
-观察：
+返回：
 
 ```
 {"root_urlconf": "urls.py", "note": "ROOT_URLCONF=urls in settings.py. Text-based map of route -> view -> decorators and body hints. auth lists checks seen in the decorators or body (an is_authenticated check deep in a branch still counts). flags are heuristics, not findings: writes_without_auth_check, writes_on_any_method (state change without a method check), object_id_without_owner_check (route takes an id, no request.user use, no role check), csrf_exempt. read_file the view before concluding anything.", "count": 104, "resolved": 100, "flagged": 33, "unresolved_includes": [], "endpoints": [{"route": "^$", "view": "home.views.index", "urlconf": "app/home/urls.py:7", "file": "app/home/views.py", "line": 16, "kind": "def", "decorators": ["@render_to('home/index.html')"], "method_check": false, "user_scoped": false}, {"route": "^about/$", "view": "home.views.about", "urlconf": "app/home/urls.py:9", "file": "app/home/views.py", "line": 30, "kind": "def", "method_check": false, "user_scoped": false}, {"route": "^contact/$", "view": "home.views.contact", "urlconf": "app/home/urls.py:10", "file": "app/home/views.py", "line": 34, "kind": "def", "inputs": ["POST"], "method_check": true, "user_scoped": false}, {"route": "^coding/$", "view": "home.views.coding", "urlconf": "app/home/urls.py:11", "file": "app/home/views.py", "line": 62, "kind": "def", "method_check": false, "user_scoped": false}, {"route": "^sitemap.txt/$", "view": "home.views.sitemap", "urlconf": "app/home/urls.py:12", "file": "app/home/views.py", "line": 67, "kind": "def", "method_check": false, "user_scoped": false}, {"route": "^robots.txt/$", "view": "home.views.robots", "urlconf": "app/home/urls.py:13", "file": "app/home/views.py", "line": 76, "kind": "def", "method_check": false, "user_scoped": false}, {"route": "^admin/$", "view": "admin.views.index", "urlconf": "app/admin/urls.py:7", "file": "app/admin/views.py", "line": 41, "kind": "def", "decorators": ["@login_required", "@render_to('admin/index.html')"], "auth": ["login_required"], "method_check": false, "user_scoped": false}, {"route": "^admin/login/$", "view": "admin.views.login", "urlconf": "app/admin/urls.py:8", "file": "app/admin/views.py", "line": 49, "kind": "def", "decorators": ["@render_to('admin/login.html')"], "auth": ["is_staff"], "inputs": ["META", "POST"], "method_check": true, "user_scoped": false}, {"route": "^admin/permission/$", "view": "admin.views.permission", "urlconf": "app/admin/urls.py:12", "file": "app/admin/views
@@ -141,7 +141,7 @@ Let me check Django version. `django.conf.urls.defaults` suggests Django 1.3 or 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "VERSION|__version__", "count": 0, "matches": [], "ok": true}
@@ -185,7 +185,7 @@ The repo is an old Django project (pre-1.4, `django.conf.urls.defaults`), with c
 }
 ```
 
-观察：
+返回：
 
 ```
 {"stage": "recon", "completed": ["recon"], "ok": true}
@@ -201,7 +201,7 @@ The repo is an old Django project (pre-1.4, `django.conf.urls.defaults`), with c
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/middleware.py", "encoding": "utf-8-sig", "total_lines": 42, "start_line": 1, "end_line": 42, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| import time\n2| \n3| from django.conf import settings\n4| from django.utils.cache import patch_vary_headers\n5| from django.utils.http import cookie_date\n6| from django.utils.importlib import import_module\n7| \n8| class SessionMiddleware(object):\n9|     def process_request(self, request):\n10|         engine = import_module(settings.SESSION_ENGINE)\n11|         session_key = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)\n12|         request.session = engine.SessionStore(session_key)\n13| \n14|     def process_response(self, request, response):\n15|         \"\"\"\n16|         If request.session was modified, or if the configuration is to save the\n17|         session every time, save the changes and set a session cookie.\n18|         \"\"\"\n19|         try:\n20|             accessed = request.session.accessed\n21|             modified = request.session.modified\n22|         except AttributeError:\n23|             pass\n24|         else:\n25|             if accessed:\n26|                 patch_vary_headers(response, ('Cookie',))\n27|             if modified or settings.SESSION_SAVE_EVERY_REQUEST:\n28|                 if request.session.get_expire_at_browser_close():\n29|                     max_age = None\n30|                     expires = None\n31|                 else:\n32|                     max_age = request.session.get_expiry_age()\n33|                     expires_time = time.time() + max_age\n34|                     expires = cookie_date(expires_time)\n35|                 # Save the session data and refresh the client cookie.\n36|                 request.session.save()\n37|                 response.set_cookie(settings.SESSION_COOKIE_NAME,\n38|                         request.session.session_key, max_age=max_age,\n39|                         expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,\n40|                         path=settings.SESSION_COOKIE_PATH,\n41|                         secure=settings.SESSION_COOKIE_SECURE or None)\n42|         return response", "ok": true}
@@ -217,7 +217,7 @@ The repo is an old Django project (pre-1.4, `django.conf.urls.defaults`), with c
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/middleware.py", "encoding": "utf-8-sig", "total_lines": 85, "start_line": 1, "end_line": 85, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.contrib import auth\n4| from django.core.exceptions import ImproperlyConfigured\n5| \n6| \n7| class LazyUser(object):\n8|     def __get__(self, request, obj_type=None):\n9|         if not hasattr(request, '_cached_user'):\n10|             from account import get_user\n11|             request._cached_user = get_user(request)\n12|         return request._cached_user\n13| \n14| \n15| class AuthenticationMiddleware(object):\n16|     \"\"\"给 request 添加 user 对象\n17|     \"\"\"\n18|     def process_request(self, request):\n19|         assert hasattr(request, 'session'), \"The Django authentication middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'.\"\n20|         request.__class__.user = LazyUser()\n21|         return None\n22| \n23| \n24| class RemoteUserMiddleware(object):\n25|     \"\"\"\n26|     Middleware for utilizing web-server-provided authentication.\n27| \n28|     If request.user is not authenticated, then this middleware attempts to\n29|     authenticate the username passed in the ``REMOTE_USER`` request header.\n30|     If authentication is successful, the user is automatically logged in to\n31|     persist the user in the session.\n32| \n33|     The header used is configurable and defaults to ``REMOTE_USER``.  Subclass\n34|     this class and change the ``header`` attribute if you need to use a\n35|     different header.\n36|     \"\"\"\n37| \n38|     # Name of request header to grab username from.  This will be the key as\n39|     # used in the request.META dictionary, i.e. the normalization of headers to\n40|     # all uppercase and the addition of \"HTTP_\" prefix apply.\n41|     header = \"REMOTE_USER\"\n42| \n43|     def process_request(self, request):\n44|         # AuthenticationMiddleware is required so that request.user exists.\n45|         if not hasattr(request, 'user'):\n46|             raise ImproperlyConfigured(\n47|                 \"The Django remote user auth middleware requires the\"\n48|                 \" authentication middleware to be installed.  Edit your\"\n49|                 \" MIDDLEWARE_CLASSES setting to insert\"\n50|                 \" 'django.contrib.auth.middleware.
@@ -245,7 +245,7 @@ Let me read the ydata settings, sessions models, account models, tokens, backend
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/models.py", "encoding": "utf-8-sig", "total_lines": 71, "start_line": 1, "end_line": 71, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| import base64\n4| import cPickle as pickle\n5| \n6| from django.db import models\n7| from django.utils.translation import ugettext_lazy as _\n8| from django.conf import settings\n9| from django.utils.hashcompat import md5_constructor\n10| \n11| \n12| class SessionManager(models.Manager):\n13|     def encode(self, session_dict):\n14|         \"\"\"\n15|         Returns the given session dictionary pickled and encoded as a string.\n16|         \"\"\"\n17|         pickled = pickle.dumps(session_dict)\n18|         pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()\n19|         return base64.encodestring(pickled + pickled_md5)\n20| \n21|     def save(self, session_key, session_dict, expire_date):\n22|         s = self.model(session_key, self.encode(session_dict), expire_date)\n23|         if session_dict:\n24|             s.save()\n25|         else:\n26|             s.delete() # Clear sessions with no data.\n27|         return s\n28| \n29| \n30| class Session(models.Model):\n31|     \"\"\"\n32|     Django provides full support for anonymous sessions. The session\n33|     framework lets you store and retrieve arbitrary data on a\n34|     per-site-visitor basis. It stores data on the server side and\n35|     abstracts the sending and receiving of cookies. Cookies contain a\n36|     session ID -- not the data itself.\n37| \n38|     The Django sessions framework is entirely cookie-based. It does\n39|     not fall back to putting session IDs in URLs. This is an intentional\n40|     design decision. Not only does that behavior make URLs ugly, it makes\n41|     your site vulnerable to session-ID theft via the \"Referer\" header.\n42| \n43|     For complete documentation on using Sessions in your code, consult\n44|     the sessions documentation that is shipped with Django (also available\n45|     on the Django website).\n46|     \"\"\"\n47|     session_key = models.CharField(_('session key'), max_length=40,\n48|                                    primary_key=True)\n49|     session_data = models.TextField(_('session data'))\n50|     expire_date = models.DateTimeField(_('expire date'))\n51|     objects = SessionManager()\n52| \n53|     class Meta:\n54|         # db_table 可以定义数据库的名字\n55|         #db_table = 'django_
@@ -261,7 +261,7 @@ Let me read the ydata settings, sessions models, account models, tokens, backend
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/settings.py", "encoding": "utf-8-sig", "total_lines": 95, "start_line": 1, "end_line": 95, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf import settings\n4| import re\n5| \n6| def get(key, default):\n7|     return getattr(settings, key, default)\n8| \n9| # FORUM Settings\n10| FORUM_BASE_TITLE = get('FORUM_BASE_TITLE', 'Django Bulletin Board')\n11| FORUM_META_DESCRIPTION = get('FORUM_META_DESCRIPTION', '')\n12| FORUM_META_KEYWORDS = get('FORUM_META_KEYWORDS', '')\n13| TOPIC_PAGE_SIZE = get('TOPIC_PAGE_SIZE', 10)\n14| FORUM_PAGE_SIZE = get('FORUM_PAGE_SIZE', 20)\n15| SEARCH_PAGE_SIZE = get('SEARCH_PAGE_SIZE', 20)\n16| USERS_PAGE_SIZE = get('USERS_PAGE_SIZE', 20)\n17| AVATARS_UPLOAD_TO = get('AVATARS_UPLOAD_TO', 'forum/avatars')\n18| AVATAR_WIDTH = get('AVATAR_WIDTH', 60)\n19| AVATAR_HEIGHT = get('AVATAR_HEIGHT', 60)\n20| DEFAULT_TIME_ZONE = get('DEFAULT_TIME_ZONE', 3)\n21| SIGNATURE_MAX_LENGTH = get('SIGNATURE_MAX_LENGTH', 1024)\n22| SIGNATURE_MAX_LINES = get('SIGNATURE_MAX_LINES', 3)\n23| READ_TIMEOUT = get('READ_TIMEOUT', 3600 * 24 * 7)\n24| HEADER = get('HEADER', 'DjangoBB')\n25| TAGLINE = get('TAGLINE', 'Django based forum engine')\n26| DEFAULT_MARKUP = get('DEFAULT_MARKUP', 'bbcode')\n27| NOTICE = get('NOTICE', '')\n28| HOST = get('HOST', 'localhost:8000')\n29| USER_ONLINE_TIMEOUT = get('USER_ONLINE_TIMEOUT', 15)\n30| EMAIL_DEBUG = get('FORUM_EMAIL_DEBUG', False)\n31| POST_USER_SEARCH = get('POST_USER_SEARCH', 1)\n32| \n33| # GRAVATAR Extension\n34| GRAVATAR_SUPPORT = get('GRAVATAR_SUPPORT', True)\n35| GRAVATAR_DEFAULT = get('GRAVATAR_DEFAULT', 'identicon')\n36| \n37| # LOFI Extension\n38| LOFI_SUPPORT = get('LOFI_SUPPORT', True)\n39| \n40| # PM Extension\n41| PM_SUPPORT = get('PM_SUPPORT', True)\n42| \n43| # AUTHORITY Extension\n44| AUTHORITY_SUPPORT = get('AUTHORITY_SUPPORT', True)\n45| AUTHORITY_STEP_0 = get('AUTHORITY_STEP_0', 0)\n46| AUTHORITY_STEP_1 = get('AUTHORITY_STEP_1', 10)\n47| AUTHORITY_STEP_2 = get('AUTHORITY_STEP_2', 25)\n48| AUTHORITY_STEP_3 = get('AUTHORITY_STEP_3', 50)\n49| AUTHORITY_STEP_4 = get('AUTHORITY_STEP_4', 75)\n50| AUTHORITY_STEP_5 = get('AUTHORITY_STEP_5', 100)\n51| AUTHORITY_STEP_6 = get('AUTHORITY_STEP_6', 150)\n52| AUTHORITY_STEP_7 = get('AUTHORITY_STEP_7', 200)\n53| AUTHORITY_STEP_8 = get('AUTHORITY_STEP_8', 300)\n54| AUTHORITY_STEP_9 = get('AUTHORITY_STEP_9', 500)\n55| AUTHORITY_STEP_10 = get('AUTHORITY_S
@@ -277,7 +277,7 @@ Let me read the ydata settings, sessions models, account models, tokens, backend
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/tokens.py", "encoding": "utf-8-sig", "total_lines": 66, "start_line": 1, "end_line": 66, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| from datetime import date\n2| from django.conf import settings\n3| from django.utils.http import int_to_base36, base36_to_int\n4| \n5| class PasswordResetTokenGenerator(object):\n6|     \"\"\"\n7|     Strategy object used to generate and check tokens for the password\n8|     reset mechanism.\n9|     \"\"\"\n10|     def make_token(self, user):\n11|         \"\"\"\n12|         Returns a token that can be used once to do a password reset\n13|         for the given user.\n14|         \"\"\"\n15|         return self._make_token_with_timestamp(user, self._num_days(self._today()))\n16| \n17|     def check_token(self, user, token):\n18|         \"\"\"\n19|         Check that a password reset token is correct for a given user.\n20|         \"\"\"\n21|         # Parse the token\n22|         try:\n23|             ts_b36, hash = token.split(\"-\")\n24|         except ValueError:\n25|             return False\n26| \n27|         try:\n28|             ts = base36_to_int(ts_b36)\n29|         except ValueError:\n30|             return False\n31| \n32|         # Check that the timestamp/uid has not been tampered with\n33|         if self._make_token_with_timestamp(user, ts) != token:\n34|             return False\n35| \n36|         # Check the timestamp is within limit\n37|         if (self._num_days(self._today()) - ts) > settings.PASSWORD_RESET_TIMEOUT_DAYS:\n38|             return False\n39| \n40|         return True\n41| \n42|     def _make_token_with_timestamp(self, user, timestamp):\n43|         # timestamp is number of days since 2001-1-1.  Converted to\n44|         # base 36, this gives us a 3 digit string until about 2121\n45|         ts_b36 = int_to_base36(timestamp)\n46| \n47|         # By hashing on the internal state of the user and using state\n48|         # that is sure to change (the password salt will change as soon as\n49|         # the password is set, at least for current Django auth, and\n50|         # last_login will also change), we produce a hash that will be\n51|         # invalid as soon as it is used.\n52|         # We limit the hash to 20 chars to keep URL short\n53|         from django.utils.hashcompat import sha_constructor\n54|         hash = sha_constructor(settings.SECRET_KEY + unicode(user.id) +\n55|                                u
@@ -293,7 +293,7 @@ Let me read the ydata settings, sessions models, account models, tokens, backend
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/backends.py", "encoding": "utf-8-sig", "total_lines": 148, "start_line": 1, "end_line": 148, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| try:\n4|     set\n5| except NameError:\n6|     from sets import Set as set # Python 2.3 fallback\n7| \n8| from django.db import connection\n9| #from django.contrib.auth.models import User\n10| from account.models import User\n11| \n12| \n13| class ModelBackend(object):\n14|     \"\"\"\n15|     Authenticates against django.contrib.auth.models.User.\n16|     \"\"\"\n17|     # TODO: Model, login attribute name and password attribute name should be\n18|     # configurable.\n19|     def authenticate(self, username=None, password=None):\n20|         try:\n21|             user = User.objects.get(username=username)\n22|             if user.check_password(password):\n23|                 return user\n24|         except User.DoesNotExist:\n25|             return None\n26| \n27|     def get_group_permissions(self, user_obj):\n28|         \"\"\"\n29|         Returns a set of permission strings that this user has through his/her\n30|         groups.\n31|         \"\"\"\n32|         if not hasattr(user_obj, '_group_perm_cache'):\n33|             cursor = connection.cursor()\n34|             # The SQL below works out to the following, after DB quoting:\n35|             # cursor.execute(\"\"\"\n36|             #     SELECT ct.\"app_label\", p.\"codename\"\n37|             #     FROM \"auth_permission\" p, \"auth_group_permissions\" gp, \"auth_user_groups\" ug, \"django_content_type\" ct\n38|             #     WHERE p.\"id\" = gp.\"permission_id\"\n39|             #         AND gp.\"group_id\" = ug.\"group_id\"\n40|             #         AND ct.\"id\" = p.\"content_type_id\"\n41|             #         AND ug.\"user_id\" = %s, [self.id])\n42|             qn = connection.ops.quote_name\n43|             sql = \"\"\"\n44|                 SELECT ct.%s, p.%s\n45|                 FROM %s p, %s gp, %s ug, %s ct\n46|                 WHERE p.%s = gp.%s\n47|                     AND gp.%s = ug.%s\n48|                     AND ct.%s = p.%s\n49|                     AND ug.%s = %%s\"\"\" % (\n50|                 qn('app_label'), qn('codename'),\n51|                 qn('account_permission'), qn('account_group_permissions'),\n52|                 qn('account_user_groups'), qn('django_content_type'),\n53|                 qn('id'), qn('permission_id'),\n54| 
@@ -334,7 +334,7 @@ Session storage uses pickle signed with MD5(SECRET_KEY), and the SECRET_KEY is c
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/views.py", "encoding": "utf-8-sig", "total_lines": 254, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf import settings\n4| from django.shortcuts import render_to_response\n5| from django.template import RequestContext\n6| from django.http import HttpResponseRedirect,HttpResponse,HttpResponseForbidden\n7| \n8| #from account.decorators import login_required, permission_required\n9| from account.models import User,AnonymousUser,Register\n10| from account.forms import RegisterForm,LoginForm,AuthenticationForm, RequestRegisterForm, PasswordResetRequestForm, SetPasswordForm\n11| \n12| from ydata.models import Topic, Post\n13| \n14| from ydata.util import render_to, build_form, get_parents\n15| \n16| \n17| @render_to('account/index.html')\n18| def index(request):\n19| \n20|     return {'title':'用户主页', 'new_user':User.objects.all().order_by('-date_joined')[0]}\n21| \n22| \n23| @render_to('account/login.html')\n24| def login (request):\n25| \n26|     if request.method == \"POST\":\n27|         form = AuthenticationForm(data=request.POST)\n28|         if form.is_valid():\n29|             username = form.cleaned_data[\"username\"]\n30|             password = form.cleaned_data[\"password\"]\n31|             from account import authenticate,login\n32|             user = authenticate(username=username, password=password)\n33|             if user is not None:\n34|                 if user.is_active:\n35|                     login(request, user)\n36|                     if request.session.test_cookie_worked():\n37|                         request.session.delete_test_cookie()\n38|                         return HttpResponseRedirect(request.session.get('login_redirect_url','/') or '/')\n39|                 else:\n40|                     return HttpResponseForbidden(u'用户未被激活，请联系管理员： ylinux.admin@gmail.com')\n41| \n42|     else:\n43|         # 形如 \"http://127.0.0.1:8000/account/login?next=/admin/\" 的 url 可以得到 next 值\n44|         request.session['login_redirect_url'] = request.GET.get('next')\n45|         form = AuthenticationForm(request)\n46| \n47|     # 登录失败，或者第一次登录，都会到这里。form可以定制很多值\n48|     request.session.set_test_cookie()\n49|     return {'title':'登录', 'form':form}\n50| \n51| \n52| \n53| # 退出后跳转到主页\n54| #@login_required\n55| def logout(request):\n56|     #from django.contrib.auth import logout\n57|     from account import
@@ -350,7 +350,7 @@ Session storage uses pickle signed with MD5(SECRET_KEY), and the SECRET_KEY is c
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| import os\n4| import datetime\n5| import random\n6| import re\n7| \n8| from django.conf import settings\n9| from django.db import models\n10| from django.template.loader import render_to_string\n11| from django.contrib.contenttypes.models import ContentType\n12| from django.db.models.manager import EmptyManager\n13| from django.utils.encoding import smart_str\n14| from django.utils.hashcompat import md5_constructor, sha_constructor\n15| \n16| \n17| # 时区\n18| TZ_CHOICES = [(float(x[0]), x[1]) for x in (\n19|     (-12, '-12'), (-11, '-11'), (-10, '-10'), (-9.5, '-09.5'), (-9, '-09'),\n20|     (-8.5, '-08.5'), (-8, '-08 PST'), (-7, '-07 MST'), (-6, '-06 CST'),\n21|     (-5, '-05 EST'), (-4, '-04 AST'), (-3.5, '-03.5'), (-3, '-03 ADT'),\n22|     (-2, '-02'), (-1, '-01'), (0, '00 GMT'), (1, '+01 CET'), (2, '+02'),\n23|     (3, '+03'), (3.5, '+03.5'), (4, '+04'), (4.5, '+04.5'), (5, '+05'),\n24|     (5.5, '+05.5'), (6, '+06'), (6.5, '+06.5'), (7, '+07'), (8, '+08'),\n25|     (9, '+09'), (9.5, '+09.5'), (10, '+10'), (10.5, '+10.5'), (11, '+11'),\n26|     (11.5, '+11.5'), (12, '+12'), (13, '+13'), (14, '+14'),\n27| )]\n28| \n29| PRIVACY_CHOICES = (\n30|     (0, u'Display your e-mail address.'),\n31|     (1, u'Hide your e-mail address but allow form e-mail.'),\n32|     (2, u'Hide your e-mail address and disallow form e-mail.'),\n33| )\n34| \n35| MARKUP_CHOICES = (\n36|     ('bbcode', 'bbcode'),\n37|     ('markdown', 'markdown'),\n38| )\n39| \n40| path = os.path.join(settings.MEDIA_ROOT, 'themes')\n41| THEME_CHOICES = [(theme, theme) for theme in os.listdir(path)\n42|                  if os.path.isdir(os.path.join(path, theme))]\n43| \n44| UNUSABLE_PASSWORD = '!' # This will never be a valid hash\n45| \n46| SHA1_RE = re.compile('^[a-f0-9]{40}$')\n47| \n48| \n49| # 设置密码\n50| def get_hexdigest(algorithm, salt, raw_password):\n51|     \"\"\"根据 algorithm,salt,raw_password 参数返回加密后的密码字符串。\n52|     支持 'md5', 'sha1' 和 'crypt' 三种加密算法。\n53|     \"\"\"\n54|     raw_password, salt = smart_str(raw_password), smart_str(salt)\n55|     if algorithm == 'crypt':\n56|         try:\n57|             import crypt\n58|         except ImportError:\n59|             raise ValueError('当前环境不支持 \"crypt\" 加密算法！')\n60|         return crypt.crypt(raw_password, sa
@@ -382,7 +382,7 @@ Let me continue reading account/views.py lines 180-254 and account/models.py mor
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/views.py", "encoding": "utf-8-sig", "total_lines": 254, "start_line": 180, "end_line": 254, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|                     'REASON':'该 Email 还未注册用户 ！'}\n181| \n182|         try:\n183|             register = Register.objects.get(email=email)\n184|             register.reset_activation_key()\n185|             register.save()\n186|         except Register.DoesNotExist:\n187|             register=Register.objects.create_profile(email)\n188| \n189|         # 发送邮件\n190|         subject = u'YLinux.org 重置密码邮件'\n191|         message = u\"尊敬的 %s ，应您的要求，重置密码 URL 是， http://ylinux.org/account/password/reset/%s\" % (email, register.activation_key)\n192|         user.email_user (subject = subject,\n193|              message = message, \n194|              from_email=settings.DEFAULT_FROM_EMAIL)\n195| \n196|         return {'EMAIL_SENT':True, 'email':email}\n197| \n198|     return {'NEW_REQUEST':True, 'form':form}\n199| \n200| \n201| @render_to('account/password_reset.html')\n202| def password_reset (request, key=None):\n203|     \"\"\" 重置用户密码 \"\"\"\n204| \n205|     try:\n206|         register = Register.objects.get(activation_key=key)\n207|     except Register.DoesNotExist:\n208|         return HttpResponseForbidden(u'<h1>错误的 Key ： %s </h1>' % key)\n209| \n210|     try:\n211|         user = User.objects.get(email=register.email)\n212|     except User.DoesNotExist:\n213|         return HttpResponseForbidden(u'<h2>无此 email 注册的用户 ： %s </h2>' % register.email)\n214| \n215|     form = build_form (SetPasswordForm, request, user=user)\n216| \n217|     if form.is_valid():\n218|         form.clean_new_password2()\n219|         form.save()\n220| \n221|         return {'PASSWORD_RESET_DONE':True,}\n222| \n223|     return {'NEW_REQUEST':True, 'form':form}\n224| \n225| \n226| \n227| @render_to(\"account/ajax_login.html\")\n228| def ajax_login (request):\n229| \n230|     if request.method != \"POST\":\n231|         return HttpResponse(\"ajax_login: Just for POST!\")\n232| \n233|     username = request.POST.get(\"username\", None)\n234|     password = request.POST.get(\"password\", None)\n235|     from account import authenticate,login\n236|     user = authenticate(username=username, password=password)\n237|     if user is not None:\n238|         if user.is_active:\n239|             login(request, user)\n240|             if request.session.test_cookie_worked():\n241|       
@@ -400,7 +400,7 @@ Let me continue reading account/views.py lines 180-254 and account/models.py mor
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 180, "end_line": 359, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|                 verbose_name='权限', blank=True)\n181| \n182|     objects = UserManager()\n183| \n184|     # YLinux 自行定义 User 模型， 不再定义 Profile 之类的模型\n185|     site = models.URLField('个人主页', verify_exists=False, blank=True)\n186|     jabber = models.CharField('Jabber', max_length=32, blank=True)\n187|     icq = models.CharField('ICQ', max_length=12, blank=True)\n188|     qq = models.CharField('QQ', max_length=16, blank=True)\n189|     msn = models.CharField('MSN', max_length=32, blank=True)\n190|     aim = models.CharField('AIM', max_length=32, blank=True)\n191|     yahoo = models.CharField('Yahoo', max_length=32, blank=True)\n192|     location = models.CharField('Location', max_length=32, blank=True)\n193|     signature = models.TextField('签名', blank=True, default='', max_length=200)\n194|     time_zone = models.FloatField('时区', choices=TZ_CHOICES, default=float(8))\n195|     # django/conf/global_settings.py 有 LANGUAGES \n196|     language = models.CharField('语言', max_length=32, default='zh-cn', choices=settings.LANGUAGES)\n197|     theme = models.CharField('主题', choices=THEME_CHOICES, max_length=80, default='default')\n198|     #show_avatar = models.BooleanField('显示avatar', blank=True, default=True)\n199|     show_signatures = models.BooleanField('显示签名', blank=True, default=True)\n200|     privacy_permission = models.IntegerField('Privacy permission', choices=PRIVACY_CHOICES, default=1)\n201|     markup = models.CharField('默认markup', max_length=15, default=\"markdown\", choices=MARKUP_CHOICES)\n202|     post_count = models.IntegerField('帖子总数', blank=True, default=0)\n203|     \n204|     \n205|     class Meta:\n206|         verbose_name = \"用户\"\n207|         verbose_name_plural = '用户'\n208| \n209|     def __unicode__(self):\n210|         return self.username\n211| \n212|     def get_absolute_url(self):\n213|         return \"/users/%s/\" % urllib.quote(smart_str(self.username))\n214| \n215|     def is_anonymous(self):\n216|         \"本类的对象都不是匿名用户\"\n217|         return False\n218| \n219|     def is_authenticated(self):\n220|         \"在模板里方便地判断用户是否经过认证的一个通用方法\"\n221|         return True\n222| \n223|     def get_full_name(self):\n224|         \"中文一般连写，英文却要空格，留待后面实现\"\n225|         full_name = u'%s %s' % (self.first_name, self.last_name)\n226|  
@@ -434,7 +434,7 @@ Now let me read the rest of account/models.py (RegisterManager) and then the wik
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 359, "end_line": 430, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "359| class RegisterManager(models.Manager):\n360| \n361|     def create_profile(self, email):\n362|         \"\"\" 创建一个 Email - Key 对 \"\"\"\n363| \n364|         salt = sha_constructor(str(random.random())).hexdigest()[:5]\n365|         if isinstance(email, unicode):\n366|             email = email.encode('utf-8')\n367|         activation_key = sha_constructor(salt+email).hexdigest()\n368|         return self.create(email=email,\n369|                            activation_key=activation_key)\n370| \n371|     def create_activate_user(self, username, email, password, activation_key, send_email=False):\n372|         \"\"\" 验证 activation_key ， 创建新用户 \"\"\"\n373| \n374|         if SHA1_RE.search(activation_key):\n375|             try:\n376|                 profile = self.get(activation_key=activation_key)\n377|             except self.model.DoesNotExist:\n378|                 return False\n379| \n380|             new_user = User.objects.create_user(username, email, password)\n381|             new_user.is_active = True\n382|             new_user.save()\n383|             profile.activation_key = self.model.ACTIVATED\n384|             profile.save()\n385|             return new_user\n386|         return False\n387| \n388| \n389| class Register(models.Model):\n390|     ''' 存放注册用户的Email和验证Key '''\n391| \n392|     ACTIVATED = u\"ALREADY_ACTIVATED\"\n393| \n394|     email = models.EmailField(\"邮件\",blank=True,unique=True)\n395|     activation_key = models.CharField('激活Key', max_length=40)\n396|     updated = models.DateTimeField(\"最后修改\", auto_now=True)\n397|     \n398| \n399|     objects = RegisterManager()\n400| \n401|     class Meta:\n402|         verbose_name = '注册激活码'\n403|         verbose_name_plural = '注册激活码'\n404| \n405|     def __unicode__ (self):\n406|         return u'%s - %s' % (self.email, self.activation_key)\n407| \n408|     def send_activation_email(self):\n409|         ''' 向用户发送注册验证邮件 '''\n410| \n411|         ctx_dict = {'activation_key': self.activation_key,\n412|                     'expiration_days': 3}\n413|         #subject = render_to_string('account/activation_email_subject.txt', ctx_dict)\n414|         subject = 'YLinux.org 注册申请信息'\n415|         # Email subject *must not* contain newlines\n416|         subject = ''.join(subject.splitl
@@ -450,7 +450,7 @@ Now let me read the rest of account/models.py (RegisterManager) and then the wik
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| import time, datetime\n4| from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden\n5| from django.shortcuts import get_object_or_404\n6| from django.core.urlresolvers import reverse\n7| from django.views.generic import TemplateView\n8| #from django.contrib.syndication.views import Feed\n9| from syndication.views import Feed\n10| \n11| from account.decorators import login_required, permission_required\n12| from ydata.models import Catalog,Topic,Post,Attachment\n13| from ydata.forms import AddPostForm, \\\n14|     AddTopicForm, EditTopicForm\n15| \n16| from ydata.util import render_to, build_form, get_parents, ylinux_get_ip\n17| import xml.etree.ElementTree as ET\n18| \n19| from wiki.utils import render_post\n20| \n21| import math\n22| \n23| @render_to('wiki/index.html')\n24| def index(request):\n25|     \"\"\"首页\"\"\"\n26| \n27| # 列出所有顶级目录\n28|     catalogs = Catalog.objects.filter(parent=None)\n29| \n30| # 论坛热帖\n31|     recentd = datetime.date.today() - datetime.timedelta(30)\n32|     hot_topics = Topic.objects.filter(updated__gt=recentd).order_by('-view_count')[:6]\n33| #新帖\n34|     new_topics = Topic.objects.all().order_by('-updated')[:10]\n35|     posts = Post.objects.all().order_by('-updated')[:10]\n36|     lastUpdataTime = int(time.time())\n37|     return {'catalogs':catalogs,\n38|             'hot_topics':hot_topics,\n39|             'new_topics':new_topics,\n40|             'title': u'[知识库]',\n41|             'posts':posts,\n42|             'lastUpdataTime': lastUpdataTime}\n43| \n44| \n45| # 一些 DoesNotExist 的页面这里处理\n46| @render_to('wiki/DoesNotExist.html')\n47| def doesnotexist(request, type, id):\n48|     return {'type':type, 'id':id}\n49| \n50| \n51| @render_to('wiki/catalog.html')\n52| def catalog(request, id=None, curpage=0):\n53|     PERPAGE = 20\n54| \n55|     if id:\n56|         try:\n57|             catalog = Catalog.objects.get(pk=id)\n58|         except Catalog.DoesNotExist:\n59|             url = reverse ('wiki:catalog_not_exist', args=[id])\n60|             return HttpResponseRedirect(url)\n61|         parents = get_parents (Catalog, id)\n62|     else:\n63|         catalog = None\n64|         parents = None\n65| \n66|     subcatalogs = Catalog.objects.filter(parent=id)\n6
@@ -478,7 +478,7 @@ Continuing to read wiki/views.py lines 180-467, and the wiki/utils.py (render_po
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 180, "end_line": 359, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|     return {'parents':parents, 'form':form, 'id': id}\n181| \n182| \n183| @login_required\n184| @render_to('wiki/add_topic.html')\n185| def add_topic(request,id):\n186|     ''' id 是 Catalog '''\n187|     \n188|     if not id:\n189|         return {'errors':'没有指定 Catalog'}\n190| \n191|     catalog = get_object_or_404(Catalog,pk=id)\n192|     if not catalog.has_access(request.user):\n193|         return HttpResponseForbidden(u'<h2>你没有权限在此组中发贴！</h2>')\n194|     parents = get_parents (Catalog, id)\n195|     ip = ylinux_get_ip(request)\n196| \n197|     form = build_form (AddTopicForm, request, \n198|            catalog=catalog, user=request.user, user_ip=ip)\n199| \n200|     if form.is_valid():\n201|         topic = form.save()\n202|         # set last topic\n203|         catalog.last_topic = topic\n204|         catalog.save()\n205|         url = reverse('wiki:show_topic', args=[topic.id])\n206|         return HttpResponseRedirect(url)\n207| \n208|     return {'parents':parents, 'form':form}\n209| \n210| \n211| @login_required\n212| @render_to('wiki/edit_topic.html')\n213| def edit_topic(request, id):\n214| \n215|     topic = get_object_or_404(Topic, pk=id)\n216| \n217|     if topic.user != request.user:\n218|         return HttpResponseForbidden('<h1>您没有这个权限！</h1>')\n219| \n220|     parents = get_parents (Catalog, topic.catalog.id)\n221|     ip = ylinux_get_ip(request)\n222| \n223|     form = build_form (EditTopicForm, request,\n224|                        text = topic.body,\n225|                        user_ip = ip,\n226|                        instance=topic)\n227| \n228|     if form.is_valid():\n229|         topic = form.save()\n230|         url = reverse ('wiki:show_topic', args=[id])\n231|         return HttpResponseRedirect(url)\n232| \n233|     attachments = Attachment.objects.filter(topic=topic)\n234|     return {'form':form,'parents':parents,'topic':topic, 'attachments':attachments}\n235| \n236| \n237| @login_required\n238| def manage_topic (request, id, type=None):\n239| \n240|     topic = get_object_or_404 (Topic, pk=id)\n241| \n242|     if topic.user != request.user:\n243|         return HttpResponseForbidden('<h1>您没有这个权限！</h1>')\n244| \n245|     c_id = topic.catalog.id\n246| \n247|     if type is \"delete\":\n248|         for p in topic.
@@ -494,7 +494,7 @@ Continuing to read wiki/views.py lines 180-467, and the wiki/utils.py (render_po
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/utils.py", "encoding": "utf-8-sig", "total_lines": 36, "start_line": 1, "end_line": 36, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.template import Template, Context\n4| \n5| POST_MAIN = '''\n6| <div class=\"post-header\">\n7|   <span class=\"louzhu\"><a name=\"post{{ post.id }}\">{{ post.id }}</a></span>\n8|   <span class=\"user\"><a href=\"{% url account:show_user post.user.id %}\">{{ post.user }}</a></span>\n9|   <span class=\"time\">{{ post.updated|date:\"Y年m月d日 H:i\" }}</span>\n10|   {% ifequal user post.user %}\n11|   <!--<span class=\"post-delete\"><a href=\"{% url wiki:del_post post.id %}\">删除</a></span>-->\n12|   <span class=\"post-edit\"><button type=\"button\" onclick=\"javascript: ajax_edit_post(this, '{{ post.id }}')\">编辑</button></span>\n13|   {% endifequal %}\n14|   <span><button type=\"button\" onclick=\"javascript: ajax_new_post(this, 'POST', '{{ post.id }}')\">回复</button></span>\n15|   <span class=\"right\"><a onclick=\"javascript: scrollTo(0,0);\" href=\"javascript:;\">TOP</a></span>\n16| </div>\n17| <div class=\"post-body\">\n18|   <p>{{ post.body_html|safe }}</p>\n19| </div>\n20| '''\n21| \n22| \n23| def render_post(user, post):\n24| \n25|     POST_ITERM = '<div class=\"post-item box\">\\n'\n26| \n27|     t = Template(POST_MAIN)\n28|     c = Context({'post': post, 'user': user})\n29|     POST_ITERM += t.render(c)\n30|     if post.children:\n31|         for child in post.children:\n32|             POST_ITERM += render_post(user, child)\n33| \n34|     POST_ITERM += '\\n</div>\\n'\n35| \n36|     return POST_ITERM", "ok": true}
@@ -522,7 +522,7 @@ The wiki views render `post.body_html|safe`. Need to see how body_html is genera
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 360, "end_line": 467, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "360| \n361|     return {'catalog':catalog,\n362|             'parents': parents,\n363|             'topics':topics,\n364|             'title': u'[知识库] 目录浏览',\n365|             'edit_topic_perm':edit_topic_perm}\n366| \n367| \n368| def ajax_show_posts(request, topicID=None, postID=None):\n369| \n370|     if topicID:\n371|         posts = Post.objects.filter(topic=topicID, parent=None).order_by('created')\n372|         #posts = Post.objects.filter(topic=topicID).order_by('created')\n373|     elif postID:\n374|         posts = [get_object_or_404(Post,pk=postID),]\n375|     else:\n376|         return HttpResponse(u'显示 posts 出错')\n377| \n378|     HTML = ''\n379| #    HTML = '''\n380| #<script type=\"text/javascript\">\n381| #  $(document).ready(function () {\n382| #    $(\".post-item\").draggable();\n383| #  })\n384| #</script>\n385| #'''\n386|     for p in posts:\n387|         HTML += render_post(request.user, p)\n388|     return HttpResponse(HTML)\n389| \n390| \n391| # 回复分为：\n392| # 1. 回复 Topic\n393| # 2. 回复 Post\n394| #@login_required\n395| @render_to('wiki/replayAJAX.html')\n396| def replayAJAX(request, topicID = None, postID = None):\n397|     \"\"\" 通过 AJAX 方式回复 \"\"\"\n398| \n399|     if not request.user.is_authenticated():\n400|         return HttpResponse(u'<h1>您没有权限！请 <a href=\"/account/login\">登录</a></h1>')\n401| \n402|     replayID = None # 需要回复的 id\n403|     parent_post = None\n404| \n405|     if topicID:\n406|         topic = get_object_or_404(Topic, pk = topicID)\n407|         replayID = topicID\n408|     elif postID:\n409|         parent_post = get_object_or_404(Post, pk = postID)\n410|         topic = get_object_or_404(Topic, pk = parent_post.topic.id)\n411|         replayID = postID\n412|     else:\n413|         return HttpResponse(u'topicID 和 postID 必需要指定一个！')\n414| \n415|     if request.method == 'GET':\n416|         m = 'POST' if postID else 'TOPIC'\n417|         ajaxFunc = 'ajax_replay(this, \"%s\", \"%s\")' % (m, replayID)\n418|         return { 'method': 'GET',\n419|                  'ajaxFunc' : ajaxFunc }\n420| \n421|     else:\n422| \n423|         if not topic.catalog.has_access(request.user):\n424|             return HttpResponse(u'<h1>您没有权限回复此帖！</h1>')\n425| \n426|         # 如果 topic 已锁，则重定向到显示 topic\n427|         if topic and 
@@ -538,7 +538,7 @@ The wiki views render `post.body_html|safe`. Need to see how body_html is genera
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| # 将 YLinux.org 的主要数据结构在此定义\n4| \n5| import os, re, codecs, datetime\n6| from django.conf import settings\n7| #from django.core.urlresolvers import reverse\n8| \n9| from account.models import User,Group\n10| from django.db import models\n11| \n12| from ydata import settings as ydata_settings\n13| from ydata.util import urlize,smiles\n14| from markdown import Markdown\n15| \n16| \n17| TZ_CHOICES = [(float(x[0]), x[1]) for x in (\n18|     (-12, '-12'), (-11, '-11'), (-10, '-10'), (-9.5, '-09.5'), (-9, '-09'),\n19|     (-8.5, '-08.5'), (-8, '-08 PST'), (-7, '-07 MST'), (-6, '-06 CST'),\n20|     (-5, '-05 EST'), (-4, '-04 AST'), (-3.5, '-03.5'), (-3, '-03 ADT'),\n21|     (-2, '-02'), (-1, '-01'), (0, '00 GMT'), (1, '+01 CET'), (2, '+02'),\n22|     (3, '+03'), (3.5, '+03.5'), (4, '+04'), (4.5, '+04.5'), (5, '+05'),\n23|     (5.5, '+05.5'), (6, '+06'), (6.5, '+06.5'), (7, '+07'), (8, '+08'),\n24|     (9, '+09'), (9.5, '+09.5'), (10, '+10'), (10.5, '+10.5'), (11, '+11'),\n25|     (11.5, '+11.5'), (12, '+12'), (13, '+13'), (14, '+14'),\n26| )]\n27| \n28| SIGN_CHOICES = ( \n29|     (1, 'PLUS'),\n30|     (-1, 'MINUS'),\n31| )\n32| \n33| MARKUP_CHOICES = ( \n34|     ('bbcode', 'bbcode'),\n35|     ('markdown', 'markdown'),\n36| )\n37| \n38| PRIVACY_CHOICES = ( \n39|     (0, u'Display your e-mail address.'),\n40|     (1, u'Hide your e-mail address but allow form e-mail.'),\n41|     (2, u'Hide your e-mail address and disallow form e-mail.'),\n42| )\n43| \n44| \n45| # Category 下分很多 Catalog\n46| class Catalog(models.Model):\n47|     # parent 键可以搜索 child\n48|     parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Catalog', related_name='child')\n49|     name = models.CharField('名字', max_length=30)\n50|     summary = models.CharField('概述', max_length=80)\n51|     groups = models.ManyToManyField(Group, blank=True,\n52|                verbose_name=\"只有在组中的用户可以访问此目录\")\n53|     position = models.IntegerField('位置', blank=True, \n54|                default=0, help_text=\"决定目录排序，默认0\")\n55|     description = models.TextField('描述', blank=True, \n56|                                    default='')\n57|     # auto_now_add 在 create object 自动保存为当前时间\n58|     # auto_now 在每次 save object 都自动保存为当前时间\n59|     created = models.DateTimeFiel
@@ -566,7 +566,7 @@ Interesting. Topic body stored in files under MEDIA_ROOT/ydata/topics/<id>.src, 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 180, "end_line": 359, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|         return html\n181| \n182|     @property\n183|     def body_desc(self):\n184|         return ''.join(self.body.split('\\n')[:5])\n185| \n186|     @property\n187|     def feed_desc(self):\n188|         return ''.join(self.body.split('\\n')[:4])\n189| \n190|     def save_file(self, text):\n191|         dirname = os.path.dirname(self.body_path)\n192|         if not os.path.exists(dirname):\n193|             os.makedirs(dirname)\t\n194|         f = file(self.body_path, 'w')\n195|         f.write(text)\n196|         f.close()\n197| \n198|         Markdown(extensions=['fenced_code']).convertFile(input=self.body_path, \n199|                        output=self.body_html_path, \n200|                        encoding=\"utf8\", myfilter=ylinux_text_filter)\n201| \n202|     @models.permalink\n203|     def get_absolute_url(self):\n204|         return ('wiki:show_topic', [self.id])\n205| \n206|     def update_read(self, user):\n207|         tracking = user.posttracking\n208|         #if last_read > last_read - don't check topics\n209|         if tracking.last_read and (tracking.last_read > self.last_post.created):\n210|             return\n211|         if isinstance(tracking.topics, dict):\n212|             #clear topics if len > 5Kb and set last_read to current time\n213|             if len(tracking.topics) > 5120:\n214|                 tracking.topics = None\n215|                 tracking.last_read = datetime.now()\n216|                 tracking.save()\n217|             #update topics if exist new post or does't exist in dict\n218|             if self.last_post.id > tracking.topics.get(str(self.id), 0):\n219|                 tracking.topics[str(self.id)] = self.last_post.id\n220|                 tracking.save()\n221|         else:\n222|             #initialize topic tracking dict\n223|             tracking.topics = {self.id: self.last_post.id}\n224|             tracking.save()\n225| \n226| \n227| class Post(models.Model):\n228|     topic = models.ForeignKey(Topic, related_name='posts', verbose_name='Topic')\n229|     # parent 是 Post 间的继承关系\n230|     parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Post', related_name='child')\n231|     user = models.ForeignKey(User, related_name='posts', verbose_name='User')\n232|     touser = m
@@ -582,7 +582,7 @@ Interesting. Topic body stored in files under MEDIA_ROOT/ydata/topics/<id>.src, 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/util.py", "encoding": "utf-8-sig", "total_lines": 176, "start_line": 1, "end_line": 176, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from HTMLParser import HTMLParser\n4| import re\n5| \n6| from django.shortcuts import render_to_response\n7| from django.template import RequestContext\n8| from django.template.defaultfilters import urlize as django_urlize\n9| \n10| from ydata import settings as ydata_settings\n11| \n12| _SMILES = [(re.compile(smile_re), path) for smile_re, path in ydata_settings.SMILES]\n13| \n14| \n15| \n16| def render_to(template):\n17| \n18|     def renderer(function):\n19|         def wrapper(request, *args, **kwargs):\n20|             output = function(request, *args, **kwargs)\n21|             if not isinstance(output, dict):\n22|                 return output\n23|             tmpl = output.pop('TEMPLATE', template)\n24|             return render_to_response(tmpl, output, context_instance=RequestContext(request))\n25|         return wrapper\n26|     return renderer\n27| \n28| \n29| class ExcludeTagsHTMLParser(HTMLParser):\n30|         \"\"\" \n31|         Class for html parsing with excluding specified tags.\n32|         \"\"\"\n33| \n34|         def __init__(self, func, tags=('a', 'code')):\n35|             HTMLParser.__init__(self)\n36|             self.func = func\n37|             self.is_ignored = False\n38|             self.tags = tags\n39|             self.html = []\n40| \n41|         def handle_starttag(self, tag, attrs):\n42|             self.html.append('<%s%s>' % (tag, self.__html_attrs(attrs)))\n43|             if tag in self.tags:\n44|                 self.is_ignored = True\n45| \n46|         def handle_data(self, data):\n47|             if not self.is_ignored:\n48|                 data = self.func(data)\n49|             self.html.append(data)\n50| \n51|         def handle_startendtag(self, tag, attrs):\n52|             self.html.append('<%s%s/>' % (tag, self.__html_attrs(attrs))) \n53| \n54|         def handle_endtag(self, tag):\n55|             self.is_ignored = False\n56|             self.html.append('</%s>' % (tag))\n57| \n58|         def handle_entityref(self, name):\n59|             self.html.append('&%s;' % name)\n60| \n61|         def handle_charref(self, name):\n62|             self.html.append('&#%s;' % name)\n63| \n64|         def unescape(self, s):                                                                 
@@ -616,7 +616,7 @@ Let me read the rest of ydata/models.py (360-452), ydata/forms.py, ydata/views.p
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 360, "end_line": 452, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "360|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n361| \n362|     def __unicode__(self):\n363|         return self.name\n364| \n365|     @models.permalink\n366|     def get_absolute_url(self):\n367|         return ('ydata:show_attachment', [self.id])\n368| \n369|     @models.permalink\n370|     def get_absolute_durl(self):\n371|         return ('ydata:download_attachment', [self.id])\n372| \n373|     def get_absolute_path(self):\n374|         return os.path.join(settings.MEDIA_ROOT, ydata_settings.ATTACHMENT_UPLOAD_TO,\n375|                             self.path)\n376| \n377| \n378| class Tag(models.Model):\n379|     ''' Tag 模型 '''\n380|     \n381|     name = models.CharField('Name', max_length=256)\n382|     user = models.ForeignKey(User, related_name='tags', verbose_name='User')\n383|     created = models.DateTimeField('Created', auto_now_add=True)\n384|     total_ref = models.IntegerField(blank=True, default=0)\n385| \n386|     def __unicode__(self):\n387|         return self.name \n388| \n389| \n390| # TOPIC 里几种可行的引用附件格式： \n391| # [A:ID] | [a:ID] | [附:ID] | [附件:ID] 等\n392| ATTACHMENT_QUOTE = re.compile(u'\\[[ ]*(a|atta|attachment|附|附件)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n393| WIKI_QUOTE = re.compile(u'\\[[ ]*(w|wiki|维科|知识库)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n394| IMG_QUOTE = re.compile(u'\\[[ ]*(i|img|图片)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n395| \n396| def ylinux_text_filter(text):\n397| \n398|     # 过滤附件信息\n399|     while 1:\n400|         m = ATTACHMENT_QUOTE.search(text)\n401|         if m:\n402|             place_html = u''\n403|             id = ''\n404|             if m.group('id'):\n405|                 id = m.group('id')\n406|                 try:\n407|                     a = Attachment.objects.get(pk=id)\n408|                     place_html = u'<a href=\"%s\" target=\"_blank\">%s</a>' % (a.get_absolute_url(), a.name)\n409|                 except Attachment.DoesNotExist:\n410|                     place_html = u'<span style=\"color:red;\">[ID为%s的附件不存在]</span>' % id\n411| \n412|             text = '%s%s%s' % (text[:m.start()], place_html, text[m.end():])\n413|         else:\n414|             break\n415| \n416|     # 过滤WIKI信息\n417|     while 1:\n418|         m = WIKI_QUOTE.search(text)\n419|         if m:\n420|    
@@ -632,7 +632,7 @@ Let me read the rest of ydata/models.py (360-452), ydata/forms.py, ydata/views.p
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/forms.py", "encoding": "utf-8-sig", "total_lines": 128, "start_line": 1, "end_line": 128, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| import os, datetime\n3| \n4| from django.conf import settings\n5| from django import forms\n6| \n7| from ydata.models import Topic, Post, Reputation, Report, Attachment, TZ_CHOICES, PRIVACY_CHOICES\n8| from ydata import settings as ydata_settings\n9|  \n10| \n11| class AddPostForm(forms.ModelForm):\n12|     name = forms.CharField(label='标题', max_length=256,\n13|            widget=forms.TextInput)\n14|     attachment = forms.FileField(label='附件', \n15|                                  required=False)\n16| \n17|     class Meta:\n18|         model = Post\n19|         fields = ['body']\n20| \n21|     def __init__(self, *args, **kwargs):\n22|         self.user = kwargs.pop('user', None)\n23|         self.topic = kwargs.pop('topic', None)\n24|         self.ip = kwargs.pop('ip', None)\n25|         super(AddPostForm, self).__init__(*args, **kwargs)\n26| \n27|         if self.topic:\n28|             self.fields['name'].widget = forms.HiddenInput()\n29|             self.fields['name'].required = False\n30| \n31|         self.fields['body'].widget = forms.Textarea(attrs={'class':'bbcode', 'rows':'10', 'cols':'60'})\n32| \n33|         if not ydata_settings.ATTACHMENT_SUPPORT:\n34|             self.fields['attachment'].widget = forms.HiddenInput()\n35|             self.fields['attachment'].required = False\n36| \n37|     def clean_attachment(self):\n38|         if self.cleaned_data['attachment']:\n39|             memfile = self.cleaned_data['attachment']\n40|             if memfile.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n41|                 raise forms.ValidationError('Attachment is too big')\n42|             return self.cleaned_data['attachment']\n43| \n44| \n45|     def save(self):\n46|         post = Post(topic=self.topic, user=self.user, user_ip=self.ip, markup='none', body=self.cleaned_data['body'])\n47|         self.topic.post_count += 1\n48|         self.topic.save()\n49|         self.topic.catalog.post_count += 1\n50|         self.topic.catalog.save()\n51|         post.updated = datetime.datetime.now();\n52|         post.save()\n53|         if ydata_settings.ATTACHMENT_SUPPORT:\n54|             self.save_attachment(post, self.cleaned_data['attachment'])\n55|         return post\n56| \n57|     def save_attachment(self, post, memf
@@ -674,7 +674,7 @@ Now ydata/views.py (upload/download) — file upload without auth on download; u
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 1, "end_line": 149, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden\n4| from django.shortcuts import get_object_or_404\n5| from django.core.urlresolvers import reverse\n6| #from django.contrib.syndication.views import Feed\n7| from syndication.views import Feed\n8| \n9| from account.decorators import login_required, permission_required\n10| from ydata.models import Catalog,Topic,Post,Attachment\n11| from ydata.forms import AddPostForm, \\\n12|     AddTopicForm, EditTopicForm\n13| \n14| from ydata.util import render_to, build_form, get_parents, ylinux_get_ip\n15| \n16| from django.conf import settings\n17| from ydata import settings as ydata_settings\n18| import os, hashlib, mimetypes, urllib\n19| \n20| from string import Template\n21| \n22| # dic = {'ID':XXX, 'URL':XXX, 'THUMBNAIL':XXX, 'DURL':XXX}\n23| attachment_response_innerHTML = Template(u'<tr>\\\n24| <td>$ID</td>\\\n25| <td><a href=\"$URL\">$NAME</a></td>\\\n26| <td>$THUMBNAIL</td>\\\n27| <td><a href=\"$DURL\">$DURL</a></td>\\\n28| </tr>')\n29| \n30| \n31| @login_required\n32| def upload_single_file(req, id):\n33|     ''' 上传单个附件， 只作异步上传使用\n34|     1. 上传的 form 中文件的 name = 'single_file'\n35|     '''\n36| \n37|     if req.method != 'POST':\n38|         return HttpResponse(\"Just for POST a single file\")\n39| \n40|     f = req.FILES['single_file'] #req.FILES.values()[0]\n41|     if f.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n42|         notes = u'文件太大： %s (限制大小： %s)' % (f.size, ydata_settings.ATTACHMENT_SIZE_LIMIT)\n43|         r = u'<script type=\"text/javascript\">window.parent.UploadError(\"%s\");</script>' % notes\n44|         return HttpResponse(r)\n45| \n46|     #topic = get_object_or_404(Topic, pk=id)\n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         topic = False\n51| \n52|     sha1_hash = hashlib.sha1()\n53|     for chunk in f.chunks():\n54|         sha1_hash.update(chunk)\n55|     fhash = sha1_hash.hexdigest()\n56| \n57|     attachments = Attachment.objects.filter(hash=fhash)\n58|     notes = ''\n59| \n60|     if attachments:\n61|         # 此文件在服务器上已存在， 增加引用计数即可\n62|         local_name = ''\n63|         attachment = False\n64|         for a in attachments:\n65|             if 
@@ -690,7 +690,7 @@ Now ydata/views.py (upload/download) — file upload without auth on download; u
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ylab/views.py", "encoding": "utf-8-sig", "total_lines": 48, "start_line": 1, "end_line": 48, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden\n4| from django.shortcuts import get_object_or_404\n5| from django.core.urlresolvers import reverse\n6| from syndication.views import Feed\n7| from django.utils import simplejson\n8| \n9| from account.decorators import login_required, permission_required\n10| from ydata.models import Catalog,Topic,Post\n11| from ydata.forms import AddPostForm, \\\n12|     AddTopicForm, EditTopicForm\n13| \n14| from ydata.util import render_to, build_form, get_parents, ylinux_get_ip\n15| \n16| import datetime\n17| \n18| def time(request):\n19|     js = u'<script type=\"text/javascript\">parent.ajax_callback(0);parent.createUploadForm()</script>'\n20|     current = datetime.datetime.now()\n21|     return HttpResponse(`current` + js)\n22| \n23| \n24| def upload_single_file(req):\n25|     ''' 仅仅处理上传的文件中的第一个 '''\n26| \n27|     if req.method != 'POST':\n28|         return HttpResponse(\"Just for POST test!\")\n29| \n30|     url = '/ydata/attachement/3'\n31|     attachment = req.FILES.values()[0]\n32|     innerHTML = u'<span><a href=\"%s\">%s</a>， %s， <a href=\"%s/delete\">删除</a></span>' % (url, attachment.name, attachment.size, url)\n33|     r = u'<script type=\"text/javascript\">window.parent.AfterSubmit(%s);</script>' % innerHTML\n34|     return HttpResponse(r)\n35| \n36| \n37| def update_post_profile(req):\n38|     \n39|     posts = Post.objects.all()\n40|     for p in posts:\n41|         if p.parent:\n42|             p.touser = p.parent.user\n43|         else:\n44|             p.touser = p.topic.user\n45|         p.updated = p.created\n46|         p.save()\n47| \n48|     return HttpResponse(u'更新 posts 完成!')", "ok": true}
@@ -780,7 +780,7 @@ Now let me look at the account decorators/`__init__`, admin views (reboot endpoi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/decorators.py", "encoding": "utf-8-sig", "total_lines": 82, "start_line": 1, "end_line": 82, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| try:\n2|     from functools import update_wrapper\n3| except ImportError:\n4|     from django.utils.functional import update_wrapper  # Python 2.3, 2.4 fallback.\n5| \n6| from ylinux.app.account import REDIRECT_FIELD_NAME\n7| \n8| from django.http import HttpResponseRedirect\n9| from django.utils.http import urlquote\n10| \n11| def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):\n12|     \"\"\"\n13|     Decorator for views that checks that the user passes the given test,\n14|     redirecting to the log-in page if necessary. The test should be a callable\n15|     that takes the user object and returns True if the user passes.\n16|     \"\"\"\n17|     def decorate(view_func):\n18|         return _CheckLogin(view_func, test_func, login_url, redirect_field_name)\n19|     return decorate\n20| \n21| def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME):\n22|     \"\"\"\n23|     Decorator for views that checks that the user is logged in, redirecting\n24|     to the log-in page if necessary.\n25|     \"\"\"\n26|     actual_decorator = user_passes_test(\n27|         lambda u: u.is_authenticated(),\n28|         redirect_field_name=redirect_field_name\n29|     )\n30|     if function:\n31|         return actual_decorator(function)\n32|     return actual_decorator\n33| \n34| def permission_required(perm, login_url=None):\n35|     \"\"\"\n36|     Decorator for views that checks whether a user has a particular permission\n37|     enabled, redirecting to the log-in page if necessary.\n38|     \"\"\"\n39|     return user_passes_test(lambda u: u.has_perm(perm), login_url=login_url)\n40| \n41| class _CheckLogin(object):\n42|     \"\"\"\n43|     Class that checks that the user passes the given test, redirecting to\n44|     the log-in page if necessary. If the test is passed, the view function\n45|     is invoked. The test should be a callable that takes the user object\n46|     and returns True if the user passes.\n47| \n48|     We use a class here so that we can define __get__. This way, when a\n49|     _CheckLogin object is used as a method decorator, the view function\n50|     is properly bound to its instance.\n51|     \"\"\"\n52|     def __init__(self, view_func, test_func, login_url=None, redirect_fi
@@ -796,7 +796,7 @@ Now let me look at the account decorators/`__init__`, admin views (reboot endpoi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/__init__.py", "encoding": "utf-8-sig", "total_lines": 100, "start_line": 1, "end_line": 100, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| import datetime\n4| from django.core.exceptions import ImproperlyConfigured\n5| from django.utils.importlib import import_module\n6| \n7| SESSION_KEY = '_auth_user_id'\n8| BACKEND_SESSION_KEY = '_auth_user_backend'\n9| REDIRECT_FIELD_NAME = 'next'\n10| \n11| \n12| def load_backend(path):\n13|     \"\"\"将 'django.contrib.auth.backends.ModelBackend' 形式转为路径，再用 import_module 得到对象。\n14|     \"\"\"\n15| \n16|     # rfind 在字符串对象里查找某个字符(串)出现的最后位置\n17|     i = path.rfind('.')\n18|     module, attr = path[:i], path[i+1:]\n19|     try:\n20|         mod = import_module(module)\n21|     except ImportError, e:\n22|         raise ImproperlyConfigured, 'Error importing authentication backend %s: \"%s\"' % (module, e)\n23|     except ValueError, e:\n24|         raise ImproperlyConfigured, 'Error importing authentication backends. Is AUTHENTICATION_BACKENDS a correctly defined list or tuple?'\n25|     try:\n26|         cls = getattr(mod, attr)\n27|     except AttributeError:\n28|         raise ImproperlyConfigured, 'Module \"%s\" does not define a \"%s\" authentication backend' % (module, attr)\n29|     return cls()\n30| \n31| def get_backends():\n32|     \"\"\" 从 settings.AUTHENTICATION_BACKENDS 里依次得到一个后端认证模块列表\n33|     \"\"\"\n34|     from django.conf import settings\n35|     backends = []\n36|     for backend_path in settings.AUTHENTICATION_BACKENDS:\n37|         backends.append(load_backend(backend_path))\n38|     return backends\n39| \n40| def authenticate(**credentials):\n41|     \"\"\"只要有一个后端认证模块通过，就返回User对象\n42|     \"\"\"\n43|     for backend in get_backends():\n44|         try:\n45|             user = backend.authenticate(**credentials)\n46|         except TypeError:\n47|             # This backend doesn't accept these credentials as arguments. Try the next one.\n48|             continue\n49|         if user is None:\n50|             continue\n51|         # Annotate the user object with the path of the backend.\n52|         user.backend = \"%s.%s\" % (backend.__module__, backend.__class__.__name__)\n53|         return user\n54| \n55| def login(request, user):\n56|     \"\"\"\n57|     Persist a user id and a backend in the request. This way a user doesn't\n58|     have to reauthenticate on every request.\n59|     \"\"\"\n60|    
@@ -814,7 +814,7 @@ Now let me look at the account decorators/`__init__`, admin views (reboot endpoi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/views.py", "encoding": "utf-8-sig", "total_lines": 481, "start_line": 340, "end_line": 445, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "340| \n341| @permission_required('ydata.delete_catalog')\n342| @render_to ('admin/del_catalog.html')\n343| def del_catalog (request, id):\n344| \n345|     catalog = get_object_or_404 (Catalog, pk=id)\n346|     subcatalogs = Catalog.objects.filter(parent=id)\n347| \n348|     if subcatalogs:\n349|         parents = get_parents (Catalog, id)\n350|         return {'catalog':catalog, 'parents':parents,\n351|                 'subcatalogs':subcatalogs}\n352| \n353|     catalog.delete()\n354|     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))\n355| \n356| \n357| # 重启 fastcgi , 先随便选个高级点的权限\n358| @permission_required('ydata.delete_catalog')\n359| def reboot(request):\n360| \n361|     import os\n362|     user=os.popen('whoami').read().strip()\n363|     os.system('killall -u %s' % user)\n364| \n365|     return HttpResponseRedirect(reverse('home:index'))\n366| \n367| \n368| # 注释\n369| \n370| # 1. permission_required 的用法\n371| # @permission_required('account.createe_perm', login_url='/admin/')\n372| # login_url 指定认证失败的跳转路径\n373| \n374| @permission_required('ydata.delete_catalog')\n375| def email_to_all(request):\n376|     ''' 管理员群发邮件 '''\n377| \n378| \n379|     if request.method == 'POST':\n380|         form = ContactForm(request.POST)\n381|         if form.is_valid():\n382|             subject = form.cleaned_data['subject']\n383|             message = form.cleaned_data['message']\n384|             sender = form.cleaned_data['sender']\n385| \n386|             recipients = []\n387|             #recipients = ['ylinux.admin@gmail.com','lijian.gnu@gmail.com',]\n388|             #recipients.append(sender)\n389|             from django.core.mail import send_mail\n390|             users = User.objects.all()\n391|             for u in users:\n392|                 recipients.append(u.email)\n393|             #for id in range(29,35):\n394|             #    u = User.objects.get(pk=id)\n395|                 recipient = [u.email]\n396|                 send_mail (subject,message,sender,recipient)\n397|                 \n398|             return render_to_response('home/thanks.html',{'title':\"感谢\", 'recipients':recipients},\n399|                                       context_instance=RequestContext(request))\n400|         return HttpResponse(\"%s\" % form.err
@@ -842,7 +842,7 @@ Now the XML-RPC layer. Read lib/django_xmlrpc/views.py, dispatcher.py, decorator
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/views.py", "encoding": "utf-8-sig", "total_lines": 155, "start_line": 1, "end_line": 155, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"Uses SimpleXMLRPCServer's SimpleXMLRPCDispatcher to serve XML-RPC requests\n2| \n3| Authors::\n4|     Graham Binns\n5|     Reza Mohammadi\n6|     Julien Fache\n7| \n8| Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who\n9| posted the original SimpleXMLRPCDispatcher to the Django wiki:\n10| http://code.djangoproject.com/wiki/XML-RPC\n11| \n12| New BSD License\n13| ===============\n14| Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon\n15| \n16| All rights reserved.\n17| \n18| Redistribution and use in source and binary forms, with or without\n19| modification, are permitted provided that the following conditions are met:\n20| \n21|     * Redistributions of source code must retain the above copyright notice,\n22|       this list of conditions and the following disclaimer.\n23|     * Redistributions in binary form must reproduce the above copyright notice,\n24|       this list of conditions and the following disclaimer in the documentation\n25|       and/or other materials provided with the distribution.\n26|     * Neither the name of the <ORGANIZATION> nor the names of its contributors\n27|       may be used to endorse or promote products derived from this software\n28|       without specific prior written permission.\n29| \n30| THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n31| \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n32| LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n33| A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n34| CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n35| EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n36| PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n37| PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n38| LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n39| NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n40| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n41| \"\"\"\n42| import sys\n43| \n44| from django.conf import settings\n45| from django.template import RequestContext\n46| from django.shortcuts import render_to_response\n47| f
@@ -858,7 +858,7 @@ Now the XML-RPC layer. Read lib/django_xmlrpc/views.py, dispatcher.py, decorator
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/dispatcher.py", "encoding": "utf-8-sig", "total_lines": 76, "start_line": 1, "end_line": 76, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"Offers a simple XML-RPC dispatcher for django_xmlrpc\n2| \n3| Author::\n4|     Graham Binns\n5| \n6| Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who\n7| posted the original SimpleXMLRPCDispatcher to the Django wiki:\n8| http://code.djangoproject.com/wiki/XML-RPC\n9| \n10| New BSD License\n11| ===============\n12| Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon\n13| \n14| All rights reserved.\n15| \n16| Redistribution and use in source and binary forms, with or without\n17| modification, are permitted provided that the following conditions are met:\n18| \n19|     * Redistributions of source code must retain the above copyright notice,\n20|       this list of conditions and the following disclaimer.\n21|     * Redistributions in binary form must reproduce the above copyright notice,\n22|       this list of conditions and the following disclaimer in the documentation\n23|       and/or other materials provided with the distribution.\n24|     * Neither the name of the <ORGANIZATION> nor the names of its contributors\n25|       may be used to endorse or promote products derived from this software\n26|       without specific prior written permission.\n27| \n28| THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n29| \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n30| LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n31| A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n32| CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n33| EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n34| PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n35| PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n36| LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n37| NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n38| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n39| \"\"\"\n40| from inspect import getargspec\n41| from SimpleXMLRPCServer import SimpleXMLRPCDispatcher\n42| from django.conf import settings\n43| \n44| \n45| # If we need to debug, now we know\n46| DEBUG = hasattr(settings, 'XMLRPC_DEBUG') a
@@ -874,7 +874,7 @@ Now the XML-RPC layer. Read lib/django_xmlrpc/views.py, dispatcher.py, decorator
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| #\n3| \n4| \"\"\"\n5|  XML-RPC public interface for YLinux\n6| \n7| \"\"\"\n8| \n9| import sys,os\n10| from datetime import datetime\n11| from time import strftime, mktime,strptime\n12| from xmlrpclib import Fault, Boolean, DateTime\n13| \n14| from account import authenticate,login\n15| from ydata.models import Topic,Catalog,User\n16| \n17| def st(u, encoding):\n18|     '''convert unicode to string'''\n19|     if isinstance(u, str):\n20|         return u\n21|     else:\n22|         return u.encode(encoding)\n23| \n24| def datetime_from_iso(isostring):\n25| \n26|     try:\n27|         isostring = isostring.split(\".\")[0]\n28|     except:\n29|         pass\n30|     \n31|     ret = isostring\n32|     try:\n33|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%SZ')))\n34|     except:\n35|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%S')))\n36| \n37|     return ret\n38| \n39| def has_auth(user, passwd):\n40| \n41|     user = authenticate(username=user, password=passwd)\n42|     if user is not None:\n43|         return True\n44|     else:\n45|         return False\n46| \n47| def delete_topic(id, user, passwd):\n48|     '''delete one topic'''\n49|     if not has_auth(user, passwd):\n50|         raise Fault(-1, \"Authentication Failure\")\n51| \n52|     try:\n53|         topic = Topic.objects.get(pk=id)\n54|         topic.posts.all().delete()\n55|         topic.delete()\n56|         return True\n57|     except:\n58|         raise Fault(-1, \"delete one topic failed\")\n59| \n60| def delete_all_topic(user, passwd):\n61|     '''delete all topic'''\n62|     if not has_auth(user, passwd):\n63|         raise Fault(-1, \"Authentication Failure\")\n64| \n65|     try:\n66|         Topic.objects.all().delete()\n67|         return True\n68|     except:\n69|         raise Fault(-1, \"delete all topics failed\")\n70| \n71| ###\n72| ### MetaWeblog API\n73| ###\n74| def topic_to_struct(topic):\n75| \n76|     return { 'userid' : topic.user.id,\n77|              'pubDate' : topic.updated.isoformat(),\n78|              'dateCreated' : topic.created.isoformat(),\n79|              'postid' : str(topic.id),\n80|              'description' : topic.body,\n81|              'title' : topic.name,\
@@ -907,7 +907,7 @@ Let me read the rest of ylinux_xmlrpc.py (180-252).
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 180, "end_line": 252, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|         if struct.has_key('description'):\n181|             topic.save_file(st(struct['description'], 'utf-8'))\n182| \n183|         return True\n184|     except Exception, e:\n185|         raise Fault(-255, \"Failed to edit topic: %s\" %str(e))\n186| \n187| def new_topic(blogid, user, passwd, struct, publish):\n188|     '''Add one topic'''\n189| \n190|     if not has_auth(user, passwd):\n191|         raise Fault(-1, \"Authentication Failure\")\n192| \n193|     title = st(struct.get('title', \"No Title\"), 'utf-8')\n194|     markup = struct.get('markup', \"markdown\")\n195| \n196|     topic = Topic(name=title, markup=markup)\n197|     topic.updated = datetime.now()\n198| \n199|     ca = st(struct['category'], 'utf-8')\n200|     catalog = Catalog.objects.get(name=ca)\n201|     topic.catalog = catalog\n202| \n203|     # find which user\n204|     topic.user = User.objects.get(username=user)\n205|     topic.save()\n206|     catalog.last_topic = topic\n207|     catalog.topic_count += 1\n208|     catalog.save()\n209| \n210|     text = struct.get('description', \"Nothing\")\n211|     topic.save_file(st(text, 'utf-8'))\n212|     return topic.id\n213| \n214| ###\n215| ### Blogger API\n216| ###\n217| \n218| def blogger_getUsersBlogs(appkey, username, password):\n219|     if not auth_user(username, password):\n220|         raise Fault(-1, \"Authentication Failure\")\n221|     site = Site.objects.get_current()\n222|     return [{'url': 'http://%s/' % site.domain,\n223|              'blogid': BLOG_ID,\n224|              'blogName': site.name},]\n225| \n226| def blogger_getUserInfo(appkey, username, password):\n227|     if not auth_user(username, password):\n228|         raise Fault(-1, \"Authentication Failure\")\n229| \n230|     site = Site.objects.get_current()\n231|     user = User.objects.get(username = username)\n232|     return {'url': 'http://%s/' % site.domain,\n233|             'nickname': user.username,\n234|             'userid': '1',\n235|             'email': user.email,\n236|             'lastname': user.last_name,\n237|             'firstname': user.first_name,}\n238| \n239| def blogger_deletePost(appkey, postid, username, password, publish):\n240|     if not auth_user(username, password):\n241|         raise Fault(-1, \"Authentication Failu
@@ -923,7 +923,7 @@ Let me read the rest of ylinux_xmlrpc.py (180-252).
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/bbs/views.py", "encoding": "utf-8-sig", "total_lines": 90, "start_line": 1, "end_line": 90, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| #coding: utf-8\n2| \n3| #from forms import ContactForm\n4| from django.shortcuts import render_to_response\n5| from django.http import HttpResponseRedirect,HttpResponse\n6| #from django.template import RequestContext\n7| from django.shortcuts import get_object_or_404\n8| from django.core.urlresolvers import reverse\n9| \n10| from account.models import User\n11| from ydata.models import Catalog, Topic, Post\n12| from ydata.util import render_to, build_form, get_parents\n13| \n14| \n15| @render_to('bbs/index.html')\n16| def index(request):\n17| \n18|     catalogs = Catalog.objects.filter(parent=None)\n19| \n20|     all_user = User.objects.all()\n21|     if all_user:\n22|         new_register_user = all_user.order_by('-date_joined')[0]\n23|     else:\n24|         new_register_user = None\n25| \n26|     return {'title':'论坛', 'catalogs':catalogs, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| @render_to('bbs/catalog.html')\n31| def catalog(request, id):\n32| \n33|     try:\n34|         catalog = Catalog.objects.get(pk=id)\n35|     except Catalog.DoesNotExist:\n36|         url = reverse ('bbs:forum_not_exist', args=[id])\n37|         return HttpResponseRedirect(url)\n38| \n39|     parents = get_parents (Catalog, id)\n40|     topics = Topic.objects.filter(catalog=catalog)\n41| \n42|     return {'catalog':catalog, 'parents':parents, 'topics':topics}\n43| \n44| @render_to('bbs/topic.html')\n45| def topic(request, id):\n46| \n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         url = reverse ('bbs:topic_not_exist', args=[id])\n51|         return HttpResponseRedirect(url)\n52| \n53|     parents = get_parents (Catalog, topic.catalog.id)\n54|     posts = Post.objects.filter(topic=topic)\n55| \n56|     return {'topic':topic, 'parents': parents, 'posts':posts}\n57| \n58| @render_to('bbs/post.html')\n59| def post(request, id):\n60| \n61|     try:\n62|         post = Post.objects.get(pk=id)\n63|     except Post.DoesNotExist:\n64|         url = reverse ('bbs:post_not_exist', args=[id])\n65|         return HttpResponseRedirect(url)\n66| \n67|     return {'post':post}\n68| \n69| # 一些 DoesNotExist 的页面这里处理\n70| @render_to('bbs/DoesNotExist.html')\n71| def doesnotexist(request, type, id):\n72|  
@@ -949,7 +949,7 @@ Now home/views.py, blog/views.py, me/views.py, syndication views/feeds, admin/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/home/views.py", "encoding": "utf-8-sig", "total_lines": 81, "start_line": 1, "end_line": 81, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from forms import ContactForm\n4| from django.shortcuts import render_to_response\n5| from django.http import HttpResponseRedirect,HttpResponse\n6| from django.template import RequestContext\n7| from django.shortcuts import get_object_or_404\n8| from django.core.urlresolvers import reverse\n9| \n10| from account.models import User\n11| from ydata.models import Catalog, Topic, Post\n12| from ydata.util import render_to, build_form, get_parents\n13| \n14| \n15| @render_to('home/index.html')\n16| def index(request):\n17| \n18|     topics = Topic.objects.all()[:10]\n19|     posts = Post.objects.all().order_by('-updated')[:10]\n20|     all_user = User.objects.all()\n21|     if all_user:\n22|         new_register_user = all_user.order_by('-date_joined')[0]\n23|     else:\n24|         new_register_user = None\n25| \n26|     return {'title':'首页', 'topics':topics, 'posts':posts, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| def about(request):\n31|     return render_to_response('home/about.html',{'title':\"关于\",},\n32|                               context_instance=RequestContext(request))\n33| \n34| def contact(request):\n35|     if request.method == 'POST':\n36|         form = ContactForm(request.POST)\n37|         if form.is_valid():\n38|             subject = form.cleaned_data['subject']\n39|             message = form.cleaned_data['message']\n40|             sender = form.cleaned_data['sender']\n41| \n42|             recipients = ['ylinux.admin@gmail.com','lijian.gnu@gmail.com',]\n43|             recipients.append(sender)\n44| \n45|             from django.core.mail import send_mail\n46|             send_mail (subject,message,sender,recipients)\n47|             return render_to_response('home/thanks.html',{'title':\"感谢\",},\n48|                                       context_instance=RequestContext(request))\n49|             #return HttpResponseRedirect('/thanks/')\n50|     else:\n51|         form = ContactForm()\n52| \n53|         return render_to_response('home/contact.html',\n54|                                   {'title':\"联系\",'form':form,},\n55|                                   context_instance=RequestContext(request))\n56| \n57| #def thanks(request):\n58| #    return render_to_response('home/thank
@@ -965,7 +965,7 @@ Now home/views.py, blog/views.py, me/views.py, syndication views/feeds, admin/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/blog/views.py", "encoding": "utf-8-sig", "total_lines": 29, "start_line": 1, "end_line": 29, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from account.models import User\n4| from ydata.models import Topic, Post\n5| from ydata.util import render_to, build_form, get_parents\n6| \n7| \n8| \n9| @render_to('blog/index.html')\n10| def index(request):\n11| \n12|     return {'title':'YLinux Blog'}\n13| \n14| \n15| @render_to('blog/homepage.html')\n16| def homepage(request, id):\n17|     ''' 指定 id 的用户 Blog 首页 '''\n18| \n19|     try:\n20|         user = User.objects.get(pk=id)\n21|     except User.DoesNotExist:\n22|         url = reverse ('account:user_not_exist', args=[id])\n23|         return HttpResponseRedirect(url)\n24| \n25|     topics = Topic.objects.filter(user=id).order_by('-updated')\n26|     posts = Post.objects.filter(user=id).order_by('-updated')\n27| \n28|     return {'the_user':user, 'topics':topics, 'posts':posts}\n29| ", "ok": true}
@@ -981,7 +981,7 @@ Now home/views.py, blog/views.py, me/views.py, syndication views/feeds, admin/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/forms.py", "encoding": "utf-8-sig", "total_lines": 236, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| #from django.contrib.auth.models import User\n4| #from django.contrib.auth.tokens import default_token_generator\n5| #from django.contrib.auth import authenticate\n6| from account.models import User\n7| from account import authenticate\n8| from account.tokens import default_token_generator\n9| \n10| from django.contrib.sites.models import Site\n11| from django.template import Context, loader\n12| from django import forms\n13| from django.utils.translation import ugettext_lazy as _\n14| from django.utils.http import int_to_base36\n15| \n16| class UserCreationForm(forms.ModelForm):\n17|     \"\"\"\n18|     A form that creates a user, with no privileges, from the given username and password.\n19|     \"\"\"\n20|     username = forms.RegexField(label=_(\"Username\"), max_length=30, regex=r'^\\w+$',\n21|         help_text = _(\"Required. 30 characters or fewer. Alphanumeric characters only (letters, digits and underscores).\"),\n22|         error_message = _(\"This value must contain only letters, numbers and underscores.\"))\n23|     password1 = forms.CharField(label=_(\"Password\"), widget=forms.PasswordInput)\n24|     password2 = forms.CharField(label=_(\"Password confirmation\"), widget=forms.PasswordInput)\n25| \n26|     class Meta:\n27|         model = User\n28|         fields = (\"username\",)\n29| \n30|     def clean_username(self):\n31|         username = self.cleaned_data[\"username\"]\n32|         try:\n33|             User.objects.get(username=username)\n34|         except User.DoesNotExist:\n35|             return username\n36|         raise forms.ValidationError(_(\"A user with that username already exists.\"))\n37| \n38|     def clean_password2(self):\n39|         password1 = self.cleaned_data.get(\"password1\", \"\")\n40|         password2 = self.cleaned_data[\"password2\"]\n41|         if password1 != password2:\n42|             raise forms.ValidationError(_(\"The two password fields didn't match.\"))\n43|         return password2\n44| \n45|     def save(self, commit=True):\n46|         user = super(UserCreationForm, self).save(commit=False)\n47|         user.set_password(self.cleaned_data[\"password1\"])\n48|         if commit:\n49|             user.save()\n50|         return user\n51| \n52| class UserChangeFo
@@ -1011,7 +1011,7 @@ Actually wait, also the brute force is offline: attacker requests password reset
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/forms.py", "encoding": "utf-8-sig", "total_lines": 236, "start_line": 180, "end_line": 236, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|         \"\"\"\n181|         Validates that the old_password field is correct.\n182|         \"\"\"\n183|         old_password = self.cleaned_data[\"old_password\"]\n184|         if not self.user.check_password(old_password):\n185|             raise forms.ValidationError(_(\"Your old password was entered incorrectly. Please enter it again.\"))\n186|         return old_password\n187| PasswordChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']\n188| \n189| class AdminPasswordChangeForm(forms.Form):\n190|     \"\"\"\n191|     A form used to change the password of a user in the admin interface.\n192|     \"\"\"\n193|     password1 = forms.CharField(label=_(\"Password\"), widget=forms.PasswordInput)\n194|     password2 = forms.CharField(label=_(\"Password (again)\"), widget=forms.PasswordInput)\n195| \n196|     def __init__(self, user, *args, **kwargs):\n197|         self.user = user\n198|         super(AdminPasswordChangeForm, self).__init__(*args, **kwargs)\n199| \n200|     def clean_password2(self):\n201|         password1 = self.cleaned_data.get('password1')\n202|         password2 = self.cleaned_data.get('password2')\n203|         if password1 and password2:\n204|             if password1 != password2:\n205|                 raise forms.ValidationError(_(\"The two password fields didn't match.\"))\n206|         return password2\n207| \n208|     def save(self, commit=True):\n209|         \"\"\"\n210|         Saves the new password.\n211|         \"\"\"\n212|         self.user.set_password(self.cleaned_data[\"password1\"])\n213|         if commit:\n214|             self.user.save()\n215|         return self.user\n216| \n217| \n218| class RequestRegisterForm(forms.Form):\n219|     email = forms.EmailField(max_length=32)\n220| \n221| \n222| class PasswordResetRequestForm(forms.Form):\n223|     email = forms.EmailField(max_length=32)\n224| \n225| \n226| # 我测试时候定义的\n227| class RegisterForm(forms.Form):\n228|     username = forms.CharField(max_length=32)\n229|     password_first = forms.CharField(max_length=32)\n230|     password_second = forms.CharField(max_length=32)\n231| \n232| \n233| class LoginForm(forms.Form):\n234|     username = forms.CharField(max_length=30)\n235| #    email = forms.EmailField()\n236|     pas
@@ -1027,7 +1027,7 @@ Actually wait, also the brute force is offline: attacker requests password reset
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/me/views.py", "encoding": "utf-8-sig", "total_lines": 188, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from account.models import User\n4| from ydata.models import Topic, Post\n5| from ydata.util import render_to, build_form, get_parents\n6| \n7| \n8| \n9| @render_to('me/index.html')\n10| def index(request):\n11| \n12|     users = User.objects.all().order_by('-last_login')[:20]\n13|     posts = Post.objects.all().order_by('-updated')[:20]\n14|     topics = Topic.objects.all().order_by('-updated')[:20]\n15| \n16|     return {'title': u\"这就是我！\", 'users': users, 'topics': topics, 'posts': posts}\n17| \n18| \n19| @render_to('me/home.html')\n20| def home(request, id):\n21|     ''' 指定 id 的用户 ME HOME '''\n22| \n23|     try:\n24|         owner = User.objects.get(pk=id)\n25|     except User.DoesNotExist:\n26|         url = reverse ('account:user_not_exist', args=[id])\n27|         return HttpResponseRedirect(url)\n28| \n29|     topic_count = len(Topic.objects.filter(user=id).order_by('-updated'))\n30|     post_count = len(Post.objects.filter(user=id).order_by('-updated'))\n31|     fpost_count = len(Post.objects.filter(touser=id).order_by('-updated'))\n32| \n33|     return {'title': u'欢迎访问 %s 的首页' % owner.username, \n34|             'owner':owner, 'owner_id': id, \n35|             'topic_count': topic_count, 'post_count': post_count, 'fpost_count': fpost_count}\n36| \n37| \n38| @render_to('me/topics.html')\n39| def topics(request, id, page=1):\n40|     ''' 分页显示用戶发表的主题 '''\n41| \n42|     page = int(page) - 1\n43|     error = ''\n44|     total_page = 0\n45| \n46|     try:\n47|         owner = User.objects.get(pk=id)\n48|     except User.DoesNotExist:\n49|         url = reverse ('account:user_not_exist', args=[id])\n50|         return HttpResponseRedirect(url)\n51| \n52|     if page < 0:\n53|         topics = []\n54|         error = u'第 %s 页主题不存在!' % (page + 1)\n55|     else:\n56|         start = page * 10\n57|         end = page * 10 + 10\n58|         topics = Topic.objects.filter(user=id).order_by('-updated')\n59|         total_page = len(topics) / 10 + 1\n60|         if ( page * 10 ) > len(topics):\n61|             error = u'第 %s 页主题不存在!' % (page + 1)\n62|             topics = []\n63|         else:\n64|             topics = topics[start:end]\n65| \n66|     page_list = range(1, total_page + 1) if total_page > 1 else []\n67|     return {'t
@@ -1061,7 +1061,7 @@ Now let me check the templates for `|safe` usage and look at the remaining admin
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "\\|safe", "count": 7, "matches": [{"path": "templates/bbs/topic.html", "line": 23, "text": "{{ topic.body_html|safe }}"}, {"path": "templates/bbs/topic.html", "line": 30, "text": "{{ p.body_html|safe }}"}, {"path": "templates/wiki/editPostAJAX.html", "line": 19, "text": "{{ post.body_html|safe }}"}, {"path": "templates/wiki/post.html", "line": 12, "text": "<p>{{ post.body_html|safe }}</p>"}, {"path": "templates/wiki/replayAJAX.html", "line": 16, "text": "{{ post.body_html|safe }}"}, {"path": "templates/wiki/topic.html", "line": 54, "text": "{{ topic.body_html|safe }}"}, {"path": "templates/wiki/topic.html", "line": 59, "text": "{{ POST_HTML|safe }}"}], "ok": true}
@@ -1079,7 +1079,7 @@ Now let me check the templates for `|safe` usage and look at the remaining admin
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/views.py", "encoding": "utf-8-sig", "total_lines": 481, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.shortcuts import get_object_or_404\n4| from django.shortcuts import render_to_response\n5| from django.template import RequestContext\n6| from django.http import HttpResponseRedirect,HttpResponse\n7| from django.core.urlresolvers import reverse\n8| from django.core.mail.message import EmailMessage\n9| \n10| from account.decorators import login_required, permission_required\n11| \n12| from account.models import Permission,Group,User,AnonymousUser\n13| from ydata.models import Catalog, Topic, Post\n14| \n15| from account.forms import RegisterForm,LoginForm,AuthenticationForm\n16| from admin.forms import \\\n17|     AddUserForm, EditUserForm, \\\n18|     AddGroupForm, EditGroupForm, \\\n19|     AddCatalogForm, EditCatalogForm, \\\n20|     AddPermissionForm, EditPermissionForm\n21| \n22| from home.forms import ContactForm\n23| \n24| from ydata.util import render_to, build_form, get_parents\n25| \n26| \n27| # 视图是 MVC 里面的 V\n28| # 这里的视图设计原则尽量如下：\n29| # 1. show_OBJECT 显示OBJECT\n30| # 2. edit_OBJECT 编辑OBJECT\n31| # 3. del_OBJECT 删除OBJECT\n32| # 4. add_OBJECT 新建OBJECT\n33| #\n34| # 单独 /OBJECT/ 显示这一类\n35| #\n36| # show 不需要权限，其他权限最好再做区分\n37| \n38| \n39| @login_required\n40| @render_to('admin/index.html')\n41| def index(request):\n42| \n43|     \"\"\" 首页 \"\"\"\n44| \n45|     return {}\n46| \n47| \n48| @render_to('admin/login.html')\n49| def login(request):\n50| \n51|     if request.method == \"POST\":\n52|         form = AuthenticationForm(data=request.POST)\n53|         if form.is_valid():\n54|             username = form.cleaned_data[\"username\"]\n55|             password = form.cleaned_data[\"password\"]\n56|             from account import authenticate,login\n57|             user = authenticate(username=username, password=password)\n58|             if user is not None and user.is_active and user.is_staff:\n59|                 login(request, user)\n60|                 if request.session.test_cookie_worked():\n61|                     request.session.delete_test_cookie()\n62|                 return HttpResponseRedirect(request.session.get('previous_url','/'))\n63| \n64|     else:\n65|         request.session['previous_url'] = request.META.get('HTTP_REFERER', '/')\n66|         form = AuthenticationForm(request)\n67| \n68| 
@@ -1117,7 +1117,7 @@ Now let me look at the lib/markdown directory to pin behavior. The list_files ou
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown", "count": 26, "truncated": false, "skipped_by_default": "directories named assets/bower_components/site-packages/static/staticfiles/third_party/thirdparty/vendor or ending in 'media', plus lib/markdown", "files": ["lib/markdown/blockparser.py", "lib/markdown/blockprocessors.py", "lib/markdown/commandline.py", "lib/markdown/etree_loader.py", "lib/markdown/html4.py", "lib/markdown/inlinepatterns.py", "lib/markdown/odict.py", "lib/markdown/postprocessors.py", "lib/markdown/preprocessors.py", "lib/markdown/treeprocessors.py", "lib/markdown/__init__.py", "lib/markdown/extensions/abbr.py", "lib/markdown/extensions/codehilite.py", "lib/markdown/extensions/def_list.py", "lib/markdown/extensions/extra.py", "lib/markdown/extensions/fenced_code.py", "lib/markdown/extensions/footnotes.py", "lib/markdown/extensions/headerid.py", "lib/markdown/extensions/html_tidy.py", "lib/markdown/extensions/imagelinks.py", "lib/markdown/extensions/meta.py", "lib/markdown/extensions/rss.py", "lib/markdown/extensions/tables.py", "lib/markdown/extensions/toc.py", "lib/markdown/extensions/wikilinks.py", "lib/markdown/extensions/__init__.py"], "ok": true}
@@ -1133,7 +1133,7 @@ Now let me look at the lib/markdown directory to pin behavior. The list_files ou
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/decorators.py", "encoding": "utf-8-sig", "total_lines": 179, "start_line": 1, "end_line": 179, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"Offers decorators to make the use of django_xmlrpc a great deal simpler\n2| \n3| Authors::\n4|     Graham Binns,\n5|     Reza Mohammadi\n6| \n7| Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who\n8| posted the original SimpleXMLRPCDispatcher to the Django wiki:\n9| http://code.djangoproject.com/wiki/XML-RPC\n10| \n11| New BSD License\n12| ===============\n13| Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon\n14| \n15| All rights reserved.\n16| \n17| Redistribution and use in source and binary forms, with or without\n18| modification, are permitted provided that the following conditions are met:\n19| \n20|     * Redistributions of source code must retain the above copyright notice,\n21|       this list of conditions and the following disclaimer.\n22|     * Redistributions in binary form must reproduce the above copyright notice,\n23|       this list of conditions and the following disclaimer in the documentation\n24|       and/or other materials provided with the distribution.\n25|     * Neither the name of the <ORGANIZATION> nor the names of its contributors\n26|       may be used to endorse or promote products derived from this software\n27|       without specific prior written permission.\n28| \n29| THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n30| \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n31| LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n32| A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n33| CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n34| EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n35| PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n36| PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n37| LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n38| NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n39| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n40| \"\"\"\n41| from xmlrpclib import Fault\n42| from django.contrib.auth import authenticate\n43| from django.utils.translation import gettext as _\n44| \n45| \n46| # Some constants for your pleas
@@ -1161,7 +1161,7 @@ Now check the markdown lib's safe_mode behavior to verify whether 'escape' mode 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "safe_mode", "count": 15, "matches": [{"path": "lib/markdown/commandline.py", "line": 82, "text": "'safe_mode': options.safe,"}, {"path": "lib/markdown/inlinepatterns.py", "line": 131, "text": "# Api for Markdown to pass safe_mode into instance"}, {"path": "lib/markdown/inlinepatterns.py", "line": 132, "text": "self.safe_mode = False"}, {"path": "lib/markdown/inlinepatterns.py", "line": 245, "text": "Sanitize a url against xss attacks in \"safe_mode\"."}, {"path": "lib/markdown/__init__.py", "line": 188, "text": "safe_mode = False,"}, {"path": "lib/markdown/__init__.py", "line": 200, "text": "* safe_mode: Disallow raw html. One of \"remove\", \"replace\" or \"escape\"."}, {"path": "lib/markdown/__init__.py", "line": 212, "text": "self.safeMode = safe_mode"}, {"path": "lib/markdown/__init__.py", "line": 580, "text": "safe_mode = False,"}, {"path": "lib/markdown/__init__.py", "line": 592, "text": "* safe_mode: Disallow raw html.  One of \"remove\", \"replace\" or \"escape\"."}, {"path": "lib/markdown/__init__.py", "line": 606, "text": "safe_mode=safe_mode,"}, {"path": "lib/markdown/__init__.py", "line": 615, "text": "safe_mode = False,"}, {"path": "lib/markdown/__init__.py", "line": 619, "text": "safe_mode=safe_mode,"}, {"path": "lib/markdown/extensions/fenced_code.py", "line": 21, "text": "Works with safe_mode also (we check this because we are using the HtmlStash):"}, {"path": "lib/markdown/extensions/fenced_code.py", "line": 23, "text": ">>> markdown.markdown(text, extensions=['fenced_code'], safe_mode='replace')"}, {"path": "lib/markdown/extensions/wikilinks.py", "line": 39, "text": "...     safe_mode = True)"}], "ok": true}
@@ -1180,7 +1180,7 @@ Now check the markdown lib's safe_mode behavior to verify whether 'escape' mode 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "VERSION|version =", "count": 1, "matches": [{"path": "lib/markdown/__init__.py", "line": 44, "text": "version = \"2.0.3\""}], "ok": true}
@@ -1209,7 +1209,7 @@ Markdown 2.0.3, default safe_mode=False. So for markup='none' (replayAJAX / AddP
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown/inlinepatterns.py", "encoding": "utf-8-sig", "total_lines": 371, "start_line": 220, "end_line": 290, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "220|         return place_holder\n221| \n222| \n223| class LinkPattern (Pattern):\n224|     \"\"\" Return a link element from the given match. \"\"\"\n225|     def handleMatch(self, m):\n226|         el = markdown.etree.Element(\"a\")\n227|         el.text = m.group(2)\n228|         title = m.group(11)\n229|         href = m.group(9)\n230| \n231|         if href:\n232|             if href[0] == \"<\":\n233|                 href = href[1:-1]\n234|             el.set(\"href\", self.sanitize_url(href.strip()))\n235|         else:\n236|             el.set(\"href\", \"\")\n237| \n238|         if title:\n239|             title = dequote(title) #.replace('\"', \"&quot;\")\n240|             el.set(\"title\", title)\n241|         return el\n242| \n243|     def sanitize_url(self, url):\n244|         \"\"\"\n245|         Sanitize a url against xss attacks in \"safe_mode\".\n246| \n247|         Rather than specifically blacklisting `javascript:alert(\"XSS\")` and all\n248|         its aliases (see <http://ha.ckers.org/xss.html>), we whitelist known\n249|         safe url formats. Most urls contain a network location, however some\n250|         are known not to (i.e.: mailto links). Script urls do not contain a\n251|         location. Additionally, for `javascript:...`, the scheme would be\n252|         \"javascript\" but some aliases will appear to `urlparse()` to have no\n253|         scheme. On top of that relative links (i.e.: \"foo/bar.html\") have no\n254|         scheme. Therefore we must check \"path\", \"parameters\", \"query\" and\n255|         \"fragment\" for any literal colons. We don't check \"scheme\" for colons\n256|         because it *should* never have any and \"netloc\" must allow the form:\n257|         `username:password@host:port`.\n258| \n259|         \"\"\"\n260|         locless_schemes = ['', 'mailto', 'news']\n261|         scheme, netloc, path, params, query, fragment = url = urlparse(url)\n262|         safe_url = False\n263|         if netloc != '' or scheme in locless_schemes:\n264|             safe_url = True\n265| \n266|         for part in url[2:]:\n267|             if \":\" in part:\n268|                 safe_url = False\n269| \n270|         if self.markdown.safeMode and not safe_url:\n271|             return ''\n272| 
@@ -1228,7 +1228,7 @@ Markdown 2.0.3, default safe_mode=False. So for markup='none' (replayAJAX / AddP
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown/__init__.py", "encoding": "utf-8-sig", "total_lines": 734, "start_line": 180, "end_line": 230, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180| \n181| \n182| class Markdown:\n183|     \"\"\"Convert Markdown to HTML.\"\"\"\n184| \n185|     def __init__(self,\n186|                  extensions=[],\n187|                  extension_configs={},\n188|                  safe_mode = False, \n189|                  output_format=DEFAULT_OUTPUT_FORMAT):\n190|         \"\"\"\n191|         Creates a new Markdown instance.\n192| \n193|         Keyword arguments:\n194| \n195|         * extensions: A list of extensions.\n196|            If they are of type string, the module mdx_name.py will be loaded.\n197|            If they are a subclass of markdown.Extension, they will be used\n198|            as-is.\n199|         * extension-configs: Configuration setting for extensions.\n200|         * safe_mode: Disallow raw html. One of \"remove\", \"replace\" or \"escape\".\n201|         * output_format: Format of output. Supported formats are:\n202|             * \"xhtml1\": Outputs XHTML 1.x. Default.\n203|             * \"xhtml\": Outputs latest supported version of XHTML (currently XHTML 1.1).\n204|             * \"html4\": Outputs HTML 4\n205|             * \"html\": Outputs latest supported version of HTML (currently HTML 4).\n206|             Note that it is suggested that the more specific formats (\"xhtml1\" \n207|             and \"html4\") be used as \"xhtml\" or \"html\" may change in the future\n208|             if it makes sense at that time. \n209| \n210|         \"\"\"\n211|         \n212|         self.safeMode = safe_mode\n213|         self.registeredExtensions = []\n214|         self.docType = \"\"\n215|         self.stripTopLevelTags = True\n216| \n217|         # Preprocessors -- 将暂不处理的 block 先隐藏起来\n218|         self.preprocessors = odict.OrderedDict()\n219|         # 将 self 作为参数传递给类，可以让类的对象调用本类对象的方法\n220|         self.preprocessors[\"html_block\"] = \\\n221|                 preprocessors.HtmlBlockPreprocessor(self)\n222|         self.preprocessors[\"reference\"] = \\\n223|                 preprocessors.ReferencePreprocessor(self)\n224|         # footnote preprocessor will be inserted with \"<reference\"\n225| \n226|         # Block processors - ran by the parser\n227|         self.parser = blockparser.BlockParser()\n228|         self.parser.blockprocessors['empty'] = \\\n229|          
@@ -1273,7 +1273,7 @@ Markdown 2.0.3 with `safe_mode=False` by default confirms the stored XSS path. N
 }
 ```
 
-观察：
+返回：
 
 ```
 {"stage": "hunt", "completed": ["hunt", "recon"], "ok": true}
@@ -1289,7 +1289,7 @@ Markdown 2.0.3 with `safe_mode=False` by default confirms the stored XSS path. N
 }
 ```
 
-观察：
+返回：
 
 ```
 {"note": "Each lead groups one rule in one file. Leads are candidates, not findings. Before finalize_report every lead must be triaged with triage_leads: link it to a finding id, or dismiss it as benign after you read_file the code around it.", "available_categories": ["config", "crypto", "csrf", "deserialization", "file_access", "injection", "redirect", "xml", "xss"], "lead_count": 29, "truncated": false, "leads": [{"id": "L1", "rule_id": "debug-true", "category": "config", "path": "settings.py", "lines": [18], "snippet": "18: DEBUG = True", "disposition": "", "note": "", "snippets": ["18: DEBUG = True"]}, {"id": "L2", "rule_id": "db-password", "category": "config", "path": "settings.py", "lines": [49], "snippet": "49: 'PASSWORD': '123456',", "disposition": "", "note": "", "snippets": ["49: 'PASSWORD': '123456',"]}, {"id": "L3", "rule_id": "secret-key", "category": "config", "path": "settings.py", "lines": [79], "snippet": "79: SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'", "disposition": "", "note": "", "snippets": ["79: SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'"]}, {"id": "L4", "rule_id": "sql-statement-format", "category": "injection", "path": "app/account/backends.py", "lines": [44], "snippet": "44: SELECT ct.%s, p.%s", "disposition": "", "note": "", "snippets": ["44: SELECT ct.%s, p.%s"]}, {"id": "L5", "rule_id": "weak-hash", "category": "crypto", "path": "app/account/models.py", "lines": [63, 65, 364, 367, 427, 430], "snippet": "63: return md5_constructor(salt + raw_password).hexdigest()", "disposition": "", "note": "", "snippets": ["63: return md5_constructor(salt + raw_password).hexdigest()", "65: return sha_constructor(salt + raw_password).hexdigest()", "364: salt = sha_constructor(str(random.random())).hexdigest()[:5]"]}, {"id": "L6", "rule_id": "insecure-random", "category": "crypto", "path": "app/account/models.py", "lines": [232, 364, 427], "snippet": "232: salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]", "disposition": "", "note": "", "snippets": ["232: salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]", "364: salt = sha_constructor(str(random.random())).hexdigest()[:5]", "427: salt = sha_constructor(str(random.random())).hexdigest()[:5]"]}, {"id": "L7", "rule_id": "weak-hash", "category": "crypto", "path": "app/account/tokens.py", "lines": [54], "snippet": "54: hash = sha_constructor(settings.SECRET_KEY + unicode(user.id) +", "disposition": "",
@@ -1315,7 +1315,7 @@ There's an app/sessions/backends/base.py I haven't seen — that's the custom se
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions", "count": 10, "truncated": false, "skipped_by_default": "directories named assets/bower_components/site-packages/static/staticfiles/third_party/thirdparty/vendor or ending in 'media', plus lib/markdown", "files": ["app/sessions/middleware.py", "app/sessions/models.py", "app/sessions/tests.py", "app/sessions/__init__.py", "app/sessions/backends/base.py", "app/sessions/backends/cache.py", "app/sessions/backends/cached_db.py", "app/sessions/backends/db.py", "app/sessions/backends/file.py", "app/sessions/backends/__init__.py"], "ok": true}
@@ -1331,7 +1331,7 @@ There's an app/sessions/backends/base.py I haven't seen — that's the custom se
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/base.py", "encoding": "utf-8-sig", "total_lines": 287, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| import base64\n2| import os\n3| import random\n4| import sys\n5| import time\n6| from datetime import datetime, timedelta\n7| try:\n8|     import cPickle as pickle\n9| except ImportError:\n10|     import pickle\n11| \n12| from django.conf import settings\n13| from django.core.exceptions import SuspiciousOperation\n14| from django.utils.hashcompat import md5_constructor\n15| \n16| # Use the system (hardware-based) random number generator if it exists.\n17| if hasattr(random, 'SystemRandom'):\n18|     randrange = random.SystemRandom().randrange\n19| else:\n20|     randrange = random.randrange\n21| MAX_SESSION_KEY = 18446744073709551616L     # 2 << 63\n22| \n23| class CreateError(Exception):\n24|     \"\"\"\n25|     Used internally as a consistent exception type to catch from save (see the\n26|     docstring for SessionBase.save() for details).\n27|     \"\"\"\n28|     pass\n29| \n30| class SessionBase(object):\n31|     \"\"\"\n32|     Base class for all Session classes.\n33|     \"\"\"\n34|     TEST_COOKIE_NAME = 'testcookie'\n35|     TEST_COOKIE_VALUE = 'worked'\n36| \n37|     def __init__(self, session_key=None):\n38|         self._session_key = session_key\n39|         self.accessed = False\n40|         self.modified = False\n41| \n42|     def __contains__(self, key):\n43|         return key in self._session\n44| \n45|     def __getitem__(self, key):\n46|         return self._session[key]\n47| \n48|     def __setitem__(self, key, value):\n49|         self._session[key] = value\n50|         self.modified = True\n51| \n52|     def __delitem__(self, key):\n53|         del self._session[key]\n54|         self.modified = True\n55| \n56|     def keys(self):\n57|         return self._session.keys()\n58| \n59|     def items(self):\n60|         return self._session.items()\n61| \n62|     def get(self, key, default=None):\n63|         return self._session.get(key, default)\n64| \n65|     def pop(self, key, *args):\n66|         self.modified = self.modified or key in self._session\n67|         return self._session.pop(key, *args)\n68| \n69|     def setdefault(self, key, value):\n70|         if key in self._session:\n71|             return self._session[key]\n72|         else:\n73|             self.modified = True\n74|             self._session[key]
@@ -1347,7 +1347,7 @@ There's an app/sessions/backends/base.py I haven't seen — that's the custom se
 }
 ```
 
-观察：
+返回：
 
 ```
 {"symbol": "SESSION_ENGINE", "matched_name": "SESSION_ENGINE", "total": 1, "truncated": false, "note": "Word-boundary text match on the last name segment, not import resolution. No definitions means the framework default applies; read the code before relying on that.", "definitions": [], "imports": [], "uses": [{"path": "app/sessions/middleware.py", "line": 10, "text": "engine = import_module(settings.SESSION_ENGINE)"}], "ok": true}
@@ -1373,7 +1373,7 @@ SESSION_ENGINE is not set anywhere → Django default 'django.contrib.sessions.b
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/db.py", "encoding": "utf-8-sig", "total_lines": 73, "start_line": 1, "end_line": 73, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| import datetime\n2| from sessions.models import Session\n3| from sessions.backends.base import SessionBase, CreateError\n4| from django.core.exceptions import SuspiciousOperation\n5| from django.db import IntegrityError, transaction\n6| from django.utils.encoding import force_unicode\n7| \n8| class SessionStore(SessionBase):\n9|     \"\"\"\n10|     Implements database session store.\n11|     \"\"\"\n12|     def load(self):\n13|         try:\n14|             s = Session.objects.get(\n15|                 session_key = self.session_key,\n16|                 expire_date__gt=datetime.datetime.now()\n17|             )\n18|             return self.decode(force_unicode(s.session_data))\n19|         except (Session.DoesNotExist, SuspiciousOperation):\n20|             self.create()\n21|             return {}\n22| \n23|     def exists(self, session_key):\n24|         try:\n25|             Session.objects.get(session_key=session_key)\n26|         except Session.DoesNotExist:\n27|             return False\n28|         return True\n29| \n30|     def create(self):\n31|         while True:\n32|             self.session_key = self._get_new_session_key()\n33|             try:\n34|                 # Save immediately to ensure we have a unique entry in the\n35|                 # database.\n36|                 self.save(must_create=True)\n37|             except CreateError:\n38|                 # Key wasn't unique. Try again.\n39|                 continue\n40|             self.modified = True\n41|             self._session_cache = {}\n42|             return\n43| \n44|     def save(self, must_create=False):\n45|         \"\"\"\n46|         Saves the current session data to the database. If 'must_create' is\n47|         True, a database error will be raised if the saving operation doesn't\n48|         create a *new* entry (as opposed to possibly updating an existing\n49|         entry).\n50|         \"\"\"\n51|         obj = Session(\n52|             session_key = self.session_key,\n53|             session_data = self.encode(self._get_session(no_load=must_create)),\n54|             expire_date = self.get_expiry_date()\n55|         )\n56|         sid = transaction.savepoint()\n57|         try:\n58|             obj.save(force_insert=must_create)\n59|         except I
@@ -1389,7 +1389,7 @@ SESSION_ENGINE is not set anywhere → Django default 'django.contrib.sessions.b
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/cached_db.py", "encoding": "utf-8-sig", "total_lines": 42, "start_line": 1, "end_line": 42, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"\n2| Cached, database-backed sessions.\n3| \"\"\"\n4| \n5| from django.conf import settings\n6| from sessions.backends.db import SessionStore as DBStore\n7| from django.core.cache import cache\n8| \n9| class SessionStore(DBStore):\n10|     \"\"\"\n11|     Implements cached, database backed sessions.\n12|     \"\"\"\n13| \n14|     def __init__(self, session_key=None):\n15|         super(SessionStore, self).__init__(session_key)\n16| \n17|     def load(self):\n18|         data = cache.get(self.session_key, None)\n19|         if data is None:\n20|             data = super(SessionStore, self).load()\n21|             cache.set(self.session_key, data, settings.SESSION_COOKIE_AGE)\n22|         return data\n23| \n24|     def exists(self, session_key):\n25|         return super(SessionStore, self).exists(session_key)\n26| \n27|     def save(self, must_create=False):\n28|         super(SessionStore, self).save(must_create)\n29|         cache.set(self.session_key, self._session, settings.SESSION_COOKIE_AGE)\n30| \n31|     def delete(self, session_key=None):\n32|         super(SessionStore, self).delete(session_key)\n33|         cache.delete(session_key or self.session_key)\n34| \n35|     def flush(self):\n36|         \"\"\"\n37|         Removes the current session data from the database and regenerates the\n38|         key.\n39|         \"\"\"\n40|         self.clear()\n41|         self.delete(self.session_key)\n42|         self.create()", "ok": true}
@@ -1433,7 +1433,7 @@ And check the DB file presence.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": ".", "count": 0, "truncated": false, "skipped_by_default": "directories named assets/bower_components/site-packages/static/staticfiles/third_party/thirdparty/vendor or ending in 'media', plus lib/markdown", "files": [], "ok": true}
@@ -1449,7 +1449,7 @@ And check the DB file presence.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "manage.py", "encoding": "utf-8-sig", "total_lines": 20, "start_line": 1, "end_line": 20, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| #!/usr/bin/env python\n2| # coding: utf-8\n3| \n4| # 说明：添加 vendor/ 目录作为 Python 的第一加载目录\n5| import os,sys\n6| \n7| THIRD_LIB = os.path.dirname(os.path.realpath(__file__))+\"/lib\"\n8| if sys.path.count(THIRD_LIB) == 0:\n9|     sys.path.insert(0,THIRD_LIB)\n10| \n11| from django.core.management import execute_manager\n12| try:\n13|     import settings # Assumed to be in the same directory.\n14| except ImportError:\n15|     import sys\n16|     sys.stderr.write(\"Error: Can't find the file 'settings.py' in the directory containing %r. It appears you've customized things.\\nYou'll have to run django-admin.py, passing it your settings module.\\n(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\\n\" % __file__)\n17|     sys.exit(1)\n18| \n19| if __name__ == \"__main__\":\n20|     execute_manager(settings)", "ok": true}
@@ -1465,7 +1465,7 @@ And check the DB file presence.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "scripts/ylinux.fcgi", "encoding": "utf-8-sig", "total_lines": 24, "start_line": 1, "end_line": 24, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| #!/usr/bin/env python\n2| # -*- coding: utf-8 -*-\n3| \n4| # 使用 fcgi 启动 django\n5| # 关键是设置好自定义加载路径\n6| \n7| import sys, os\n8| \n9| CGI_ROOT = os.path.dirname(os.path.realpath(__file__))\n10| # 添加自定义Python路径\n11| sys.path.insert(0, \"/usr/local/bin/python\")\n12| #sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + 'django')\n13| sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))\n14| sys.path.insert(0,CGI_ROOT+\"/ylinux/lib\")\n15| \n16| # 切换到工程目录（可选）\n17| # os.chdir(\"/www/user.root.dir/site.mount.point/htdocs\")\n18| \n19| # 设定DJANGO_SETTINGS_MODULE环境变量\n20| #os.environ['DJANGO_SETTINGS_MODULE'] = \"myproject.settings\"\n21| os.environ['DJANGO_SETTINGS_MODULE'] = \"ylinux.ysettings\"\n22| \n23| from django.core.servers.fastcgi import runfastcgi\n24| runfastcgi(method=\"threaded\", daemonize=\"false\") ", "ok": true}
@@ -1481,7 +1481,7 @@ And check the DB file presence.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/home/forms.py", "encoding": "utf-8-sig", "total_lines": 9, "start_line": 1, "end_line": 9, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django import forms\n4| \n5| class ContactForm(forms.Form):\n6|     subject = forms.CharField(max_length=100)\n7|     message = forms.CharField()\n8|     sender = forms.EmailField()\n9|     cc_myself = forms.BooleanField(required=False)", "ok": true}
@@ -1513,7 +1513,7 @@ Now let me look at remaining files: app/syndication/feeds.py, app/syndication/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/syndication/feeds.py", "encoding": "utf-8-sig", "total_lines": 38, "start_line": 1, "end_line": 38, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| from django.contrib.syndication import views\n2| from django.core.exceptions import ObjectDoesNotExist\n3| import warnings\n4| \n5| # This is part of the deprecated API\n6| from django.contrib.syndication.views import FeedDoesNotExist, add_domain\n7| \n8| class Feed(views.Feed):\n9|     \"\"\"Provided for backwards compatibility.\"\"\"\n10|     def __init__(self, slug, request):\n11|         warnings.warn('The syndication feeds.Feed class is deprecated. Please '\n12|                       'use the new class based view API.',\n13|                       category=PendingDeprecationWarning)\n14| \n15|         self.slug = slug\n16|         self.request = request\n17|         self.feed_url = getattr(self, 'feed_url', None) or request.path\n18|         self.title_template = self.title_template or ('feeds/%s_title.html' % slug)\n19|         self.description_template = self.description_template or ('feeds/%s_description.html' % slug)\n20| \n21|     def get_object(self, bits):\n22|         return None\n23| \n24|     def get_feed(self, url=None):\n25|         \"\"\"\n26|         Returns a feedgenerator.DefaultFeed object, fully populated, for\n27|         this feed. Raises FeedDoesNotExist for invalid parameters.\n28|         \"\"\"\n29|         if url:\n30|             bits = url.split('/')\n31|         else:\n32|             bits = []\n33|         try:\n34|             obj = self.get_object(bits)\n35|         except ObjectDoesNotExist:\n36|             raise FeedDoesNotExist\n37|         return super(Feed, self).get_feed(obj, self.request)\n38| ", "ok": true}
@@ -1529,7 +1529,7 @@ Now let me look at remaining files: app/syndication/feeds.py, app/syndication/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/syndication/views.py", "encoding": "utf-8-sig", "total_lines": 209, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| import datetime\n2| from django.conf import settings\n3| from django.contrib.sites.models import Site, RequestSite\n4| from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist\n5| from django.http import HttpResponse, Http404\n6| from django.template import loader, Template, TemplateDoesNotExist, RequestContext\n7| from django.utils import feedgenerator, tzinfo\n8| from django.utils.encoding import force_unicode, iri_to_uri, smart_unicode\n9| from django.utils.html import escape\n10| \n11| def add_domain(domain, url):\n12|     if not (url.startswith('http://')\n13|             or url.startswith('https://')\n14|             or url.startswith('mailto:')):\n15|         # 'url' must already be ASCII and URL-quoted, so no need for encoding\n16|         # conversions here.\n17|         url = iri_to_uri(u'http://%s%s' % (domain, url))\n18|     return url\n19| \n20| class FeedDoesNotExist(ObjectDoesNotExist):\n21|     pass\n22| \n23| \n24| class Feed(object):\n25|     feed_type = feedgenerator.DefaultFeed\n26|     title_template = None\n27|     description_template = None\n28| \n29|     def __call__(self, request, *args, **kwargs):\n30|         try:\n31|             obj = self.get_object(request, *args, **kwargs)\n32|         except ObjectDoesNotExist:\n33|             raise Http404('Feed object does not exist.')\n34|         feedgen = self.get_feed(obj, request)\n35|         response = HttpResponse(mimetype=feedgen.mime_type)\n36|         feedgen.write(response, 'utf-8')\n37|         return response\n38| \n39|     def item_title(self, item):\n40|         # Titles should be double escaped by default (see #6533)\n41|         return escape(force_unicode(item))\n42| \n43|     def item_description(self, item):\n44|         return force_unicode(item)\n45| \n46|     def item_link(self, item):\n47|         try:\n48|             return item.get_absolute_url()\n49|         except AttributeError:\n50|             raise ImproperlyConfigured('Give your %s class a get_absolute_url() method, or define an item_link() method in your Feed class.' % item.__class__.__name__)\n51| \n52|     def __get_dynamic_attr(self, attname, obj, default=None):\n53|         try:\n54|             attr = getattr(self, attname)\n55|         except AttributeError:\n56| 
@@ -1545,7 +1545,7 @@ Now let me look at remaining files: app/syndication/feeds.py, app/syndication/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/urls.py", "encoding": "utf-8-sig", "total_lines": 60, "start_line": 1, "end_line": 60, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| from wiki.views import LatestTopicFeed, LatestPostFeed\n5| \n6| # patterns 的第一个元素是其他view的base路径\n7| urlpatterns = patterns('wiki.views',\n8| \n9|     url(r'^$', 'index', name='index'),\n10| \n11|     # 一些不存在的对象\n12|     url(r'^catalog_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Catalog'}, name='catalog_not_exist'),\n13|     url(r'^topic_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Topic'}, name='topic_not_exist'),\n14|     url(r'^post_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Post'}, name='post_not_exist'),\n15| \n16|     # Show Catalog : /前缀/catalog/<catalog-id>/\n17|     # Show Topic : /前缀/topic/<topic-id>/\n18|     # Show Post : /前缀/post/<post-id>/\n19|     url(r'^catalog/$', 'catalog', name='catalogs'),\n20|     url(r'^catalog/(?P<id>\\d+)/$', 'catalog', name='show_catalog'),\n21|     url(r'^catalog/(?P<id>\\d+)/(?P<curpage>\\d+)/$', 'catalog', name='show_catalog_with_page'),\n22|     url(r'^topic/(?P<id>\\d+)/$', 'topic', name='show_topic'),\n23|     url(r'^post/(?P<id>\\d+)/$', 'post', name='show_post'),\n24| \n25|     # Add Topic :  /前缀/catalog/<catalog-id>/addtopic\n26|     # Add Post  :  /前缀/topic/<topic-id>/addpost\n27|     url(r'^topic/(?P<id>\\d+)/addpost/$', 'add_post', name='add_post'),\n28|     url(r'^catalog/(?P<id>\\d+)/addtopic/$', 'add_topic', name='add_topic'),\n29| \n30|     # Edit Topic :  /前缀/topic/<topic-id>/edit/\n31|     url(r'^topic/(?P<id>\\d+)/edit/$', 'edit_topic', name='edit_topic'),\n32| \n33|     # Delete Topic : /前缀/topic/<topic-id>/delete/\n34|     url(r'^topic/(?P<id>\\d+)/delete/$', 'manage_topic', {'type':'delete'}, name='del_topic'),\n35|     url(r'^topic/(?P<id>\\d+)/recycled/$', 'manage_topic', {'type':'recycled'}, name='recycled_topic'),\n36|     url(r'^topic/(?P<id>\\d+)/hidden/$', 'manage_topic', {'type':'hidden'}, name='hidden_topic'),\n37|     url(r'^topic/(?P<id>\\d+)/disable_recycled/$', 'manage_topic', {'type':'disable_recycled'}, name='disable_recycled_topic'),\n38|     url(r'^topic/(?P<id>\\d+)/disable_hidden/$', 'manage_topic', {'type':'disable_hidden'}, name='disable_hidden_topic'),\n39| \n40|     url(r'^post/(?P<id>\\d+)/delete/$', 'del_post', name='del_post'),\n41| \n42|     # Feeds\n43|     url(r'^topic/ne
@@ -1561,7 +1561,7 @@ Now let me look at remaining files: app/syndication/feeds.py, app/syndication/vi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/ydata/attachment.html", "encoding": "utf-8-sig", "total_lines": 43, "start_line": 1, "end_line": 43, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| {% extends 'wiki/base.html' %}\n2| {% block content %}\n3| \n4| <p><span class=\"title\">查看附件</span> <a href=\"{% url ydata:download_attachment attachment.id %}\">下载附件</a> </p>\n5| \n6| <table>\n7|   <tbody>\n8|     <tr>\n9|       <th>名字</th>\n10|       <td>{{ attachment.name }}</td>\n11|     </tr>\n12|     <tr>\n13|       <th>大小</th>\n14|       <td>{{ attachment.size }}</td>\n15|     </tr>\n16|     <tr>\n17|       <th>所有者</th>\n18|       <td><a href=\"{% url account:show_user attachment.user.id %}\">{{ attachment.user }}<a></td>\n19|     </tr>\n20|     <tr>\n21|       <th>描述</th>\n22|       <td>{{ attachment.description }}</td>\n23|     </tr>\n24|     <tr>\n25|       <th>创建时间</th>\n26|       <td>{{ attachment.created }}</td>\n27|     </tr>\n28|     <tr>\n29|       <th>更新时间</th>\n30|       <td>{{ attachment.updated }}</td>\n31|     </tr>\n32|     <tr>\n33|       <th>下载次数</th>\n34|       <td>{{ attachment.dtimes }}</td>\n35|     </tr>\n36|     <tr>\n37|       <th>引用次数</th>\n38|       <td>{{ attachment.qtimes }}</td>\n39|     </tr>\n40|   <tbody>\n41| </table>\n42| \n43| {% endblock %}", "ok": true}
@@ -1598,7 +1598,7 @@ Open redirect findings:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "email|signature|safe|escape|autoescape", "count": 17, "matches": [{"path": "templates/404.html", "line": 11, "text": "<form action=\"https://groups.google.com/group/ylinux?hl=zh-CN/boxsubscribe\"><tr><td> 您的 Email : <input type=text name=email> <input type=submit name=\"sub\" value=\"订阅\"></td></tr></form>"}, {"path": "templates/500.html", "line": 11, "text": "<form action=\"https://groups.google.com/group/ylinux?hl=zh-CN/boxsubscribe\"><tr><td> 您的 Email : <input type=text name=email> <input type=submit name=\"sub\" value=\"订阅\"></td></tr></form>"}, {"path": "templates/account/password_reset_request.html", "line": 6, "text": "<h2> 此邮件未被注册： {{ email }}</h2>"}, {"path": "templates/account/password_reset_request.html", "line": 12, "text": "<h2> 重置密码链接已经发送到邮件： {{ email }} </h2>"}, {"path": "templates/account/password_reset_request.html", "line": 23, "text": "<input id=\"id_email\" type=\"text\" name=\"email\"/>"}, {"path": "templates/account/request_register.html", "line": 6, "text": "<h2> 此邮件已经被使用： {{ email }}</h2>"}, {"path": "templates/account/request_register.html", "line": 13, "text": "<h2> 注册链接已经发送到邮件： {{ email }} </h2>"}, {"path": "templates/account/request_register.html", "line": 24, "text": "<p><label for=\"id_email\">邮件：</label> <input id=\"id_email\" type=\"text\" name=\"email\"/></p>"}, {"path": "templates/admin/user.html", "line": 17, "text": "{% if create_user %}<p><a href=\"{% url admin:email2all %}\">管理员群发邮件</a></p>{% endif %}"}, {"path": "templates/bbs/topic.html", "line": 23, "text": "{{ topic.body_html|safe }}"}, {"path": "templates/bbs/topic.html", "line": 30, "text": "{{ p.body_html|safe }}"}, {"path": "templates/home/about.html", "line": 13, "text": "<form action=\"https://groups.google.com/group/ylinux?hl=zh-CN/boxsubscribe\"><tr><td> 您的 Email : <input type=text name=email> <input type=submit name=\"sub\" value=\"订阅\"></td></tr></form>"}, {"path": "templates/wiki/editPostAJAX.html", "line": 19, "text": "{{ post.body_html|safe }}"}, {"path": "templates/wiki/post.html", "line": 12, "text": "<p>{{ post.body_html|safe }}</p>"}, {"path": "templates/wiki/replayAJAX.html", "line": 16, "text": "{{ post.body_html|safe }}"}, {"path": "templates/wiki/topic.html", "line": 54, "text": "{{ topic.body_html|safe }}"}, {"path": "templates/wiki/topic.html", "line": 59, "text": "{{ POST_HTML|safe }}"}], "ok": true}
@@ -1614,7 +1614,7 @@ Open redirect findings:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/wiki/topic.html", "encoding": "utf-8-sig", "total_lines": 69, "start_line": 1, "end_line": 69, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| {% extends 'wiki/base.html' %}\n2| \n3| {% block extend_header %}\n4| \n5| <link rel=\"stylesheet\" href=\"{{ MEDIA_URL }}themes/{% if theme %}{{ theme }}{% else %}default{% endif %}/common.css\" />\n6| <link rel=\"stylesheet\" href=\"{{ MEDIA_URL }}themes/{% if theme %}{{ theme }}{% else %}default{% endif %}/topic.css\" />\n7| \n8| <script src=\"{{ MEDIA_URL }}js/jquery-ui/js/jquery-ui-1.8.15.custom.min.js\"></script>\n9| \n10| <link href=\"{{ MEDIA_URL }}js/syntaxhighlighter/styles/shCoreYLinux.css\" rel=\"stylesheet\" type=\"text/css\"/>\n11| <link href=\"{{ MEDIA_URL }}js/syntaxhighlighter/styles/shThemeYLinux.css\" rel=\"stylesheet\" type=\"text/css\"/>\n12| \n13| <script src=\"{{ MEDIA_URL }}js/ylinux.js\" type=\"text/javascript\"></script>\n14| <script src=\"{{ MEDIA_URL }}js/syntaxhighlighter/scripts/shCore.js\" type=\"text/javascript\"></script>\n15| <script src=\"{{ MEDIA_URL }}js/syntaxhighlighter/scripts/shAutoloader.js\" type=\"text/javascript\"></script>\n16| <script type=\"text/javascript\">\n17|   $(document).ready(function () {\n18|     load_syntaxhighlighter();\n19|     //$(\"#posts\").load(\"{% url wiki:ajax_show_topic_posts topic.id %}\");\n20|   })\n21| </script>\n22| \n23| {% endblock %}\n24| \n25| {% block content %}\n26| <div id=\"topic\">\n27| \n28|   <div class=\"topic-header box\">\n29|     <p class=\"topic-title title\">{{ topic }}</p>\n30|     <p class=\"topic-info info\">\n31|       <b>作   者：</b> <span class=\"user\"><a href=\"{% url account:show_user topic.user.id %}\">{{ topic.user }}</a></span>\n32|       <br/>\n33|       <b>发布时间：</b> <span class=\"time\">{{ topic.created|date:\"Y年m月d日 H:i\" }}</span>\n34|       <br/>\n35|       <b>最近更新：</b> <span class=\"time\">{{ topic.updated|date:\"Y年m月d日 H:i\" }}</span>\n36|       <br/>\n37|       <b>查看次数:</b> {{ topic.view_count }}\n38|       <!--在 <a href=\"http://www.ip138.com/ips.asp?ip={{ topic.user_ip }}&action=2\">{{ topic.user_ip }}</a>-->\n39|     </p>\n40| \n41|     <p class=\"topic-action action\">\n42|       {% ifequal user topic.user %}<a href=\"{% url wiki:edit_topic topic.id %}\">编辑</a> |{% endifequal %}\n43|       <a href=\"{% url wiki:add_post topic.id %}\">回复</a>\n44|       {% ifequal user topic.user %}\n45|       <!--[<a href=\"{% url wiki:del_topic topic
@@ -1644,7 +1644,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/urls.py", "encoding": "utf-8-sig", "total_lines": 17, "start_line": 1, "end_line": 17, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('account.views',\n6|     url(r'^$', 'index', name=\"index\"),\n7|     url(r'^register/$', 'request_register', name='register'),\n8|     url(r'^register/(?P<key>.+)/$', 'register', name='complete_register'),\n9|     url(r'^login/$', 'login', name='login'),\n10|     url(r'^logout/$', 'logout', name='logout'),\n11|     url(r'^(?P<id>\\d+)/$', 'user', name='show_user'),\n12|     url(r'^password/reset/$', 'password_reset_request', name='password_reset_request'),\n13|     url(r'^password/reset/(?P<key>.+)/$', 'password_reset', name='password_reset'),\n14| \n15|     url(r'^login/ajax/$', 'ajax_login', name='ajax_login'),\n16|     url(r'^logout/ajax/$', 'ajax_logout', name='ajax_logout'),\n17| )", "ok": true}
@@ -1660,7 +1660,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/context_processors.py", "encoding": "utf-8-sig", "total_lines": 23, "start_line": 1, "end_line": 23, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.core.context_processors import PermWrapper\n4| from django.conf import settings\n5| \n6| def auth(request):\n7|     \"\"\" \n8|     Returns context variables required by apps that use Django's authentication\n9|     system.\n10| \n11|     If there is no 'user' attribute in the request, uses AnonymousUser (from\n12|     django.contrib.auth).\n13|     \"\"\"\n14|     if hasattr(request, 'user'):\n15|         user = request.user\n16|     else:\n17|         from account.models import AnonymousUser\n18|         user = AnonymousUser()\n19|     return {\n20|         'user': user,\n21| #        'messages': user.get_and_delete_messages(),\n22|         'perms': PermWrapper(user),\n23|     }", "ok": true}
@@ -1676,7 +1676,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/urls.py", "encoding": "utf-8-sig", "total_lines": 10, "start_line": 1, "end_line": 10, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ydata.views',\n6|     url(r'^uploadsf/(?P<id>\\d+)/$', 'upload_single_file', name='uploadsf'),\n7|     url(r'^attachment/(?P<id>\\d+)/$', 'show_attachment', name='show_attachment'),\n8|     url(r'^attachment/(?P<id>\\d+)/remove/$', 'remove_attachment', name='delete_attachment'),\n9|     url(r'^attachment/(?P<id>\\d+)/download/$', 'download_attachment', name='download_attachment'),\n10| )", "ok": true}
@@ -1692,7 +1692,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ylab/urls.py", "encoding": "utf-8-sig", "total_lines": 9, "start_line": 1, "end_line": 9, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ylab.views',\n6|     url(r'^time$', 'time', name='time'),\n7|     url(r'^uploadsf$', 'upload_single_file', name='uploadsf'),\n8|     url(r'^update_post_profile$', 'update_post_profile', name='update_post_profile'),\n9| )", "ok": true}
@@ -1708,7 +1708,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/me/urls.py", "encoding": "utf-8-sig", "total_lines": 19, "start_line": 1, "end_line": 19, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('me.views',\n6|     url(r'^$', 'index', name='index'),\n7|     url(r'^(?P<id>\\d+)/$', 'home', name='home'),\n8|     url(r'^(?P<id>\\d+)/topics/$', 'topics', name='topics'),\n9|     url(r'^(?P<id>\\d+)/topics/page_(?P<page>\\d+)/$', 'topics', name='topics_page'),\n10|     url(r'^(?P<id>\\d+)/posts_by_other/$', 'posts_by_other', name='posts_by_other'),\n11|     url(r'^(?P<id>\\d+)/posts_by_other/page_(?P<page>\\d+)/$', 'posts_by_other', name='posts_by_other_page'),\n12|     url(r'^(?P<id>\\d+)/posts_for_other/$', 'posts_for_other', name='posts_for_other'),\n13|     url(r'^(?P<id>\\d+)/posts_for_other/page_(?P<page>\\d+)/$', 'posts_for_other', name='posts_for_other_page'),\n14| \n15|     url(r'^(?P<id>\\d+)/posts/to/$', 'posts', {'obj': 'to'}, name='to_posts'),\n16|     url(r'^(?P<id>\\d+)/posts/to/page_(?P<page>\\d+)/$', 'posts', {'obj': 'to'}, name='to_posts_page'),\n17|     url(r'^(?P<id>\\d+)/posts/from/$', 'posts', {'obj': 'from'}, name='from_posts'),\n18|     url(r'^(?P<id>\\d+)/posts/from/page_(?P<page>\\d+)/$', 'posts', {'obj': 'from'}, name='from_posts_page'),\n19| )", "ok": true}
@@ -1724,7 +1724,7 @@ Let me batch read the small ones.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/urls.py", "encoding": "utf-8-sig", "total_lines": 53, "start_line": 1, "end_line": 53, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('admin.views',\n6| \n7|     url(r'^$', 'index', name=\"index\"),\n8|     url(r'^login/$', 'login', name=\"login\"),\n9| \n10| \n11|     # Permission\n12|     url(r'^permission/$', 'permission', name='permissions'),\n13|     url(r'^permission/(?P<id>\\d+)/$', 'show_permission', name='show_permission'),\n14|     url(r'^permission/(?P<id>\\d+)/edit$', 'edit_permission', name='edit_permission'),\n15|     url(r'^permission/add/$', 'add_permission', name='add_permission'),\n16|     url(r'^permission/(?P<id>\\d+)/del$', 'del_permission', name='del_permission'),\n17| \n18| \n19|     # Group\n20|     url(r'^group/$', 'group', name='groups'),\n21|     url(r'^group/(?P<id>\\d+)/$', 'show_group', name='show_group'),\n22|     url(r'^group/(?P<id>\\d+)/edit$', 'edit_group', name='edit_group'),\n23|     url(r'^group/add/$', 'add_group', name='add_group'),\n24|     url(r'^group/(?P<id>\\d+)/del$', 'del_group', name='del_group'),\n25| \n26|     \n27|     # User\n28|     url(r'^user/$', 'user', name='users'),\n29|     url(r'^user/(?P<id>\\d+)/$', 'show_user', name='show_user'),\n30|     url(r'^user/(?P<id>\\d+)/edit/$', 'edit_user', name='edit_user'),\n31|     url(r'^user/add/$', 'add_user', name='add_user'),\n32|     # 最好不要 del user， 禁止用户即可\n33|     url(r'^user/(?P<id>\\d+)/del$', 'del_user', name='del_user'),\n34| \n35|     url(r'^user/email2all/$', 'email_to_all', name='email2all'),\n36| \n37| \n38|     # Catalog\n39|     url(r'^catalog/$', 'catalog', name='catalogs'),\n40|     url(r'^catalog/(?P<id>\\d+)/$', 'show_catalog', name='show_catalog'),\n41|     url(r'^catalog/(?P<id>\\d+)/del/$', 'del_catalog', name='del_catalog'),\n42|     url(r'^catalog/(?P<id>\\d+)/edit/$', 'edit_catalog', name='edit_catalog'),\n43|     url(r'^catalog/(?P<parent_id>\\d+)/add/$', 'add_catalog', name='add_sub_catalog'),\n44|     url(r'^catalog/add/$', 'add_catalog', {'parent_id':None}, name='add_top_catalog'),\n45| \n46|     # Send Message\n47|     url(r'^push_news/$', 'push_news', name='push_news'),\n48| \n49|     # 危险！\n50|     url(r'^reboot/$', 'reboot'),\n51| \n52|     url(r'^update_bbs/$', 'update_bbs'),\n53| )", "ok": true}
@@ -1752,7 +1752,7 @@ Let me read admin/forms.py and sessions/backends/file.py, cache.py.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/file.py", "encoding": "utf-8-sig", "total_lines": 147, "start_line": 1, "end_line": 147, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| import errno\n2| import os\n3| import tempfile\n4| \n5| from django.conf import settings\n6| from sessions.backends.base import SessionBase, CreateError\n7| from django.core.exceptions import SuspiciousOperation, ImproperlyConfigured\n8| \n9| \n10| class SessionStore(SessionBase):\n11|     \"\"\"\n12|     Implements a file based session store.\n13|     \"\"\"\n14|     def __init__(self, session_key=None):\n15|         self.storage_path = getattr(settings, \"SESSION_FILE_PATH\", None)\n16|         if not self.storage_path:\n17|             self.storage_path = tempfile.gettempdir()\n18| \n19|         # Make sure the storage path is valid.\n20|         if not os.path.isdir(self.storage_path):\n21|             raise ImproperlyConfigured(\n22|                 \"The session storage path %r doesn't exist. Please set your\"\n23|                 \" SESSION_FILE_PATH setting to an existing directory in which\"\n24|                 \" Django can store session data.\" % self.storage_path)\n25| \n26|         self.file_prefix = settings.SESSION_COOKIE_NAME\n27|         super(SessionStore, self).__init__(session_key)\n28| \n29|     def _key_to_file(self, session_key=None):\n30|         \"\"\"\n31|         Get the file associated with this session key.\n32|         \"\"\"\n33|         if session_key is None:\n34|             session_key = self.session_key\n35| \n36|         # Make sure we're not vulnerable to directory traversal. Session keys\n37|         # should always be md5s, so they should never contain directory\n38|         # components.\n39|         if os.path.sep in session_key:\n40|             raise SuspiciousOperation(\n41|                 \"Invalid characters (directory components) in session key\")\n42| \n43|         return os.path.join(self.storage_path, self.file_prefix + session_key)\n44| \n45|     def load(self):\n46|         session_data = {}\n47|         try:\n48|             session_file = open(self._key_to_file(), \"rb\")\n49|             try:\n50|                 file_data = session_file.read()\n51|                 # Don't fail if there is no data in the session file.\n52|                 # We may have opened the empty placeholder file.\n53|                 if file_data:\n54|                     try:\n55|                         se
@@ -1768,7 +1768,7 @@ Let me read admin/forms.py and sessions/backends/file.py, cache.py.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/cache.py", "encoding": "utf-8-sig", "total_lines": 56, "start_line": 1, "end_line": 56, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| from sessions.backends.base import SessionBase, CreateError\n2| from django.core.cache import cache\n3| \n4| class SessionStore(SessionBase):\n5|     \"\"\"\n6|     A cache-based session store.\n7|     \"\"\"\n8|     def __init__(self, session_key=None):\n9|         self._cache = cache\n10|         super(SessionStore, self).__init__(session_key)\n11| \n12|     def load(self):\n13|         session_data = self._cache.get(self.session_key)\n14|         if session_data is not None:\n15|             return session_data\n16|         self.create()\n17|         return {}\n18| \n19|     def create(self):\n20|         # Because a cache can fail silently (e.g. memcache), we don't know if\n21|         # we are failing to create a new session because of a key collision or\n22|         # because the cache is missing. So we try for a (large) number of times\n23|         # and then raise an exception. That's the risk you shoulder if using\n24|         # cache backing.\n25|         for i in xrange(10000):\n26|             self.session_key = self._get_new_session_key()\n27|             try:\n28|                 self.save(must_create=True)\n29|             except CreateError:\n30|                 continue\n31|             self.modified = True\n32|             return\n33|         raise RuntimeError(\"Unable to create a new session key.\")\n34| \n35|     def save(self, must_create=False):\n36|         if must_create:\n37|             func = self._cache.add\n38|         else:\n39|             func = self._cache.set\n40|         result = func(self.session_key, self._get_session(no_load=must_create),\n41|                 self.get_expiry_age())\n42|         if must_create and not result:\n43|             raise CreateError\n44| \n45|     def exists(self, session_key):\n46|         if self._cache.has_key(session_key):\n47|             return True\n48|         return False\n49| \n50|     def delete(self, session_key=None):\n51|         if session_key is None:\n52|             if self._session_key is None:\n53|                 return\n54|             session_key = self._session_key\n55|         self._cache.delete(session_key)\n56| ", "ok": true}
@@ -1784,7 +1784,7 @@ Let me read admin/forms.py and sessions/backends/file.py, cache.py.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/forms.py", "encoding": "utf-8-sig", "total_lines": 174, "start_line": 1, "end_line": 174, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django import forms\n4| \n5| from django.shortcuts import get_object_or_404\n6| from django.contrib.contenttypes.models import ContentType\n7| \n8| from account.models import Permission,Group,User\n9| from ydata.models import Catalog, Topic, Post, Reputation, Report, Attachment, TZ_CHOICES, PRIVACY_CHOICES\n10| from ydata import settings as ydata_settings\n11| \n12| \n13| class AddPermissionForm (forms.ModelForm):\n14|     class Meta:\n15|         model = Permission\n16|         \n17|     def __init__ (self, *args, **kwargs):\n18|         super (AddPermissionForm, self).__init__ (*args, **kwargs)\n19| \n20|     def save (self):\n21|         permission = Permission (name=self.cleaned_data['name'], content_type=self.cleaned_data['content_type'], codename=self.cleaned_data['codename'])\n22|         permission.save()\n23|         return permission\n24| \n25| class EditPermissionForm (forms.ModelForm):\n26| \n27|     class Meta:\n28|         model = Permission\n29| \n30|     def __init__ (self, *args, **kwargs):\n31|         super(EditPermissionForm, self).__init__(*args, **kwargs)\n32| \n33|     def save (self):\n34|         permission = super(EditPermissionForm, self).save(commit=False)\n35|         permission.name = self.cleaned_data['name']\n36|         permission.codename = self.cleaned_data['codename']\n37|         permission.content_type = self.cleaned_data['content_type']\n38|         permission.save()\n39|         return permission\n40| \n41| \n42| class AddGroupForm (forms.ModelForm):\n43| \n44|     class Meta:\n45|         model = Group\n46| \n47|     def __init__ (self, *args, **kwargs):\n48|         super(AddGroupForm, self).__init__(*args, **kwargs)\n49| \n50|     def save (self):\n51|         group = Group(name=self.cleaned_data['name'])\n52|         group.save()\n53|         for perm in self.cleaned_data['permissions']:\n54|             group.permissions.add(perm)\n55|         return group\n56| \n57| \n58| class EditGroupForm (forms.ModelForm):\n59| \n60|     class Meta:\n61|         model = Group\n62| \n63|     def __init__ (self, *args, **kwargs):\n64|         super(EditGroupForm, self).__init__(*args, **kwargs)\n65| \n66|     def save (self):\n67|         group = super(EditGroupForm, self).save(commit=Fals
@@ -1824,7 +1824,7 @@ Let me read admin/views.py 180-340 to be thorough.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/views.py", "encoding": "utf-8-sig", "total_lines": 481, "start_line": 180, "end_line": 339, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|         return HttpResponseRedirect(url)\n181| \n182|     return {'form':form, 'group':group}\n183| \n184| \n185| @permission_required('account.delete_group')\n186| @render_to ('admin/del_group.html')\n187| def del_group (request, id):\n188| \n189|     group = get_object_or_404 (Group, pk=id)\n190|     # 这里等待以后验证是否已有其他关联\n191|     group.delete()\n192|     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))\n193| \n194| \n195| # User 管理\n196| \n197| @permission_required('account.view_user')\n198| @render_to('admin/user.html')\n199| def user(request):\n200| \n201|     users = User.objects.all()\n202|     if hasattr(request, 'user'):\n203|         create_user = request.user.has_perm ('account.create_user')\n204|         edit_user =  request.user.has_perm ('account.edit_user')\n205|         delete_user = request.user.has_perm ('account.delete_user')\n206|     return {'users':users,\n207|             'create_user':create_user,\n208|             'edit_user':edit_user,\n209|             'delete_user':delete_user}\n210| \n211| \n212| @permission_required('account.view_user')\n213| @render_to ('admin/show_user.html')\n214| def show_user (request, id):\n215| \n216|     user = get_object_or_404 (User, pk=id)\n217|     return {'the_user':user}\n218| \n219| \n220| @permission_required('account.create_user')\n221| @render_to('admin/add_user.html')\n222| def add_user(request):\n223| \n224|     form = build_form (AddUserForm, request)\n225|     if form.is_valid():\n226|         user = form.save()\n227|         url = reverse ('admin:show_user', args=[user.id])\n228|         return HttpResponseRedirect(url)\n229| \n230|     return {'form':form}\n231| \n232| \n233| @permission_required('account.edit_user')\n234| @render_to ('admin/edit_user.html')\n235| def edit_user (request, id):\n236| \n237|     user = get_object_or_404(User, pk=id)\n238|     form = build_form (EditUserForm, request, instance=user)\n239| \n240|     if form.is_valid():\n241|         form.save()\n242|         url = reverse ('admin:show_user', args=[id])\n243|         return HttpResponseRedirect(url)\n244| \n245|     return {'form':form, 'user':user}\n246| \n247| \n248| # 这里用一个冒险的技巧，权限为'just_admin_can_delete'的\n249| # 就可以删除用户，但是这只有 superuser 可以验证为 True \n250| @permission_required('j
@@ -1840,7 +1840,7 @@ Let me read admin/views.py 180-340 to be thorough.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/account/user.html", "encoding": "utf-8-sig", "total_lines": 20, "start_line": 1, "end_line": 20, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| {% extends 'wiki/base.html' %}\n2| {% block content %}\n3| \n4| <h3>用户名：{{ the_user }}</h3>\n5| \n6| <h3>发表的主题有：</h3>\n7| <ul>\n8|   {% for t in topics %}\n9|   <li><a href=\"{% url wiki:show_topic t.id %}\">{{ t }}</a></li>\n10|   {% endfor %}\n11| </ul>\n12| \n13| <h3>参与的主题有：</h3>\n14| <ul>\n15|   {% for p in posts %}\n16|   <li><a href=\"{% url wiki:show_post p.id %}\">{{ p }}</a></li>\n17|   {% endfor %}\n18| </ul>\n19| \n20| {% endblock %}", "ok": true}
@@ -1876,7 +1876,7 @@ Good. Now I have a fairly complete picture. Let me consolidate findings and chec
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "csrf", "count": 1, "matches": [{"path": "templates/wiki/ajax_add_topic.html", "line": 56, "text": "{% csrf_token %}"}], "ok": true}
@@ -1893,7 +1893,7 @@ Good. Now I have a fairly complete picture. Let me consolidate findings and chec
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "CsrfViewMiddleware|csrf_protect|csrf_exempt|csrf_token", "count": 3, "matches": [{"path": "lib/django_xmlrpc/views.py", "line": 50, "text": "from django.views.decorators.csrf import csrf_exempt"}, {"path": "lib/django_xmlrpc/views.py", "line": 52, "text": "from django.contrib.csrf.middleware import csrf_exempt"}, {"path": "lib/django_xmlrpc/views.py", "line": 73, "text": "@csrf_exempt"}], "ok": true}
@@ -1909,7 +1909,7 @@ Good. Now I have a fairly complete picture. Let me consolidate findings and chec
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/__init__.py", "encoding": "utf-8-sig", "total_lines": 44, "start_line": 1, "end_line": 44, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"__init__ module for the django_xmlrpc package\n2| \n3| Authors::\n4|     Graham Binns\n5|     Julien Fache\n6| \n7| Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who\n8| posted the original SimpleXMLRPCDispatcher to the Django wiki:\n9| http://code.djangoproject.com/wiki/XML-RPC\n10| \n11| New BSD License\n12| ===============\n13| Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon\n14| \n15| All rights reserved.\n16| \n17| Redistribution and use in source and binary forms, with or without\n18| modification, are permitted provided that the following conditions are met:\n19| \n20|     * Redistributions of source code must retain the above copyright notice,\n21|       this list of conditions and the following disclaimer.\n22|     * Redistributions in binary form must reproduce the above copyright notice,\n23|       this list of conditions and the following disclaimer in the documentation\n24|       and/or other materials provided with the distribution.\n25|     * Neither the name of the <ORGANIZATION> nor the names of its contributors\n26|       may be used to endorse or promote products derived from this software\n27|       without specific prior written permission.\n28| \n29| THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n30| \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n31| LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n32| A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n33| CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n34| EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n35| PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n36| PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n37| LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n38| NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n39| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n40| \"\"\"\n41| VERSION = (0, 1, 1)\n42| __version__ = '.'.join(map(str, VERSION))\n43| \n44| from views import xmlrpcdispatcher", "ok": true}
@@ -1947,7 +1947,7 @@ Wait, actually, let me reconsider: is it sha_constructor(str(random.random())).h
 }
 ```
 
-观察：
+返回：
 
 ```
 {"symbol": "default_token_generator", "matched_name": "default_token_generator", "total": 4, "truncated": false, "note": "Word-boundary text match on the last name segment, not import resolution. No definitions means the framework default applies; read the code before relying on that.", "definitions": [{"path": "app/account/tokens.py", "line": 66, "text": "default_token_generator = PasswordResetTokenGenerator()"}], "imports": [{"path": "app/account/forms.py", "line": 8, "text": "from account.tokens import default_token_generator"}], "uses": [{"path": "app/account/forms.py", "line": 4, "text": "#from django.contrib.auth.tokens import default_token_generator"}, {"path": "app/account/forms.py", "line": 120, "text": "use_https=False, token_generator=default_token_generator):"}], "ok": true}
@@ -1963,7 +1963,7 @@ Wait, actually, let me reconsider: is it sha_constructor(str(random.random())).h
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/me/index.html", "encoding": "utf-8-sig", "total_lines": 132, "start_line": 1, "end_line": 132, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n2|           \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n3| \n4| <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"zh\" lang=\"zh\">\n5| \n6|   <head>\n7|     <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n8|     <link REL=\"SHORTCUT ICON\" HREF=\"{{ MEDIA_URL }}images/favicon.ico\">\n9|     <title>{{ title }}{% if title %} - {% endif %}YLinux.org</title>\n10|     <script type=\"text/javascript\" src=\"{{ MEDIA_URL }}js/jquery-1.6.2.min.js\" ></script>\n11|     <script type=\"text/javascript\" src=\"{{ MEDIA_URL }}js/ylinux.js\" ></script>\n12|     <link rel=\"stylesheet\" href=\"{{ MEDIA_URL }}themes/{% if theme %}{{ theme }}{% else %}default{% endif %}/me.css\" />\n13|   </head>\n14| \n15|   <!-- body 用 container 包容，分4块： header,navigator,content,footer -->  \n16|   <body>\n17| \n18|     <!-- 开始 header (分2块: logo,account) -->\n19|     <div id=\"header\" class=\"clearfix\">\n20|       <div id=\"logo\"><a href=\"/\"><img src=\"{{ MEDIA_URL }}images/ylinux-logo.gif\" alt=\"YLinux\"/></a></div>\n21|       <div id=\"navigator\">\n22|         <a href=\"/\">首页</a>\n23|         <a href=\"/coding\">新闻</a>\n24|         <a href=\"/me\">ME</a>\n25|         <a href=\"/coding\">项目</a>\n26|         <a href=\"/wiki\">知识库</a>\n27|       </div>\n28|       <div id=\"account\">\n29|         {% if user.is_authenticated %}\n30|         <a href=\"{% url me:home user.id %}\"><span class=\"visitor\">我的主页</span></a>\n31|         <span id=\"logout\"><button type=\"button\" onclick=\"javascript: ajax_logout()\">退出</button></span>\n32|         {% else %}\n33|         <span id=\"login\"><button type=\"button\" onclick=\"javascript: ajax_create_login()\">登录</button></span>\n34|         <span id=\"register\"><button type=\"button\">注册</button></span>\n35|         {% endif %}\n36|       </div>\n37|     </div>\n38|     <!-- 结束 header -->\n39| \n40| \n41|     <!-- 开始 main -->\n42|     <div id=\"main\" class=\"clearfix\">\n43| \n44|       <div id=\"me-side\" class=\"box\">\n45|         <div id=\"tools\" class=\"clearfix\">\n46|           <form method=\"get\" action=\"http://www.google.com/search\" target=\"google_window\">\n47|             <input type=\"text\" name=\"as_q\" s
@@ -1979,7 +1979,7 @@ Wait, actually, let me reconsider: is it sha_constructor(str(random.random())).h
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/account/index.html", "encoding": "utf-8-sig", "total_lines": 5, "start_line": 1, "end_line": 5, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| {% extends \"account/base.html\" %}\n2| \n3| {% block content %}\n4| <p>{% if new_user %}欢迎新用户：<a href=\"{% url account:show_user new_user.id %}\">{{ new_user }}</a>{% endif %}</p>\n5| {% endblock %}", "ok": true}
@@ -1995,7 +1995,7 @@ Wait, actually, let me reconsider: is it sha_constructor(str(random.random())).h
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/wiki/ajax_add_topic.html", "encoding": "utf-8-sig", "total_lines": 84, "start_line": 1, "end_line": 84, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| <div id=\"wiki-container-main-title\">\n2|   <span>\n3|     <a href=\"javascript: void(0)\" onclick=\"ajax_list_catalog('{% url wiki:ajax_show_update %}')\">开始</a>\n4|     {% for pid,name in parents %}\n5|       &gt; <a href=\"javascript: void(0)\" onclick=\"ajax_list_catalog('{% url wiki:ajax_show_catalog pid %}')\">{{ name }}</a>\n6|     {% endfor %}\n7| \n8|     {% if user.is_authenticated %}\n9|     <!-- <span class=\"right\"><a href=\"{% url wiki:index %}\" target=\"_self\" id=\"write_new\">返回</a></span> -->\n10|     {% endif %}\n11| \n12|   </span>\n13| </div>\n14| <!--\n15| <p>\n16|   <a href=\"{% url wiki:index %}\">知识库</a>\n17|   {% for id,name in parents %}\n18|   | <a href=\"{% url wiki:show_catalog id %}\">{{ name }}</a>\n19|   {% endfor %}\n20|   | 发表新主题\n21| </p>\n22| -->\n23| \n24| \n25| {% if form.errors %}\n26| <div id=\"form-error\">\n27|   <p>提交表格有错误发生：</p>\n28|   <ul>\n29|     {% for field in form %}\n30|     {% if field.errors %}\n31|     <li>{{ field.name }}： {{ field.errors|striptags }}</li>\n32|     {% endif %}\n33|     {% endfor %}\n34|   </ul>\n35| </div>\n36| {% endif %}\n37| \n38| <form action=\"{% url wiki:add_topic id%}\" method=\"POST\">\n39| <!--  \n40|   <p><label for=\"id_name\">标题:</label> <input id=\"id_name\" type=\"text\" name=\"name\" maxlength=\"256\" /></p>\n41|   <p>\n42|     <label for=\"id_markup\">语法:</label>\n43|     <select name=\"markup\" id=\"id_markup\">\n44|       <option value=\"bbcode\">bbcode</option>\n45|       <option value=\"markdown\" selected=\"selected\">markdown</option>\n46|     </select>\n47|     <span><a href=\"/wiki/topic/8/\" target=\"_blank\">Markdown 标记语言使用帮助</a></span>\n48|   </p>\n49|   <p>\n50|     <label for=\"id_text\">正文:</label>\n51|     <textarea id=\"id_text\" rows=\"20\" cols=\"60\" name=\"text\"></textarea>\n52|     <input type=\"hidden\" name=\"catalog\" value=\"4\" id=\"id_catalog\" />\n53|   </p>\n54|   　 <p><input type=\"submit\" value=\"发表\"></p>\n55| -->\n56| {% csrf_token %}\n57| {{ form.as_p }}\n58| <input type=\"submit\" value=\"发表\" />\n59| </form>\n60| \n61| <!--\n62| <div id=\"uploadList\">\n63|   <p>附件管理</p>\n64|   <table>\n65|     <tbody id=\"upload\">\n66|       <tr>\n67|         <th>ID</th>\n68|         <th>名字</th>\n69|         <th>描述</th>\n7
@@ -2046,7 +2046,7 @@ Let me read the remaining URL configs and a few leftover files to complete cover
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/home/urls.py", "encoding": "utf-8-sig", "total_lines": 14, "start_line": 1, "end_line": 14, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| from home.views import index,about,contact,coding,sitemap,robots,index_foolday\n5| \n6| urlpatterns = patterns('',\n7|     url(r'^$', index, name=\"index\"),\n8|     #url(r'^orig_index$', index, name=\"orig_index\"),\n9|     url(r'^about/$', about, name=\"about\"),\n10|     url(r'^contact/$', contact, name=\"contact\"),\n11|     url(r'^coding/$', coding),\n12|     url(r'^sitemap.txt/$', sitemap),\n13|     url(r'^robots.txt/$', robots),\n14| )", "ok": true}
@@ -2062,7 +2062,7 @@ Let me read the remaining URL configs and a few leftover files to complete cover
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/bbs/urls.py", "encoding": "utf-8-sig", "total_lines": 16, "start_line": 1, "end_line": 16, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('bbs.views',\n6| \n7|     url(r'^$', 'index', name='index'),\n8|     #url(r'^(?P<id>\\d+)/$', 'catalog_forum', name='subforum'),\n9|     url(r'^(?P<id>\\d+)/$', 'catalog', name='catalog'),\n10|     url(r'^topic/(?P<id>\\d+)/$', 'topic', name='topic'),\n11|     url(r'^post/(?P<id>\\d+)/$', 'post', name='post'),\n12| \n13|     url(r'^forum_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Forum'}, name='forum_not_exist'),\n14|     url(r'^topic_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Topic'}, name='topic_not_exist'),\n15|     url(r'^post_not_exist/(?P<id>\\d+)/$', 'doesnotexist', {'type':'Post'}, name='post_not_exist'),\n16| )", "ok": true}
@@ -2078,7 +2078,7 @@ Let me read the remaining URL configs and a few leftover files to complete cover
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/blog/urls.py", "encoding": "utf-8-sig", "total_lines": 8, "start_line": 1, "end_line": 8, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('blog.views',\n6|     url(r'^$', 'index', name='index'),\n7|     url(r'^(?P<id>\\d+)/$', 'homepage', name='home_of'),\n8| )", "ok": true}
@@ -2094,7 +2094,7 @@ Let me read the remaining URL configs and a few leftover files to complete cover
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/xmlrpc_get.html", "encoding": "utf-8-sig", "total_lines": 26, "start_line": 1, "end_line": 26, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| {% extends \"home/base.html\" %}\n2| {% load i18n %}\n3| \n4| {% block title %}{% trans \"XML-RPC Service\" %}{% endblock %}\n5| \n6| {% block content %}\n7| <h2>{% trans \"XML-RPC Service\" %}</h2>\n8| \n9| <p>{% trans \"You need to invoke this service using an XML-RPC Client.\" %}</p>\n10| \n11| <h3>{% trans \"The following methods are available :\" %}</h3>\n12| \n13| {% for m in methods %}\n14| <div class=\"functions\">\n15|   <h4>{{ m.0 }}</h4>\n16|   <div class=\"function_desc\">\n17|     <strong>{% trans \"Types of argument\" %}{{ m.1.args|length|pluralize }} :</strong> {{ m.1.args }}\n18|     <br />\n19|     <strong>{% trans \"Type of return\" %} :</strong> {{ m.1.returns }}\n20|     <br />\n21|     <pre class=\"function_doc\">{{ m.2 }}</pre>\n22|   </div>\n23| </div>\n24| {% endfor %}\n25| {% endblock %}\n26| ", "ok": true}
@@ -2110,7 +2110,7 @@ Let me read the remaining URL configs and a few leftover files to complete cover
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "scripts/ylinux-client.py", "encoding": "utf-8-sig", "total_lines": 296, "start_line": 1, "end_line": 180, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| #!/usr/bin/env python\n2| \n3| import xmlrpclib\n4| from xmlrpclib import Fault\n5| import traceback\n6| import sys,os\n7| \n8| from optparse import OptionParser\n9| \n10| # You can set YLINUX_XMLRPC env to specify what the Ylinux XMLRPC URL.\n11| # That is: export YLINUX_XMLRPC=\"http://example.com/xmlprc/\"\n12| \n13| # product URL\n14| YLINUX_XMLRPC = os.environ.get('YLINUX_XMLRPC', \"http://ylinux.org/xmlrpc/\")\n15| # devel URL\n16| #YLINUX_XMLRPC = os.environ.get('YLINUX_XMLRPC', \"http://127.0.0.1:8000/xmlrpc/\")\n17| \n18| def u(s, encoding):\n19|     '''convert string to unicode'''\n20|     if isinstance(s, unicode):\n21|         return s\n22|     else:\n23|         return unicode(s, encoding)\n24| \n25| class YLinuxClient(object):\n26|     '''A Simple XML-RPC client for YLinux'''\n27| \n28|     def __init__(self, user, passwd, blogid=0, url=YLINUX_XMLRPC, verbose=False):\n29|         self.server = xmlrpclib.ServerProxy(url, verbose=verbose)\n30|         #self.server = xmlrpclib.ServerProxy(url, verbose=verbose, use_datetime=True)\n31| \n32|         self.blogid = blogid\n33|         self.user = user\n34|         self.passwd = passwd\n35| \n36|     def add_topic(self, struct, publish=True):\n37| \n38|         try:\n39|             return self.server.metaWeblog.newPost(self.blogid, self.user, self.passwd, struct, publish)\n40|         except Fault, f:\n41|             #traceback.print_exc()\n42|             print str(f)\n43|             return False\n44| \n45|     def edit_topic(self, postid, struct, publish=True):\n46| \n47|         try:\n48|             return self.server.metaWeblog.editPost(postid, self.user, self.passwd, struct, publish)\n49|         except Fault, f:\n50|             #traceback.print_exc()\n51|             print str(f)\n52|             return False\n53| \n54|     def delete_topic(self, id):\n55| \n56|         try:\n57|             return self.server.delete_topic(id, self.user, self.passwd)\n58|         except Fault, f:\n59|             #traceback.print_exc()\n60|             print str(f)\n61|             return False\n62| \n63|     def delete_all_topic(self):\n64|         try:\n65|             return self.server.delete_all_topic(self.user, self.passwd)\n66|         except Fault, f:\n67|             #traceback.print_
@@ -2166,7 +2166,7 @@ I now have a complete picture. Let me record the investigation phase and write u
 }
 ```
 
-观察：
+返回：
 
 ```
 {"stage": "investigate", "completed": ["hunt", "investigate", "recon"], "ok": true}
@@ -2238,7 +2238,7 @@ I now have a complete picture. Let me record the investigation phase and write u
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-001", "status": "confirmed", "evidence_count": 7, "ok": true}
@@ -2302,7 +2302,7 @@ Now the other findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-002", "status": "confirmed", "evidence_count": 4, "warning": "evidence overlaps with ['XSS-001']; merge them if they describe the same issue", "ok": true}
@@ -2350,7 +2350,7 @@ Now the other findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-003", "status": "confirmed", "evidence_count": 3, "ok": true}
@@ -2416,7 +2416,7 @@ Continue with remaining findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "AUTHZ-001", "status": "confirmed", "evidence_count": 4, "ok": true}
@@ -2458,7 +2458,7 @@ Continue with remaining findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-001", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2504,7 +2504,7 @@ Continue with remaining findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-002", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2545,7 +2545,7 @@ Continue with remaining findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CSRF-001", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2602,7 +2602,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CRYPTO-001", "status": "confirmed", "evidence_count": 3, "ok": true}
@@ -2643,7 +2643,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CRYPTO-002", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2688,7 +2688,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-001", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2729,7 +2729,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-002", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2768,7 +2768,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-003", "status": "confirmed", "evidence_count": 1, "ok": true}
@@ -2804,7 +2804,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "FILE-001", "status": "needs_review", "evidence_count": 1, "ok": true}
@@ -2850,7 +2850,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "REDIRECT-001", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -2885,7 +2885,7 @@ Now crypto, config, file, redirect, email, deser findings.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "EMAIL-001", "status": "confirmed", "evidence_count": 1, "ok": true}
@@ -2936,7 +2936,7 @@ Now the deserialization finding (DESER-001) and the self-XSS upload finding (XSS
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "DESER-001", "status": "needs_review", "evidence_count": 2, "warning": "evidence overlaps with ['CONFIG-002']; merge them if they describe the same issue", "ok": true}
@@ -2978,7 +2978,7 @@ Now the deserialization finding (DESER-001) and the self-XSS upload finding (XSS
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-004", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -3046,7 +3046,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L1"], "pending_leads": ["L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3067,7 +3067,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L2"], "pending_leads": ["L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L15", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3089,7 +3089,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L3", "L15"], "pending_leads": ["L4", "L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3109,7 +3109,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L4"], "pending_leads": ["L5", "L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3130,7 +3130,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L5"], "pending_leads": ["L6", "L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3151,7 +3151,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L6"], "pending_leads": ["L7", "L8", "L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3171,7 +3171,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L7"], "pending_leads": ["L8", "L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3192,7 +3192,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L8"], "pending_leads": ["L9", "L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3216,7 +3216,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L9"], "pending_leads": ["L10", "L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3236,7 +3236,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L10"], "pending_leads": ["L11", "L12", "L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3257,7 +3257,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L11", "L12"], "pending_leads": ["L13", "L14", "L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3278,7 +3278,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L13", "L14"], "pending_leads": ["L16", "L17", "L18", "L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3301,7 +3301,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L16", "L17", "L18"], "pending_leads": ["L19", "L20", "L21", "L22", "L23", "L24", "L25", "L26", "L27", "L28", "L29"], "ok": true}
@@ -3327,7 +3327,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L19", "L25", "L26", "L27", "L28", "L29"], "pending_leads": ["L20", "L21", "L22", "L23", "L24"], "ok": true}
@@ -3348,7 +3348,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"ok": false, "error": "note must explain the judgement (at least 15 characters)"}
@@ -3368,7 +3368,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L21"], "pending_leads": ["L20", "L22", "L23", "L24"], "ok": true}
@@ -3388,7 +3388,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L22"], "pending_leads": ["L20", "L23", "L24"], "ok": true}
@@ -3409,7 +3409,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L23"], "pending_leads": ["L20", "L24"], "ok": true}
@@ -3429,7 +3429,7 @@ Now let me close all pattern-scan leads.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L24"], "pending_leads": ["L20"], "ok": true}
@@ -3460,7 +3460,7 @@ L20 triage failed due to short note. Retry with a longer note.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"triaged": ["L20"], "pending_leads": [], "ok": true}
@@ -3487,7 +3487,7 @@ All leads triaged. Now set verify stage and check coverage gaps before finalizin
 }
 ```
 
-观察：
+返回：
 
 ```
 {"stage": "verify", "completed": ["hunt", "investigate", "recon", "verify"], "ok": true}
@@ -3501,7 +3501,7 @@ All leads triaged. Now set verify stage and check coverage gaps before finalizin
 {}
 ```
 
-观察：
+返回：
 
 ```
 {"stages": [{"stage": "recon", "note": "Django 1.3 时代项目：自定义会话/认证中间件、XML-RPC、DEBUG=True、硬编码 SECRET_KEY。已用 list_endpoints 标出 104 个端点，33 个待查（多处 writes_on_any_method、csrf_exempt、无鉴权写入）"}, {"stage": "hunt", "note": "已读完 settings/urls/sessions/account/XML-RPC 等核心文件。确认：MD5+SECRET_KEY 签名 pickle 会话、20bit 激活码、markdown 无 safe_mode 的 body_html、XML-RPC 任意删帖、无 CSRF 中间件。用 pattern_scan 查漏"}, {"stage": "investigate", "note": "沿数据流读完 account/views/models/forms/tokens、sessions 全部后端、wiki/ydata/ylab/me/bbs/blog/home/admin 视图与表单、XML-RPC 层、markdown 库 safe_mode 行为、关键模板 |safe 落点；确认多条可达漏洞链"}, {"stage": "verify", "note": "已写入 16 条 finding（4 XSS、2 access_control、1 CSRF、2 crypto、3 config、1 file、1 redirect、1 email、1 deserialization 待复核），29 条 pattern_scan 线索全部关闭"}], "stage_names": ["hunt", "investigate", "recon", "verify"], "files_read": ["settings.py", "urls.py", "app/sessions/middleware.py", "app/account/middleware.py", "app/sessions/models.py", "app/ydata/settings.py", "app/account/tokens.py", "app/account/backends.py", "app/account/views.py", "app/account/models.py", "app/wiki/views.py", "app/wiki/utils.py", "app/ydata/models.py", "app/ydata/util.py", "app/ydata/forms.py", "app/ydata/views.py", "app/ylab/views.py", "app/account/decorators.py", "app/account/__init__.py", "app/admin/views.py", "lib/django_xmlrpc/views.py", "lib/django_xmlrpc/dispatcher.py", "lib/ylinux_xmlrpc.py", "app/bbs/views.py", "app/home/views.py", "app/blog/views.py", "app/account/forms.py", "app/me/views.py", "lib/django_xmlrpc/decorators.py", "lib/markdown/inlinepatterns.py", "lib/markdown/__init__.py", "app/sessions/backends/base.py", "app/sessions/backends/db.py", "app/sessions/backends/cached_db.py", "manage.py", "scripts/ylinux.fcgi", "app/home/forms.py", "app/syndication/feeds.py", "app/syndication/views.py", "app/wiki/urls.py", "templates/ydata/attachment.html", "templates/wiki/topic.html", "app/account/urls.py", "app/account/context_processors.py", "app/ydata/urls.py", "app/ylab/urls.py", "app/me/urls.py", "app/admin/urls.py", "app/sessions/backends/file.py", "app/sessions/backends/cache.py", "app/admin/forms.py", "templates/account/user.html", "lib/django_xmlrpc/__init__.py", "templates/me/index.html", "templates/account/index.html", "templates/wiki/ajax_add_topic.html", "app/home/urls.py", "app/bbs/urls.py", "app/blog/urls.py", "templates/xmlrpc_get.html", "scripts/ylinux-client.py"], "searches": 9, "scans": 1, "findings": [{"id": "XSS-001", "title": "知识库/论坛帖子与主题正文存在存储型 XSS（Markdown 未启用 safe_mode 且模板
@@ -3543,7 +3543,7 @@ One more consideration — the finalize gate mentions "finalize_report 还要求
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/syndication/views.py", "encoding": "utf-8-sig", "total_lines": 209, "start_line": 180, "end_line": 209, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180| \n181| def feed(request, url, feed_dict=None):\n182|     \"\"\"Provided for backwards compatibility.\"\"\"\n183|     import warnings\n184|     warnings.warn('The syndication feed() view is deprecated. Please use the '\n185|                   'new class based view API.',\n186|                   category=PendingDeprecationWarning)\n187| \n188|     if not feed_dict:\n189|         raise Http404(\"No feeds are registered.\")\n190| \n191|     try:\n192|         slug, param = url.split('/', 1)\n193|     except ValueError:\n194|         slug, param = url, ''\n195| \n196|     try:\n197|         f = feed_dict[slug]\n198|     except KeyError:\n199|         raise Http404(\"Slug %r isn't registered.\" % slug)\n200| \n201|     try:\n202|         feedgen = f(slug, request).get_feed(param)\n203|     except FeedDoesNotExist:\n204|         raise Http404(\"Invalid feed parameters. Slug %r is valid, but other parameters, or lack thereof, are not.\" % slug)\n205| \n206|     response = HttpResponse(mimetype=feedgen.mime_type)\n207|     feedgen.write(response, 'utf-8')\n208|     return response\n209| ", "ok": true}
@@ -3561,7 +3561,7 @@ One more consideration — the finalize gate mentions "finalize_report 还要求
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/me/views.py", "encoding": "utf-8-sig", "total_lines": 188, "start_line": 180, "end_line": 188, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "180|     elif obj == 'to':\n181|         title = u'%s 得到的评论' % owner.username\n182| \n183|     page_list = range(1, total_page + 1) if total_page > 1 else []\n184|     return {'title': title, \n185|             'owner': owner, 'owner_id': id, 'posts': posts, 'obj': obj,\n186|             'error': error, 'last_page': total_page, 'pre_page': page, 'next_page': page + 2,\n187|             'page_list': page_list, 'cur_page': page + 1}\n188| ", "ok": true}
@@ -3579,7 +3579,7 @@ One more consideration — the finalize gate mentions "finalize_report 还要求
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/admin/views.py", "encoding": "utf-8-sig", "total_lines": 481, "start_line": 445, "end_line": 481, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "445|     Ybody += u'''\n446| </ul>\n447| \n448| <h3>最新回复</h3>\n449| <ul>\n450| '''\n451| \n452|     posts = Post.objects.all().order_by('-updated')[:10]\n453|     for p in posts:\n454|         Ybody += u'<li><a href=\"http://www.ylinux.org/wiki/topic/%s#post%s\">%s</a></li>\\n' % (p.topic.id, p.id, p)\n455|     Ybody += u'''\n456| </ul>\n457| \n458| <p>这些都是刚开始试验，欢迎反馈最新动态推送体验！\n459| 请在这里反馈内容： <a href=\"http://ylinux.org/wiki/topic/115/\">[开发动态] -- 添加更新推送功能</a>\n460| </p>\n461| \n462| '''\n463| \n464|     Yfrom_email = \"ylinux.admin@gmail.com\"\n465|     toL = ['lijian.gnu@gmail.com']\n466| \n467|     bccL = []\n468|     users = User.objects.all()\n469|     for u in users:\n470|         bccL.append(u.email)\n471| \n472|     Yheaders = {'Reply-To': 'lijian.gnu@gmail.com'}\n473| \n474|     YMSG = EmailMessage(\n475|         subject = Ysubject, body = Ybody, from_email = Yfrom_email, \n476|         to = toL, bcc = bccL, headers = Yheaders)\n477| \n478|     YMSG.content_subtype = \"html\"\n479|     ret = YMSG.send()\n480| \n481|     return HttpResponse(u'发送邮件成功： %s' % ret)", "ok": true}
@@ -3612,7 +3612,7 @@ All views and URL configs are covered. Finalizing the report.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "report accepted", "finding_count": 17, "ok": true}
@@ -3676,7 +3676,7 @@ Let me start.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 185, "end_line": 275, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "185| \n186|     @property\n187|     def feed_desc(self):\n188|         return ''.join(self.body.split('\\n')[:4])\n189| \n190|     def save_file(self, text):\n191|         dirname = os.path.dirname(self.body_path)\n192|         if not os.path.exists(dirname):\n193|             os.makedirs(dirname)\t\n194|         f = file(self.body_path, 'w')\n195|         f.write(text)\n196|         f.close()\n197| \n198|         Markdown(extensions=['fenced_code']).convertFile(input=self.body_path, \n199|                        output=self.body_html_path, \n200|                        encoding=\"utf8\", myfilter=ylinux_text_filter)\n201| \n202|     @models.permalink\n203|     def get_absolute_url(self):\n204|         return ('wiki:show_topic', [self.id])\n205| \n206|     def update_read(self, user):\n207|         tracking = user.posttracking\n208|         #if last_read > last_read - don't check topics\n209|         if tracking.last_read and (tracking.last_read > self.last_post.created):\n210|             return\n211|         if isinstance(tracking.topics, dict):\n212|             #clear topics if len > 5Kb and set last_read to current time\n213|             if len(tracking.topics) > 5120:\n214|                 tracking.topics = None\n215|                 tracking.last_read = datetime.now()\n216|                 tracking.save()\n217|             #update topics if exist new post or does't exist in dict\n218|             if self.last_post.id > tracking.topics.get(str(self.id), 0):\n219|                 tracking.topics[str(self.id)] = self.last_post.id\n220|                 tracking.save()\n221|         else:\n222|             #initialize topic tracking dict\n223|             tracking.topics = {self.id: self.last_post.id}\n224|             tracking.save()\n225| \n226| \n227| class Post(models.Model):\n228|     topic = models.ForeignKey(Topic, related_name='posts', verbose_name='Topic')\n229|     # parent 是 Post 间的继承关系\n230|     parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Post', related_name='child')\n231|     user = models.ForeignKey(User, related_name='posts', verbose_name='User')\n232|     touser = models.ForeignKey(User, blank=True, null=True, related_name='from_posts', verbose_name='ToUser')\n233|     created = models.DateTimeField('Cre
@@ -3694,7 +3694,7 @@ Let me start.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown/__init__.py", "encoding": "utf-8-sig", "total_lines": 734, "start_line": 175, "end_line": 260, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "175| \n176| etree = etree_loader.importETree()\n177| \n178| # Adds the ability to output html4\n179| import html4\n180| \n181| \n182| class Markdown:\n183|     \"\"\"Convert Markdown to HTML.\"\"\"\n184| \n185|     def __init__(self,\n186|                  extensions=[],\n187|                  extension_configs={},\n188|                  safe_mode = False, \n189|                  output_format=DEFAULT_OUTPUT_FORMAT):\n190|         \"\"\"\n191|         Creates a new Markdown instance.\n192| \n193|         Keyword arguments:\n194| \n195|         * extensions: A list of extensions.\n196|            If they are of type string, the module mdx_name.py will be loaded.\n197|            If they are a subclass of markdown.Extension, they will be used\n198|            as-is.\n199|         * extension-configs: Configuration setting for extensions.\n200|         * safe_mode: Disallow raw html. One of \"remove\", \"replace\" or \"escape\".\n201|         * output_format: Format of output. Supported formats are:\n202|             * \"xhtml1\": Outputs XHTML 1.x. Default.\n203|             * \"xhtml\": Outputs latest supported version of XHTML (currently XHTML 1.1).\n204|             * \"html4\": Outputs HTML 4\n205|             * \"html\": Outputs latest supported version of HTML (currently HTML 4).\n206|             Note that it is suggested that the more specific formats (\"xhtml1\" \n207|             and \"html4\") be used as \"xhtml\" or \"html\" may change in the future\n208|             if it makes sense at that time. \n209| \n210|         \"\"\"\n211|         \n212|         self.safeMode = safe_mode\n213|         self.registeredExtensions = []\n214|         self.docType = \"\"\n215|         self.stripTopLevelTags = True\n216| \n217|         # Preprocessors -- 将暂不处理的 block 先隐藏起来\n218|         self.preprocessors = odict.OrderedDict()\n219|         # 将 self 作为参数传递给类，可以让类的对象调用本类对象的方法\n220|         self.preprocessors[\"html_block\"] = \\\n221|                 preprocessors.HtmlBlockPreprocessor(self)\n222|         self.preprocessors[\"reference\"] = \\\n223|                 preprocessors.ReferencePreprocessor(self)\n224|         # footnote preprocessor will be inserted with \"<reference\"\n225| \n226|         # Block processors - ran by the parser\n227|     
@@ -3712,7 +3712,7 @@ Let me start.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 410, "end_line": 467, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "410|         topic = get_object_or_404(Topic, pk = parent_post.topic.id)\n411|         replayID = postID\n412|     else:\n413|         return HttpResponse(u'topicID 和 postID 必需要指定一个！')\n414| \n415|     if request.method == 'GET':\n416|         m = 'POST' if postID else 'TOPIC'\n417|         ajaxFunc = 'ajax_replay(this, \"%s\", \"%s\")' % (m, replayID)\n418|         return { 'method': 'GET',\n419|                  'ajaxFunc' : ajaxFunc }\n420| \n421|     else:\n422| \n423|         if not topic.catalog.has_access(request.user):\n424|             return HttpResponse(u'<h1>您没有权限回复此帖！</h1>')\n425| \n426|         # 如果 topic 已锁，则重定向到显示 topic\n427|         if topic and topic.closed:\n428|             return HttpResponse(u'主题已锁定，不可回复！')\n429| \n430|         ip = ylinux_get_ip(request)\n431| \n432|         post_body = request.POST.get(\"body\", None)\n433|         if len(post_body) < 2:\n434|             return {'error': u'您的回复太短，至少2个字符！'}\n435|         post = Post(topic = topic, user = request.user, user_ip = ip, markup = 'none', body = post_body, parent = parent_post)\n436|         post.save()\n437|         topic.post_count += 1\n438|         topic.last_post = post\n439|         topic.save()\n440|         topic.catalog.post_count += 1\n441|         topic.catalog.last_post = post\n442|         topic.catalog.save()\n443| \n444|         return {'method': 'POST', 'topic': topic, 'post': post}\n445| \n446| \n447| @login_required\n448| @render_to('wiki/editPostAJAX.html')\n449| def editPostAJAX(request, postID):\n450| \n451|     post = get_object_or_404(Post, pk = postID)\n452| \n453|     if request.method == 'GET':\n454|         return {'method': 'GET', 'post': post}\n455| \n456|     post_body = request.POST.get('body', None)\n457|     if not post_body:\n458|         return HttpResponse(u'error: No contents found!')\n459|     post.body = post_body\n460|     post.save()\n461| \n462|     post.topic.last_post = post\n463|     post.topic.save()\n464|     post.topic.catalog.last_post = post\n465|     post.topic.catalog.save()\n466| \n467|     return {'method': 'POST', 'post': post}", "ok": true}
@@ -3730,7 +3730,7 @@ Let me start.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/utils.py", "encoding": "utf-8-sig", "total_lines": 36, "start_line": 1, "end_line": 36, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.template import Template, Context\n4| \n5| POST_MAIN = '''\n6| <div class=\"post-header\">\n7|   <span class=\"louzhu\"><a name=\"post{{ post.id }}\">{{ post.id }}</a></span>\n8|   <span class=\"user\"><a href=\"{% url account:show_user post.user.id %}\">{{ post.user }}</a></span>\n9|   <span class=\"time\">{{ post.updated|date:\"Y年m月d日 H:i\" }}</span>\n10|   {% ifequal user post.user %}\n11|   <!--<span class=\"post-delete\"><a href=\"{% url wiki:del_post post.id %}\">删除</a></span>-->\n12|   <span class=\"post-edit\"><button type=\"button\" onclick=\"javascript: ajax_edit_post(this, '{{ post.id }}')\">编辑</button></span>\n13|   {% endifequal %}\n14|   <span><button type=\"button\" onclick=\"javascript: ajax_new_post(this, 'POST', '{{ post.id }}')\">回复</button></span>\n15|   <span class=\"right\"><a onclick=\"javascript: scrollTo(0,0);\" href=\"javascript:;\">TOP</a></span>\n16| </div>\n17| <div class=\"post-body\">\n18|   <p>{{ post.body_html|safe }}</p>\n19| </div>\n20| '''\n21| \n22| \n23| def render_post(user, post):\n24| \n25|     POST_ITERM = '<div class=\"post-item box\">\\n'\n26| \n27|     t = Template(POST_MAIN)\n28|     c = Context({'post': post, 'user': user})\n29|     POST_ITERM += t.render(c)\n30|     if post.children:\n31|         for child in post.children:\n32|             POST_ITERM += render_post(user, child)\n33| \n34|     POST_ITERM += '\\n</div>\\n'\n35| \n36|     return POST_ITERM", "ok": true}
@@ -3748,7 +3748,7 @@ Let me start.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "templates/wiki/topic.html", "encoding": "utf-8-sig", "total_lines": 69, "start_line": 40, "end_line": 69, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "40| \n41|     <p class=\"topic-action action\">\n42|       {% ifequal user topic.user %}<a href=\"{% url wiki:edit_topic topic.id %}\">编辑</a> |{% endifequal %}\n43|       <a href=\"{% url wiki:add_post topic.id %}\">回复</a>\n44|       {% ifequal user topic.user %}\n45|       <!--[<a href=\"{% url wiki:del_topic topic.id %}\">删除</a>]-->| \n46|       [<a href=\"{% url wiki:hidden_topic topic.id %}\">隐藏</a>] \n47|       [<a href=\"{% url wiki:recycled_topic topic.id %}\">移入回收站</a>]\n48|       {% endifequal %}\n49|     </p>\n50| \n51|   </div>\n52| \n53|   <div class=\"topic-body content\">\n54|     {{ topic.body_html|safe }}\n55|   </div>\n56| \n57| \n58| {% if posts %}\n59| {{ POST_HTML|safe }}\n60| {% endif %}\n61| \n62| </div>\n63| \n64| <div id=\"create-post\" class=\"create-post\">\n65|   <button type=\"button\" onclick=\"javascript: ajax_new_post(this, 'TOPIC', '{{ topic.id }}')\">回复主题</button>\n66|   <!--<a href=\"{% url wiki:add_post topic.id %}\">回复</a>-->\n67| </div>\n68| \n69| {% endblock %}", "ok": true}
@@ -3794,7 +3794,7 @@ Also check convertFile in lib/markdown/__init__.py to see how myfilter is used.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 380, "end_line": 452, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "380|     \n381|     name = models.CharField('Name', max_length=256)\n382|     user = models.ForeignKey(User, related_name='tags', verbose_name='User')\n383|     created = models.DateTimeField('Created', auto_now_add=True)\n384|     total_ref = models.IntegerField(blank=True, default=0)\n385| \n386|     def __unicode__(self):\n387|         return self.name \n388| \n389| \n390| # TOPIC 里几种可行的引用附件格式： \n391| # [A:ID] | [a:ID] | [附:ID] | [附件:ID] 等\n392| ATTACHMENT_QUOTE = re.compile(u'\\[[ ]*(a|atta|attachment|附|附件)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n393| WIKI_QUOTE = re.compile(u'\\[[ ]*(w|wiki|维科|知识库)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n394| IMG_QUOTE = re.compile(u'\\[[ ]*(i|img|图片)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n395| \n396| def ylinux_text_filter(text):\n397| \n398|     # 过滤附件信息\n399|     while 1:\n400|         m = ATTACHMENT_QUOTE.search(text)\n401|         if m:\n402|             place_html = u''\n403|             id = ''\n404|             if m.group('id'):\n405|                 id = m.group('id')\n406|                 try:\n407|                     a = Attachment.objects.get(pk=id)\n408|                     place_html = u'<a href=\"%s\" target=\"_blank\">%s</a>' % (a.get_absolute_url(), a.name)\n409|                 except Attachment.DoesNotExist:\n410|                     place_html = u'<span style=\"color:red;\">[ID为%s的附件不存在]</span>' % id\n411| \n412|             text = '%s%s%s' % (text[:m.start()], place_html, text[m.end():])\n413|         else:\n414|             break\n415| \n416|     # 过滤WIKI信息\n417|     while 1:\n418|         m = WIKI_QUOTE.search(text)\n419|         if m:\n420|             place_html = u''\n421|             id = ''\n422|             if m.group('id'):\n423|                 id = m.group('id')\n424|                 try:\n425|                     t = Topic.objects.get(pk=id)\n426|                     place_html = u'<a href=\"%s\" target=\"_blank\">%s</a>' % (t.get_absolute_url(), t.name)\n427|                 except Topic.DoesNotExist:\n428|                     place_html = u'<span style=\"color:red;\">[ID为%s的附件不存在]</span>' % id\n429| \n430|             text = '%s%s%s' % (text[:m.start()], place_html, text[m.end():])\n431|         else:\n432|             break\n433| \n434|     # 过滤图片信息\n435|     while 1:\n436|   
@@ -3811,7 +3811,7 @@ Also check convertFile in lib/markdown/__init__.py to see how myfilter is used.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "def convertFile|myfilter", "count": 0, "matches": [], "ok": true}
@@ -3829,7 +3829,7 @@ Also check convertFile in lib/markdown/__init__.py to see how myfilter is used.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/util.py", "encoding": "utf-8-sig", "total_lines": 176, "start_line": 1, "end_line": 120, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from HTMLParser import HTMLParser\n4| import re\n5| \n6| from django.shortcuts import render_to_response\n7| from django.template import RequestContext\n8| from django.template.defaultfilters import urlize as django_urlize\n9| \n10| from ydata import settings as ydata_settings\n11| \n12| _SMILES = [(re.compile(smile_re), path) for smile_re, path in ydata_settings.SMILES]\n13| \n14| \n15| \n16| def render_to(template):\n17| \n18|     def renderer(function):\n19|         def wrapper(request, *args, **kwargs):\n20|             output = function(request, *args, **kwargs)\n21|             if not isinstance(output, dict):\n22|                 return output\n23|             tmpl = output.pop('TEMPLATE', template)\n24|             return render_to_response(tmpl, output, context_instance=RequestContext(request))\n25|         return wrapper\n26|     return renderer\n27| \n28| \n29| class ExcludeTagsHTMLParser(HTMLParser):\n30|         \"\"\" \n31|         Class for html parsing with excluding specified tags.\n32|         \"\"\"\n33| \n34|         def __init__(self, func, tags=('a', 'code')):\n35|             HTMLParser.__init__(self)\n36|             self.func = func\n37|             self.is_ignored = False\n38|             self.tags = tags\n39|             self.html = []\n40| \n41|         def handle_starttag(self, tag, attrs):\n42|             self.html.append('<%s%s>' % (tag, self.__html_attrs(attrs)))\n43|             if tag in self.tags:\n44|                 self.is_ignored = True\n45| \n46|         def handle_data(self, data):\n47|             if not self.is_ignored:\n48|                 data = self.func(data)\n49|             self.html.append(data)\n50| \n51|         def handle_startendtag(self, tag, attrs):\n52|             self.html.append('<%s%s/>' % (tag, self.__html_attrs(attrs))) \n53| \n54|         def handle_endtag(self, tag):\n55|             self.is_ignored = False\n56|             self.html.append('</%s>' % (tag))\n57| \n58|         def handle_entityref(self, name):\n59|             self.html.append('&%s;' % name)\n60| \n61|         def handle_charref(self, name):\n62|             self.html.append('&#%s;' % name)\n63| \n64|         def unescape(self, s):                                                                 
@@ -3856,7 +3856,7 @@ The search for `def convertFile|myfilter` in lib/markdown returned 0 matches. Th
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "convertFile|def convert", "count": 0, "matches": [], "ok": true}
@@ -3874,7 +3874,7 @@ The search for `def convertFile|myfilter` in lib/markdown returned 0 matches. Th
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown/__init__.py", "encoding": "utf-8-sig", "total_lines": 734, "start_line": 300, "end_line": 420, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "300|                 postprocessors.RawHtmlPostprocessor(self)\n301|         self.postprocessors[\"amp_substitute\"] = \\\n302|                 postprocessors.AndSubstitutePostprocessor()\n303|         # footnote postprocessor will be inserted with \">amp_substitute\"\n304| \n305|         # Map format keys to serializers\n306|         self.output_formats = {\n307|             'html'  : html4.to_html_string, \n308|             'html4' : html4.to_html_string,\n309|             'xhtml' : etree.tostring, \n310|             'xhtml1': etree.tostring,\n311|         }\n312| \n313|         self.references = {}\n314|         self.htmlStash = preprocessors.HtmlStash()\n315|         self.registerExtensions(extensions = extensions,\n316|                                 configs = extension_configs)\n317|         self.set_output_format(output_format)\n318|         self.reset()\n319| \n320|     def registerExtensions(self, extensions, configs):\n321|         \"\"\"\n322|         Register extensions with this instance of Markdown.\n323| \n324|         Keyword aurguments:\n325| \n326|         * extensions: A list of extensions, which can either\n327|            be strings or objects.  See the docstring on Markdown.\n328|         * configs: A dictionary mapping module names to config options.\n329| \n330|         \"\"\"\n331|         for ext in extensions:\n332|             if isinstance(ext, basestring):\n333|                 ext = load_extension(ext, configs.get(ext, []))\n334|             if isinstance(ext, Extension):\n335|                 try:\n336|                     # 每个扩展都有extendMarkdown方法，传递给它本类的实\n337|                     # 例（self），它调用下面的 registerExtension 方法注\n338|                     # 册函数，此处非常有技巧，值得学习！\n339|                     ext.extendMarkdown(self, globals())\n340|                 except NotImplementedError, e:\n341|                     message(ERROR, e)\n342|             else:\n343|                 message(ERROR, 'Extension \"%s.%s\" must be of type: \"markdown.Extension\".' \\\n344|                     % (ext.__class__.__module__, ext.__class__.__name__))\n345| \n346|     # 此方法可以被有reset()方法的扩展调用，用于本类的reset()方法一次重置所有的扩展\n347|     def registerExtension(self, extension):\n348|         \"\"\" This gets called by the extension \"\"\"\n349|         
@@ -3905,7 +3905,7 @@ The lib/markdown/__init__.py doesn't seem to have `convertFile`. Let me search t
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "convertFile", "count": 1, "matches": [{"path": "app/ydata/models.py", "line": 198, "text": "Markdown(extensions=['fenced_code']).convertFile(input=self.body_path,"}], "ok": true}
@@ -3923,7 +3923,7 @@ The lib/markdown/__init__.py doesn't seem to have `convertFile`. Let me search t
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/markdown/__init__.py", "encoding": "utf-8-sig", "total_lines": 734, "start_line": 420, "end_line": 520, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "420|                     message(CRITICAL, 'Failed to strip top level tags.')\n421| \n422|         # Run the text post-processors\n423|         for pp in self.postprocessors.values():\n424|             output = pp.run(output)\n425| \n426|         return output.strip()\n427| \n428|     def convertFile(self, input=None, output=None, encoding=None, myfilter=None):\n429|         \"\"\"Converts a markdown file and returns the HTML as a unicode string.\n430| \n431|         Decodes the file using the provided encoding (defaults to utf-8),\n432|         passes the file content to markdown, and outputs the html to either\n433|         the provided stream or the file with provided name, using the same\n434|         encoding as the source file.\n435| \n436|         **Note:** This is the only place that decoding and encoding of unicode\n437|         takes place in Python-Markdown.  (All other code is unicode-in /\n438|         unicode-out.)\n439| \n440|         Keyword arguments:\n441| \n442|         * input: Name of source text file.\n443|         * output: Name of output file. Writes to stdout if `None`.\n444|         * encoding: Encoding of input and output files. Defaults to utf-8.\n445| \n446|         \"\"\"\n447| \n448|         encoding = encoding or \"utf-8\"\n449| \n450|         # Read the source\n451|         input_file = codecs.open(input, mode=\"r\", encoding=encoding)\n452|         text = input_file.read()\n453|         input_file.close()\n454|         text = text.lstrip(u'\\ufeff') # remove the byte-order mark\n455| \n456|         if myfilter:\n457|             text = myfilter(text)\n458|         # Convert\n459|         html = self.convert(text)\n460| \n461|         # Write to file or stdout\n462|         if isinstance(output, (str, unicode)):\n463|             output_file = codecs.open(output, \"w\", encoding=encoding)\n464|             output_file.write(html)\n465|             output_file.close()\n466|         else:\n467|             output.write(html.encode(encoding))\n468| \n469| \n470| \"\"\"\n471| Extensions\n472| -----------------------------------------------------------------------------\n473| \"\"\"\n474| \n475| class Extension:\n476|     \"\"\" Base class for extensions to subclass. \"\"\"\n477|     def __init__(self, configs = {}):
@@ -3964,7 +3964,7 @@ Also need to verify entry points for XSS-001:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 30, "end_line": 110, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30| \n31| @login_required\n32| def upload_single_file(req, id):\n33|     ''' 上传单个附件， 只作异步上传使用\n34|     1. 上传的 form 中文件的 name = 'single_file'\n35|     '''\n36| \n37|     if req.method != 'POST':\n38|         return HttpResponse(\"Just for POST a single file\")\n39| \n40|     f = req.FILES['single_file'] #req.FILES.values()[0]\n41|     if f.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n42|         notes = u'文件太大： %s (限制大小： %s)' % (f.size, ydata_settings.ATTACHMENT_SIZE_LIMIT)\n43|         r = u'<script type=\"text/javascript\">window.parent.UploadError(\"%s\");</script>' % notes\n44|         return HttpResponse(r)\n45| \n46|     #topic = get_object_or_404(Topic, pk=id)\n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         topic = False\n51| \n52|     sha1_hash = hashlib.sha1()\n53|     for chunk in f.chunks():\n54|         sha1_hash.update(chunk)\n55|     fhash = sha1_hash.hexdigest()\n56| \n57|     attachments = Attachment.objects.filter(hash=fhash)\n58|     notes = ''\n59| \n60|     if attachments:\n61|         # 此文件在服务器上已存在， 增加引用计数即可\n62|         local_name = ''\n63|         attachment = False\n64|         for a in attachments:\n65|             if local_name == '':\n66|                 local_name = a.path\n67|             if a.user == req.user:\n68|                 attachment = a\n69|                 notes = u'文件已经存在，请不要重复上传。'\n70|             a.qtimes += 1\n71|             a.save()\n72|         if not attachment:\n73|             attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash, qtimes=2)\n74|             if topic:\n75|                 attachment.topic = topic\n76| \n77|     else:\n78|         local_name = str(id) + '-' + str(req.user.id) + '-' + f.name\n79|         save_path = os.path.join(settings.MEDIA_ROOT,\n80|                                  ydata_settings.ATTACHMENT_UPLOAD_TO,\n81|                                  local_name)\n82|         save_file = open(save_path, 'wb+')\n83|         for chunk in f.chunks():\n84|             save_file.write(chunk)\n85| \n86|         attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash)\n87|         if topic:\n88|             attachment.topic = topic\n89| \n90|     attac
@@ -3982,7 +3982,7 @@ Also need to verify entry points for XSS-001:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/urls.py", "encoding": "utf-8-sig", "total_lines": 17, "start_line": 1, "end_line": 17, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('account.views',\n6|     url(r'^$', 'index', name=\"index\"),\n7|     url(r'^register/$', 'request_register', name='register'),\n8|     url(r'^register/(?P<key>.+)/$', 'register', name='complete_register'),\n9|     url(r'^login/$', 'login', name='login'),\n10|     url(r'^logout/$', 'logout', name='logout'),\n11|     url(r'^(?P<id>\\d+)/$', 'user', name='show_user'),\n12|     url(r'^password/reset/$', 'password_reset_request', name='password_reset_request'),\n13|     url(r'^password/reset/(?P<key>.+)/$', 'password_reset', name='password_reset'),\n14| \n15|     url(r'^login/ajax/$', 'ajax_login', name='ajax_login'),\n16|     url(r'^logout/ajax/$', 'ajax_logout', name='ajax_logout'),\n17| )", "ok": true}
@@ -4000,7 +4000,7 @@ Also need to verify entry points for XSS-001:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/views.py", "encoding": "utf-8-sig", "total_lines": 254, "start_line": 30, "end_line": 115, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30|             password = form.cleaned_data[\"password\"]\n31|             from account import authenticate,login\n32|             user = authenticate(username=username, password=password)\n33|             if user is not None:\n34|                 if user.is_active:\n35|                     login(request, user)\n36|                     if request.session.test_cookie_worked():\n37|                         request.session.delete_test_cookie()\n38|                         return HttpResponseRedirect(request.session.get('login_redirect_url','/') or '/')\n39|                 else:\n40|                     return HttpResponseForbidden(u'用户未被激活，请联系管理员： ylinux.admin@gmail.com')\n41| \n42|     else:\n43|         # 形如 \"http://127.0.0.1:8000/account/login?next=/admin/\" 的 url 可以得到 next 值\n44|         request.session['login_redirect_url'] = request.GET.get('next')\n45|         form = AuthenticationForm(request)\n46| \n47|     # 登录失败，或者第一次登录，都会到这里。form可以定制很多值\n48|     request.session.set_test_cookie()\n49|     return {'title':'登录', 'form':form}\n50| \n51| \n52| \n53| # 退出后跳转到主页\n54| #@login_required\n55| def logout(request):\n56|     #from django.contrib.auth import logout\n57|     from account import logout\n58|     previous_url = request.GET.get('next')\n59|     logout(request)\n60|     return HttpResponseRedirect(previous_url or '/')\n61| \n62| \n63| @render_to('account/request_register.html')\n64| def request_register(request):\n65|     ''' 使用 email 申请一个注册 URL '''\n66| \n67|     form = build_form (RequestRegisterForm, request)\n68| \n69|     if form.is_valid():\n70|         email = form.cleaned_data['email']\n71|         try:\n72|             register = Register.objects.get(email=email)\n73|             return {'ALREADY_USED_EMAIL':True, 'email':email,\n74|                     'REASON':'不要使用同一个 Email 重复申请注册！'}\n75|         except Register.DoesNotExist:\n76|             pass\n77| \n78|         try:\n79|             user = User.objects.get(email=email)\n80|             return {'ALREADY_USED_EMAIL':True, 'email':email,\n81|                     'REASON':'该用户已经成功加入 YLinux ！'}\n82|         except User.DoesNotExist:\n83|             pass\n84| \n85|         register=Register.objects.create_profile(email)\n86|         if register:\n87|             register.send_act
@@ -4018,7 +4018,7 @@ Also need to verify entry points for XSS-001:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/views.py", "encoding": "utf-8-sig", "total_lines": 254, "start_line": 190, "end_line": 235, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "190|         subject = u'YLinux.org 重置密码邮件'\n191|         message = u\"尊敬的 %s ，应您的要求，重置密码 URL 是， http://ylinux.org/account/password/reset/%s\" % (email, register.activation_key)\n192|         user.email_user (subject = subject,\n193|              message = message, \n194|              from_email=settings.DEFAULT_FROM_EMAIL)\n195| \n196|         return {'EMAIL_SENT':True, 'email':email}\n197| \n198|     return {'NEW_REQUEST':True, 'form':form}\n199| \n200| \n201| @render_to('account/password_reset.html')\n202| def password_reset (request, key=None):\n203|     \"\"\" 重置用户密码 \"\"\"\n204| \n205|     try:\n206|         register = Register.objects.get(activation_key=key)\n207|     except Register.DoesNotExist:\n208|         return HttpResponseForbidden(u'<h1>错误的 Key ： %s </h1>' % key)\n209| \n210|     try:\n211|         user = User.objects.get(email=register.email)\n212|     except User.DoesNotExist:\n213|         return HttpResponseForbidden(u'<h2>无此 email 注册的用户 ： %s </h2>' % register.email)\n214| \n215|     form = build_form (SetPasswordForm, request, user=user)\n216| \n217|     if form.is_valid():\n218|         form.clean_new_password2()\n219|         form.save()\n220| \n221|         return {'PASSWORD_RESET_DONE':True,}\n222| \n223|     return {'NEW_REQUEST':True, 'form':form}\n224| \n225| \n226| \n227| @render_to(\"account/ajax_login.html\")\n228| def ajax_login (request):\n229| \n230|     if request.method != \"POST\":\n231|         return HttpResponse(\"ajax_login: Just for POST!\")\n232| \n233|     username = request.POST.get(\"username\", None)\n234|     password = request.POST.get(\"password\", None)\n235|     from account import authenticate,login", "ok": true}
@@ -4086,7 +4086,7 @@ XSS-003、REDIRECT-001、XSS-004 的关键证据已确认。继续读取其余�
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "settings.py", "encoding": "utf-8-sig", "total_lines": 177, "start_line": 1, "end_line": 120, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # Django settings for ylinux project.\n2| # coding: utf-8\n3| \n4| import os.path\n5| import sys \n6| import re\n7| \n8| PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))\n9| \n10| # lib 目录安放第三方软件包\n11| if sys.path.count(PROJECT_ROOT+\"/lib\") == 0:\n12|     sys.path.insert(0,PROJECT_ROOT+\"/lib\")\n13| \n14| # app 目录存放我的project包含的软件包\n15| if sys.path.count(PROJECT_ROOT+\"/app\") == 0:\n16|     sys.path.insert(0,PROJECT_ROOT+\"/app\")\n17| \n18| DEBUG = True\n19| TEMPLATE_DEBUG = DEBUG\n20| DOMAIN = \"127.0.0.1:8000\"\n21| \n22| INTERNAL_IPS = ('127.0.0.1',)\n23| \n24| ADMINS = (\n25|     # ('Your Name', 'your_email@domain.com'),\n26| )\n27| \n28| # 这里填写你的发邮件email账户名和密码\n29| DEFAULT_FROM_EMAIL = ''\n30| EMAIL_HOST = ''\n31| EMAIL_HOST_USER = ''\n32| EMAIL_HOST_PASSWORD = ''\n33| EMAIL_PORT = ''\n34| EMAIL_USE_TLS = True\n35| EMAIL_SUBJECT_PREFIX = '[YLinux]'\n36| \n37| \n38| MANAGERS = ADMINS\n39| \n40| # 数据库\n41| # 示例使用 mysql 数据库\n42| DATABASES = {\n43|     'default': {\n44|         # 可选数据库: postgresql_psycopg2 postgresql mysql sqlite3 oracle\n45|         #'ENGINE': 'django.db.backends.mysql',\n46|         'ENGINE': 'django.db.backends.sqlite3',\n47|         'NAME': 'ylinux',\n48|         'USER': 'ylinux',\n49|         'PASSWORD': '123456',\n50|         'HOST': '',\n51|         'PORT': '',\n52|         }\n53|     }\n54| \n55| \n56| # Local time zone for this installation. Choices can be found here:\n57| # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name\n58| # although not all choices may be available on all operating systems.\n59| # If running in a Windows environment this must be set to the same as your\n60| # system time zone.\n61| TIME_ZONE = 'Asia/Shanghai'\n62| \n63| # Language code for this installation. All choices can be found here:\n64| # http://www.i18nguy.com/unicode/language-identifiers.html\n65| LANGUAGE_CODE = 'zh-cn'\n66| \n67| SITE_ID = 1\n68| \n69| # If you set this to False, Django will make some optimizations so as not\n70| # to load the internationalization machinery.\n71| USE_I18N = True\n72| \n73| \n74| MEDIA_ROOT = PROJECT_ROOT+'/ymedia/'\n75| MEDIA_URL = '/ymedia/'\n76| \n77| \n78| # Make this unique, and don't share it with anybody.\n79| SECRET_KEY = 'c#0cz^i$lyr6*b*xe-t@0tqc_c3dnju=+c1lk^k7(r^7lhz$g@'\n80| \n81| \n
@@ -4104,7 +4104,7 @@ XSS-003、REDIRECT-001、XSS-004 的关键证据已确认。继续读取其余�
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "urls.py", "encoding": "utf-8-sig", "total_lines": 64, "start_line": 45, "end_line": 64, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "45| urlpatterns += patterns('django_xmlrpc.views',\n46| \n47|     url(r'^xmlrpc/$', handle_xmlrpc, {}, name='xmlrpc'),\n48| )\n49| \n50| # 开发使用 django 自带的 web 服务器，需按照下面方法设置静态目录。如果放\n51| # 到公网上，那么需要用你所有的 web 服务器设置静态目录。一般在共享主机的\n52| # 环境里，针对 apache 可以用 .htaccess 实现\n53| \n54| # 另外要注意的是，如果打开 admin 功能，就不要用 static 作为 url 前部分。\n55| \n56| # 如果用 'show_indexes' 打开目录显示功能，可以在定义一个\n57| # static/directory_index.html 模板。\n58| \n59| if (settings.DEBUG):\n60|     urlpatterns += patterns ('',\n61|         (r'^ymedia/(?P<path>.*)$', 'django.views.static.serve',\n62|          {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),\n63|     )\n64| ", "ok": true}
@@ -4122,7 +4122,7 @@ XSS-003、REDIRECT-001、XSS-004 的关键证据已确认。继续读取其余�
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 30, "end_line": 195, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30|     \n31|     ret = isostring\n32|     try:\n33|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%SZ')))\n34|     except:\n35|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%S')))\n36| \n37|     return ret\n38| \n39| def has_auth(user, passwd):\n40| \n41|     user = authenticate(username=user, password=passwd)\n42|     if user is not None:\n43|         return True\n44|     else:\n45|         return False\n46| \n47| def delete_topic(id, user, passwd):\n48|     '''delete one topic'''\n49|     if not has_auth(user, passwd):\n50|         raise Fault(-1, \"Authentication Failure\")\n51| \n52|     try:\n53|         topic = Topic.objects.get(pk=id)\n54|         topic.posts.all().delete()\n55|         topic.delete()\n56|         return True\n57|     except:\n58|         raise Fault(-1, \"delete one topic failed\")\n59| \n60| def delete_all_topic(user, passwd):\n61|     '''delete all topic'''\n62|     if not has_auth(user, passwd):\n63|         raise Fault(-1, \"Authentication Failure\")\n64| \n65|     try:\n66|         Topic.objects.all().delete()\n67|         return True\n68|     except:\n69|         raise Fault(-1, \"delete all topics failed\")\n70| \n71| ###\n72| ### MetaWeblog API\n73| ###\n74| def topic_to_struct(topic):\n75| \n76|     return { 'userid' : topic.user.id,\n77|              'pubDate' : topic.updated.isoformat(),\n78|              'dateCreated' : topic.created.isoformat(),\n79|              'postid' : str(topic.id),\n80|              'description' : topic.body,\n81|              'title' : topic.name,\n82|              'category' : topic.catalog.name,\n83|              'link' : topic.get_absolute_url(),\n84|              'permalink' : topic.get_absolute_url(),\n85|             }\n86| \n87| #   Category struct\n88| #\n89| #    ‘categoryID’ – ID of the category\n90| #    ‘parentID’ – ID of the category’s parent\n91| #    ‘description’ – Name of the category\n92| #    ‘categoryDescription’ – Description of the category\n93| #    ‘categoryName’ – Name of the category\n94| #    ‘htmlUrl’ – Category permalink\n95| #    ‘rssUrl’ – RSS feed for the category\n96| def category_to_struct(cate):\n97|     return {'description':cate.description,\n98|             'summary':cate.summary,\n99
@@ -4140,7 +4140,7 @@ XSS-003、REDIRECT-001、XSS-004 的关键证据已确认。继续读取其余�
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ylab/views.py", "encoding": "utf-8-sig", "total_lines": 48, "start_line": 1, "end_line": 48, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden\n4| from django.shortcuts import get_object_or_404\n5| from django.core.urlresolvers import reverse\n6| from syndication.views import Feed\n7| from django.utils import simplejson\n8| \n9| from account.decorators import login_required, permission_required\n10| from ydata.models import Catalog,Topic,Post\n11| from ydata.forms import AddPostForm, \\\n12|     AddTopicForm, EditTopicForm\n13| \n14| from ydata.util import render_to, build_form, get_parents, ylinux_get_ip\n15| \n16| import datetime\n17| \n18| def time(request):\n19|     js = u'<script type=\"text/javascript\">parent.ajax_callback(0);parent.createUploadForm()</script>'\n20|     current = datetime.datetime.now()\n21|     return HttpResponse(`current` + js)\n22| \n23| \n24| def upload_single_file(req):\n25|     ''' 仅仅处理上传的文件中的第一个 '''\n26| \n27|     if req.method != 'POST':\n28|         return HttpResponse(\"Just for POST test!\")\n29| \n30|     url = '/ydata/attachement/3'\n31|     attachment = req.FILES.values()[0]\n32|     innerHTML = u'<span><a href=\"%s\">%s</a>， %s， <a href=\"%s/delete\">删除</a></span>' % (url, attachment.name, attachment.size, url)\n33|     r = u'<script type=\"text/javascript\">window.parent.AfterSubmit(%s);</script>' % innerHTML\n34|     return HttpResponse(r)\n35| \n36| \n37| def update_post_profile(req):\n38|     \n39|     posts = Post.objects.all()\n40|     for p in posts:\n41|         if p.parent:\n42|             p.touser = p.parent.user\n43|         else:\n44|             p.touser = p.topic.user\n45|         p.updated = p.created\n46|         p.save()\n47| \n48|     return HttpResponse(u'更新 posts 完成!')", "ok": true}
@@ -4193,7 +4193,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "settings.py", "encoding": "utf-8-sig", "total_lines": 177, "start_line": 120, "end_line": 177, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "120| TEMPLATE_CONTEXT_PROCESSORS = (\n121| #    \"django.core.context_processors.auth\",\n122| \n123|     #auth返回user对象\n124|     \"ylinux.app.account.context_processors.auth\",\n125| \n126|     \"django.core.context_processors.debug\",\n127|     \"django.core.context_processors.i18n\",\n128|     \"django.core.context_processors.media\",\n129|     \"django.core.context_processors.request\",\n130| )\n131| \n132| INSTALLED_APPS = (\n133| #    'django.contrib.auth',\n134|     # 目前 account 里的 ContentType 需要这个models\n135|     'django.contrib.contenttypes',\n136| #    'django.contrib.sessions',\n137| #    'django.contrib.sites',\n138| #    'django.contrib.admin',\n139| \n140|     # Ylinux.org 的应用\n141|     'ylinux.app.sessions',\n142|     'ylinux.app.admin',\n143|     'ylinux.app.account',\n144|     'ylinux.app.home',\n145|     'ylinux.app.ydata',\n146|     'ylinux.app.wiki',\n147|     'ylinux.app.blog',\n148|     'ylinux.app.ylab',\n149|     'ylinux.app.me',\n150|     'django_xmlrpc',\n151| )\n152| \n153| \n154| # 语言集合\n155| LANGUAGES = (\n156|     ('en', 'English'),\n157|     ('zh-cn', '简体中文'),\n158|     ('zh-tw', '繁体中文'),\n159| )\n160| \n161| # XML-RPC Public interface for YLinux\n162| XMLRPC_DEBUG=True\n163| #XMLRPC_METHODS = ylinux_xmlrpc.XMLRPC_METHODS\n164| XMLRPC_METHODS = (\n165|     ('ylinux_xmlrpc.delete_topic', 'delete_topic'),\n166|     ('ylinux_xmlrpc.delete_all_topic', 'delete_all_topic'),\n167| \n168|     # MetaWebBlog API\n169|     ('ylinux_xmlrpc.new_topic', 'metaWeblog.newPost'),\n170|     ('ylinux_xmlrpc.new_media', 'metaWeblog.newMediaObject'),\n171|     ('ylinux_xmlrpc.edit_topic', 'metaWeblog.editPost'),\n172|     ('ylinux_xmlrpc.get_topic', 'metaWeblog.getPost'),\n173|     ('ylinux_xmlrpc.get_categories', 'metaWeblog.getCategories'),\n174|     ('ylinux_xmlrpc.get_recent_topics', 'metaWeblog.getRecentPosts'),\n175| \n176|     # TODO: AtomPub and Blogger API\n177| )", "ok": true}
@@ -4211,7 +4211,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ylab/urls.py", "encoding": "utf-8-sig", "total_lines": 9, "start_line": 1, "end_line": 9, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ylab.views',\n6|     url(r'^time$', 'time', name='time'),\n7|     url(r'^uploadsf$', 'upload_single_file', name='uploadsf'),\n8|     url(r'^update_post_profile$', 'update_post_profile', name='update_post_profile'),\n9| )", "ok": true}
@@ -4229,7 +4229,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 260, "end_line": 300, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "260| \n261|     elif type is \"disable_recycled\":\n262|         topic.recycled = 0\n263| \n264|     if type is not \"delete\":\n265|         topic.save()\n266| \n267|     url = reverse ('wiki:show_catalog', args=[c_id])\n268|     return HttpResponseRedirect(url)\n269| \n270| \n271| @login_required\n272| def del_post (request, id):\n273| \n274|     post = get_object_or_404 (Post, pk=id)\n275|     t_id = post.topic.id\n276| \n277|     if post.user != request.user:\n278|         return HttpResponseForbidden('<h1>您没有这个权限！</h1>')\n279| \n280|     post.delete()\n281| \n282|     url = reverse ('wiki:show_topic', args=[t_id])\n283|     return HttpResponseRedirect(url)\n284| \n285| \n286| # django.utils.feedgenerator 是 low-level 调用，以后换成这个\n287| class LatestTopicFeed(Feed):\n288|     title = \"YLinux.org 最新主题\"\n289|     link = \"/topic/news/\"\n290|     description = \"YLinux.org 站点的最近主题动态\"\n291| \n292|     def items(self):\n293|         return Topic.objects.order_by('-updated')[:20]\n294| \n295|     def item_title(self, item):\n296|         return item.name\n297| \n298|     def item_pubdate(self, item):\n299|         return item.updated\n300| ", "ok": true}
@@ -4247,7 +4247,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/base.py", "encoding": "utf-8-sig", "total_lines": 287, "start_line": 75, "end_line": 110, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "75|             return value\n76| \n77|     def set_test_cookie(self):\n78|         self[self.TEST_COOKIE_NAME] = self.TEST_COOKIE_VALUE\n79| \n80|     def test_cookie_worked(self):\n81|         return self.get(self.TEST_COOKIE_NAME) == self.TEST_COOKIE_VALUE\n82| \n83|     def delete_test_cookie(self):\n84|         del self[self.TEST_COOKIE_NAME]\n85| \n86|     def encode(self, session_dict):\n87|         \"Returns the given session dictionary pickled and encoded as a string.\"\n88|         pickled = pickle.dumps(session_dict, pickle.HIGHEST_PROTOCOL)\n89|         pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()\n90|         return base64.encodestring(pickled + pickled_md5)\n91| \n92|     def decode(self, session_data):\n93|         encoded_data = base64.decodestring(session_data)\n94|         pickled, tamper_check = encoded_data[:-32], encoded_data[-32:]\n95|         if md5_constructor(pickled + settings.SECRET_KEY).hexdigest() != tamper_check:\n96|             raise SuspiciousOperation(\"User tampered with session cookie.\")\n97|         try:\n98|             return pickle.loads(pickled)\n99|         # Unpickling can cause a variety of exceptions. If something happens,\n100|         # just return an empty dictionary (an empty session).\n101|         except:\n102|             return {}\n103| \n104|     def update(self, dict_):\n105|         self._session.update(dict_)\n106|         self.modified = True\n107| \n108|     def has_key(self, key):\n109|         return self._session.has_key(key)\n110| ", "ok": true}
@@ -4265,7 +4265,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/home/views.py", "encoding": "utf-8-sig", "total_lines": 81, "start_line": 20, "end_line": 60, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "20|     all_user = User.objects.all()\n21|     if all_user:\n22|         new_register_user = all_user.order_by('-date_joined')[0]\n23|     else:\n24|         new_register_user = None\n25| \n26|     return {'title':'首页', 'topics':topics, 'posts':posts, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| def about(request):\n31|     return render_to_response('home/about.html',{'title':\"关于\",},\n32|                               context_instance=RequestContext(request))\n33| \n34| def contact(request):\n35|     if request.method == 'POST':\n36|         form = ContactForm(request.POST)\n37|         if form.is_valid():\n38|             subject = form.cleaned_data['subject']\n39|             message = form.cleaned_data['message']\n40|             sender = form.cleaned_data['sender']\n41| \n42|             recipients = ['ylinux.admin@gmail.com','lijian.gnu@gmail.com',]\n43|             recipients.append(sender)\n44| \n45|             from django.core.mail import send_mail\n46|             send_mail (subject,message,sender,recipients)\n47|             return render_to_response('home/thanks.html',{'title':\"感谢\",},\n48|                                       context_instance=RequestContext(request))\n49|             #return HttpResponseRedirect('/thanks/')\n50|     else:\n51|         form = ContactForm()\n52| \n53|         return render_to_response('home/contact.html',\n54|                                   {'title':\"联系\",'form':form,},\n55|                                   context_instance=RequestContext(request))\n56| \n57| #def thanks(request):\n58| #    return render_to_response('home/thanks.html',{'title':\"感谢\",},\n59| #                              context_instance=RequestContext(request))\n60| ", "ok": true}
@@ -4283,7 +4283,7 @@ Also need to check whether XMLRPC_METHODS includes delete_all_topic (settings.py
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/views.py", "encoding": "utf-8-sig", "total_lines": 155, "start_line": 60, "end_line": 110, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "60| \n61| # Declare xmlrpcdispatcher correctly depending on our python version\n62| if sys.version_info[:3] >= (2, 5,):\n63|     xmlrpcdispatcher = DjangoXMLRPCDispatcher(allow_none=False, encoding=None)\n64| else:\n65|     xmlrpcdispatcher = DjangoXMLRPCDispatcher()\n66| \n67| \n68| @xmlrpc_func(returns='string', args=['string'])\n69| def test_xmlrpc(text):\n70|     \"\"\"Simply returns the args passed to it as a string\"\"\"\n71|     return \"Here's a response! %s\" % str(text)\n72| \n73| @csrf_exempt\n74| def handle_xmlrpc(request):\n75|     \"\"\"Handles XML-RPC requests. All XML-RPC calls should be forwarded here\n76| \n77|     request\n78|         The HttpRequest object that carries the XML-RPC call. If this is a\n79|         GET request, nothing will happen (we only accept POST requests)\n80|     \"\"\"\n81|     if request.method == \"POST\":\n82|         if DEBUG:\n83|             print request.raw_post_data\n84|         try:\n85|             response = HttpResponse(content_type='text/xml')\n86|             response.write(\n87|                 xmlrpcdispatcher._marshaled_dispatch(request.raw_post_data))\n88|             if DEBUG:\n89|                 print response\n90|             return response\n91|         except:\n92|             return HttpResponseServerError()\n93|     else:\n94|         methods = xmlrpcdispatcher.system_listMethods()\n95|         method_list = []\n96| \n97|         for method in methods:\n98|             sig_ = xmlrpcdispatcher.system_methodSignature(method)\n99|             sig = {\n100|                 'returns': sig_[0],\n101|                 'args': \", \".join(sig_[1:]),\n102|             }\n103| \n104|             # this just reads your docblock, so fill it in!\n105|             method_help = xmlrpcdispatcher.system_methodHelp(method)\n106| \n107|             method_list.append((method, sig, method_help))\n108| \n109|         if hasattr(settings, 'XMLRPC_GET_TEMPLATE'):\n110|             # This behaviour is deprecated", "ok": true}
@@ -4319,7 +4319,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 50, "end_line": 70, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "50| def get_hexdigest(algorithm, salt, raw_password):\n51|     \"\"\"根据 algorithm,salt,raw_password 参数返回加密后的密码字符串。\n52|     支持 'md5', 'sha1' 和 'crypt' 三种加密算法。\n53|     \"\"\"\n54|     raw_password, salt = smart_str(raw_password), smart_str(salt)\n55|     if algorithm == 'crypt':\n56|         try:\n57|             import crypt\n58|         except ImportError:\n59|             raise ValueError('当前环境不支持 \"crypt\" 加密算法！')\n60|         return crypt.crypt(raw_password, salt)\n61| \n62|     if algorithm == 'md5':\n63|         return md5_constructor(salt + raw_password).hexdigest()\n64|     elif algorithm == 'sha1':\n65|         return sha_constructor(salt + raw_password).hexdigest()\n66|     raise ValueError(\"未知加密算法\")\n67| \n68| \n69| # 检查密码\n70| def check_password(raw_password, enc_password):", "ok": true}
@@ -4337,7 +4337,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 215, "end_line": 245, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "215|     def is_anonymous(self):\n216|         \"本类的对象都不是匿名用户\"\n217|         return False\n218| \n219|     def is_authenticated(self):\n220|         \"在模板里方便地判断用户是否经过认证的一个通用方法\"\n221|         return True\n222| \n223|     def get_full_name(self):\n224|         \"中文一般连写，英文却要空格，留待后面实现\"\n225|         full_name = u'%s %s' % (self.first_name, self.last_name)\n226|         return full_name.strip()\n227| \n228|     def set_password(self, raw_password):\n229|         \"设置密码\"\n230|         import random\n231|         algo = 'sha1'\n232|         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]\n233|         hsh = get_hexdigest(algo, salt, raw_password)\n234|         self.password = '%s$%s$%s' % (algo, salt, hsh)\n235| \n236|     def check_password(self, raw_password):\n237|         \"\"\"\n238|         Returns a boolean of whether the raw_password was correct. Handles\n239|         encryption formats behind the scenes.\n240|         \"\"\"\n241|         # Backwards-compatibility check. Older passwords won't include the\n242|         # algorithm or salt.\n243|         if '$' not in self.password:\n244|             is_correct = (self.password == get_hexdigest('md5', '', raw_password))\n245|             if is_correct:", "ok": true}
@@ -4355,7 +4355,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 350, "end_line": 380, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "350|         return []\n351| \n352|     def is_anonymous(self):\n353|         return True\n354| \n355|     def is_authenticated(self):\n356|         return False\n357| \n358| \n359| class RegisterManager(models.Manager):\n360| \n361|     def create_profile(self, email):\n362|         \"\"\" 创建一个 Email - Key 对 \"\"\"\n363| \n364|         salt = sha_constructor(str(random.random())).hexdigest()[:5]\n365|         if isinstance(email, unicode):\n366|             email = email.encode('utf-8')\n367|         activation_key = sha_constructor(salt+email).hexdigest()\n368|         return self.create(email=email,\n369|                            activation_key=activation_key)\n370| \n371|     def create_activate_user(self, username, email, password, activation_key, send_email=False):\n372|         \"\"\" 验证 activation_key ， 创建新用户 \"\"\"\n373| \n374|         if SHA1_RE.search(activation_key):\n375|             try:\n376|                 profile = self.get(activation_key=activation_key)\n377|             except self.model.DoesNotExist:\n378|                 return False\n379| \n380|             new_user = User.objects.create_user(username, email, password)", "ok": true}
@@ -4373,7 +4373,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 415, "end_line": 430, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "415|         # Email subject *must not* contain newlines\n416|         subject = ''.join(subject.splitlines())\n417|         \n418|         #message = render_to_string('account/activation_email.txt', ctx_dict)\n419|         message = \"尊敬的 %s ：您的注册 URL 是：http://ylinux.org/account/register/%s\" % (self.email,self.activation_key)\n420| \n421|         from django.core.mail import send_mail\n422|         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])\n423| \n424|     def reset_activation_key (self):\n425|         ''' 重新生成 activation_key '''\n426| \n427|         salt = sha_constructor(str(random.random())).hexdigest()[:5]\n428|         if isinstance(self.email, unicode):\n429|             email = self.email.encode('utf-8')\n430|         self.activation_key = sha_constructor(salt+self.email).hexdigest()", "ok": true}
@@ -4391,7 +4391,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/middleware.py", "encoding": "utf-8-sig", "total_lines": 42, "start_line": 25, "end_line": 42, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "25|             if accessed:\n26|                 patch_vary_headers(response, ('Cookie',))\n27|             if modified or settings.SESSION_SAVE_EVERY_REQUEST:\n28|                 if request.session.get_expire_at_browser_close():\n29|                     max_age = None\n30|                     expires = None\n31|                 else:\n32|                     max_age = request.session.get_expiry_age()\n33|                     expires_time = time.time() + max_age\n34|                     expires = cookie_date(expires_time)\n35|                 # Save the session data and refresh the client cookie.\n36|                 request.session.save()\n37|                 response.set_cookie(settings.SESSION_COOKIE_NAME,\n38|                         request.session.session_key, max_age=max_age,\n39|                         expires=expires, domain=settings.SESSION_COOKIE_DOMAIN,\n40|                         path=settings.SESSION_COOKIE_PATH,\n41|                         secure=settings.SESSION_COOKIE_SECURE or None)\n42|         return response", "ok": true}
@@ -4409,7 +4409,7 @@ Let me read those.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/forms.py", "encoding": "utf-8-sig", "total_lines": 128, "start_line": 30, "end_line": 115, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30| \n31|         self.fields['body'].widget = forms.Textarea(attrs={'class':'bbcode', 'rows':'10', 'cols':'60'})\n32| \n33|         if not ydata_settings.ATTACHMENT_SUPPORT:\n34|             self.fields['attachment'].widget = forms.HiddenInput()\n35|             self.fields['attachment'].required = False\n36| \n37|     def clean_attachment(self):\n38|         if self.cleaned_data['attachment']:\n39|             memfile = self.cleaned_data['attachment']\n40|             if memfile.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n41|                 raise forms.ValidationError('Attachment is too big')\n42|             return self.cleaned_data['attachment']\n43| \n44| \n45|     def save(self):\n46|         post = Post(topic=self.topic, user=self.user, user_ip=self.ip, markup='none', body=self.cleaned_data['body'])\n47|         self.topic.post_count += 1\n48|         self.topic.save()\n49|         self.topic.catalog.post_count += 1\n50|         self.topic.catalog.save()\n51|         post.updated = datetime.datetime.now();\n52|         post.save()\n53|         if ydata_settings.ATTACHMENT_SUPPORT:\n54|             self.save_attachment(post, self.cleaned_data['attachment'])\n55|         return post\n56| \n57|     def save_attachment(self, post, memfile):\n58|         if memfile:\n59|             obj = Attachment(size=memfile.size, content_type=memfile.content_type,\n60|                              name=memfile.name, post=post)\n61|             dir = os.path.join(settings.MEDIA_ROOT, ydata_settings.ATTACHMENT_UPLOAD_TO)\n62|             fname = '%d.0' % post.id\n63|             path = os.path.join(dir, fname)\n64|             file(path, 'w').write(memfile.read())\n65|             obj.path = fname\n66|             obj.save()\n67| \n68| \n69| class AddTopicForm(forms.ModelForm):\n70| \n71|     text = forms.CharField(widget=forms.Textarea)\n72| \n73|     class Meta:\n74|         model = Topic\n75|         fields = ['catalog','name','markup']\n76| \n77|     def __init__(self, *args, **kwargs):\n78|         self.catalog = kwargs.pop('catalog', None)\n79|         self.user = kwargs.pop('user', None)\n80|         self.user_ip = kwargs.pop('user_ip', None)\n81|         super(AddTopicForm, self).__init__(*args, **kwargs)\n82| \n83|         self.fields['catalog'].initi
@@ -4459,7 +4459,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/views.py", "encoding": "utf-8-sig", "total_lines": 254, "start_line": 155, "end_line": 200, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "155| \n156|     # 因为 ylinux.app.sessions.middleware.SessionMiddleware\n157|     # 中间件会在 request 里的设置 user 变量，我们这里另起名\n158|     return {'the_user':user, 'topics':topics, 'posts':posts}\n159| \n160| @render_to('account/list_all_user.html')\n161| def list_all_user(request):\n162| \n163|     ''' 列出已注册的用户，还未最终决定是否需要这个功能 '''\n164| \n165| \n166| @render_to('account/password_reset_request.html')\n167| def password_reset_request (request):\n168| \n169|     ''' 用户请求重置密码密码 '''\n170| \n171|     form = build_form (PasswordResetRequestForm, request)\n172| \n173|     if form.is_valid():\n174|         email = form.cleaned_data['email']\n175| \n176|         try:\n177|             user = User.objects.get(email=email)\n178|         except User.DoesNotExist:\n179|             return {'NOT_EXIST_EMAIL':True, 'email':email,\n180|                     'REASON':'该 Email 还未注册用户 ！'}\n181| \n182|         try:\n183|             register = Register.objects.get(email=email)\n184|             register.reset_activation_key()\n185|             register.save()\n186|         except Register.DoesNotExist:\n187|             register=Register.objects.create_profile(email)\n188| \n189|         # 发送邮件\n190|         subject = u'YLinux.org 重置密码邮件'\n191|         message = u\"尊敬的 %s ，应您的要求，重置密码 URL 是， http://ylinux.org/account/password/reset/%s\" % (email, register.activation_key)\n192|         user.email_user (subject = subject,\n193|              message = message, \n194|              from_email=settings.DEFAULT_FROM_EMAIL)\n195| \n196|         return {'EMAIL_SENT':True, 'email':email}\n197| \n198|     return {'NEW_REQUEST':True, 'form':form}\n199| \n200| ", "ok": true}
@@ -4477,7 +4477,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/home/forms.py", "encoding": "utf-8-sig", "total_lines": 9, "start_line": 1, "end_line": 9, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django import forms\n4| \n5| class ContactForm(forms.Form):\n6|     subject = forms.CharField(max_length=100)\n7|     message = forms.CharField()\n8|     sender = forms.EmailField()\n9|     cc_myself = forms.BooleanField(required=False)", "ok": true}
@@ -4494,7 +4494,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "def has_access|SESSION_ENGINE", "count": 2, "matches": [{"path": "app/sessions/middleware.py", "line": 10, "text": "engine = import_module(settings.SESSION_ENGINE)"}, {"path": "app/ydata/models.py", "line": 91, "text": "def has_access(self, user):"}], "ok": true}
@@ -4512,7 +4512,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 108, "end_line": 149, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "108| \n109| @login_required\n110| @render_to('ydata/attachment.html')\n111| def remove_attachment(req, id):\n112|     ''' 删除指定 id 的附件信息 '''\n113|     a = get_object_or_404(Attachment,pk=id)\n114|     return {'attachment': a}\n115| \n116| \n117| def download_attachment(request, id):\n118| \n119|     a = get_object_or_404(Attachment,pk=id)\n120| \n121|     a.dtimes += 1\n122|     a.save()\n123| \n124|     print a.get_absolute_path()\n125|     f = open(a.get_absolute_path())\n126|     response = HttpResponse(f.read())\n127|     f.close()\n128| \n129|     type, encoding = mimetypes.guess_type(a.get_absolute_path())\n130|     if type is None:\n131|         type = 'application/octet-stream'\n132|     response['Content-Type'] = type\n133|     response['Content-Length'] = str(a.size)\n134|     if encoding is not None:\n135|         response['Content-Encoding'] = encoding\n136| \n137|     # To inspect details for the below code, see http://greenbytes.de/tech/tc2231/\n138|     if u'WebKit' in request.META['HTTP_USER_AGENT']:\n139|         # Safari 3.0 and Chrome 2.0 accepts UTF-8 encoded string directly.\n140|         filename_header = 'filename=%s' % a.name.encode('utf-8')\n141|     elif u'MSIE' in request.META['HTTP_USER_AGENT']:\n142|         # IE does not support internationalized filename at all.\n143|         # It can only recognize internationalized URL, so we do the trick via routing rules.\n144|         filename_header = ''\n145|     else:\n146|         # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).\n147|         filename_header = 'filename*=UTF-8\\'\\'%s' % urllib.quote(a.name.encode('utf-8'))\n148|     response['Content-Disposition'] = 'attachment; ' + filename_header\n149|     return response", "ok": true}
@@ -4530,7 +4530,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/models.py", "encoding": "utf-8-sig", "total_lines": 71, "start_line": 1, "end_line": 70, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| import base64\n4| import cPickle as pickle\n5| \n6| from django.db import models\n7| from django.utils.translation import ugettext_lazy as _\n8| from django.conf import settings\n9| from django.utils.hashcompat import md5_constructor\n10| \n11| \n12| class SessionManager(models.Manager):\n13|     def encode(self, session_dict):\n14|         \"\"\"\n15|         Returns the given session dictionary pickled and encoded as a string.\n16|         \"\"\"\n17|         pickled = pickle.dumps(session_dict)\n18|         pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()\n19|         return base64.encodestring(pickled + pickled_md5)\n20| \n21|     def save(self, session_key, session_dict, expire_date):\n22|         s = self.model(session_key, self.encode(session_dict), expire_date)\n23|         if session_dict:\n24|             s.save()\n25|         else:\n26|             s.delete() # Clear sessions with no data.\n27|         return s\n28| \n29| \n30| class Session(models.Model):\n31|     \"\"\"\n32|     Django provides full support for anonymous sessions. The session\n33|     framework lets you store and retrieve arbitrary data on a\n34|     per-site-visitor basis. It stores data on the server side and\n35|     abstracts the sending and receiving of cookies. Cookies contain a\n36|     session ID -- not the data itself.\n37| \n38|     The Django sessions framework is entirely cookie-based. It does\n39|     not fall back to putting session IDs in URLs. This is an intentional\n40|     design decision. Not only does that behavior make URLs ugly, it makes\n41|     your site vulnerable to session-ID theft via the \"Referer\" header.\n42| \n43|     For complete documentation on using Sessions in your code, consult\n44|     the sessions documentation that is shipped with Django (also available\n45|     on the Django website).\n46|     \"\"\"\n47|     session_key = models.CharField(_('session key'), max_length=40,\n48|                                    primary_key=True)\n49|     session_data = models.TextField(_('session data'))\n50|     expire_date = models.DateTimeField(_('expire date'))\n51|     objects = SessionManager()\n52| \n53|     class Meta:\n54|         # db_table 可以定义数据库的名字\n55|         #db_table = 'django_
@@ -4548,7 +4548,7 @@ Also, for XSS-002: attachment upload requires login (ydata/views.py:31 @login_re
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 385, "end_line": 414, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "385|             return new_user\n386|         return False\n387| \n388| \n389| class Register(models.Model):\n390|     ''' 存放注册用户的Email和验证Key '''\n391| \n392|     ACTIVATED = u\"ALREADY_ACTIVATED\"\n393| \n394|     email = models.EmailField(\"邮件\",blank=True,unique=True)\n395|     activation_key = models.CharField('激活Key', max_length=40)\n396|     updated = models.DateTimeField(\"最后修改\", auto_now=True)\n397|     \n398| \n399|     objects = RegisterManager()\n400| \n401|     class Meta:\n402|         verbose_name = '注册激活码'\n403|         verbose_name_plural = '注册激活码'\n404| \n405|     def __unicode__ (self):\n406|         return u'%s - %s' % (self.email, self.activation_key)\n407| \n408|     def send_activation_email(self):\n409|         ''' 向用户发送注册验证邮件 '''\n410| \n411|         ctx_dict = {'activation_key': self.activation_key,\n412|                     'expiration_days': 3}\n413|         #subject = render_to_string('account/activation_email_subject.txt', ctx_dict)\n414|         subject = 'YLinux.org 注册申请信息'", "ok": true}
@@ -4589,7 +4589,7 @@ Now let me check has_access and SESSION_ENGINE.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 55, "end_line": 110, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "55|     description = models.TextField('描述', blank=True, \n56|                                    default='')\n57|     # auto_now_add 在 create object 自动保存为当前时间\n58|     # auto_now 在每次 save object 都自动保存为当前时间\n59|     created = models.DateTimeField(\"创建时间\", \n60|                auto_now_add=True)\n61|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n62|     post_count = models.IntegerField('总帖子数', \n63|                blank=True, default=0)\n64|     topic_count = models.IntegerField('总主题数', \n65|                blank=True, default=0)\n66|     last_post = models.ForeignKey('Post', blank=True, \n67|                null=True, related_name='last_catalog_post')\n68|     # There should be many topics here! FIXME!\n69|     last_topic = models.ForeignKey('Topic', blank=True, \n70|                null=True, related_name='last_catalog_topic')\n71|     class Meta:\n72|         ordering = ['position']\n73|         verbose_name = '目录'\n74|         verbose_name_plural = '目录'\n75| \n76|     def __unicode__(self):\n77|         return self.name\n78| \n79|     @models.permalink\n80|     def get_absolute_url(self):\n81|         return ('wiki:show_catalog', [self.id])\n82| \n83|     @property\n84|     def children(self):\n85|         return Catalog.objects.filter(parent=self.id)\n86| \n87|     #@property\n88|     #def posts(self):\n89|     #    return Post.objects.filter(topic__catalog=self).select_related().count()\n90| \n91|     def has_access(self, user):\n92|         ''' 判断用户是否有权限，如果一个 Catalog 还未指定用户组，所有用户都有权限 '''\n93|         if self.groups.count() > 0:\n94|             if user.is_authenticated():\n95|                 try:\n96|                     self.groups.get(user__pk=user.id)\n97|                 except Group.DoesNotExist:\n98|                     return False\n99|             else:\n100|                 return False\n101|         return True\n102| \n103| \n104| # 主题：每个 catalog 下会有很多主题，\n105| # YLinux 默认： 论坛以 Topic 为表现形式，Wiki 以 Tag 为表现形式。\n106| class Topic(models.Model):\n107|     catalog = models.ForeignKey(Catalog, related_name='topics', verbose_name='Catalog')\n108|     # 预计修改为 Subject\n109|     name = models.CharField('标题', max_length=256)\n110|     created = models.DateTimeField('Created', auto_now_add=True)", "ok": true}
@@ -4606,7 +4606,7 @@ Now let me check has_access and SESSION_ENGINE.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "SESSION_ENGINE\\s*=", "count": 0, "matches": [], "ok": true}
@@ -4640,7 +4640,7 @@ Let me check replayAJAX decorators and sessions/__init__.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 390, "end_line": 412, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "390| \n391| # 回复分为：\n392| # 1. 回复 Topic\n393| # 2. 回复 Post\n394| #@login_required\n395| @render_to('wiki/replayAJAX.html')\n396| def replayAJAX(request, topicID = None, postID = None):\n397|     \"\"\" 通过 AJAX 方式回复 \"\"\"\n398| \n399|     if not request.user.is_authenticated():\n400|         return HttpResponse(u'<h1>您没有权限！请 <a href=\"/account/login\">登录</a></h1>')\n401| \n402|     replayID = None # 需要回复的 id\n403|     parent_post = None\n404| \n405|     if topicID:\n406|         topic = get_object_or_404(Topic, pk = topicID)\n407|         replayID = topicID\n408|     elif postID:\n409|         parent_post = get_object_or_404(Post, pk = postID)\n410|         topic = get_object_or_404(Topic, pk = parent_post.topic.id)\n411|         replayID = postID\n412|     else:", "ok": true}
@@ -4657,7 +4657,7 @@ Let me check replayAJAX decorators and sessions/__init__.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "SESSION_ENGINE", "count": 1, "matches": [{"path": "app/sessions/middleware.py", "line": 10, "text": "engine = import_module(settings.SESSION_ENGINE)"}], "ok": true}
@@ -4696,7 +4696,7 @@ Now let me double check one thing in XSS-001: the claim includes "会话 Cookie 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/views.py", "encoding": "utf-8-sig", "total_lines": 155, "start_line": 1, "end_line": 60, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| \"\"\"Uses SimpleXMLRPCServer's SimpleXMLRPCDispatcher to serve XML-RPC requests\n2| \n3| Authors::\n4|     Graham Binns\n5|     Reza Mohammadi\n6|     Julien Fache\n7| \n8| Credit must go to Brendan W. McAdams <brendan.mcadams@thewintergrp.com>, who\n9| posted the original SimpleXMLRPCDispatcher to the Django wiki:\n10| http://code.djangoproject.com/wiki/XML-RPC\n11| \n12| New BSD License\n13| ===============\n14| Copyright (c) 2007, Graham Binns http://launchpad.net/~codedragon\n15| \n16| All rights reserved.\n17| \n18| Redistribution and use in source and binary forms, with or without\n19| modification, are permitted provided that the following conditions are met:\n20| \n21|     * Redistributions of source code must retain the above copyright notice,\n22|       this list of conditions and the following disclaimer.\n23|     * Redistributions in binary form must reproduce the above copyright notice,\n24|       this list of conditions and the following disclaimer in the documentation\n25|       and/or other materials provided with the distribution.\n26|     * Neither the name of the <ORGANIZATION> nor the names of its contributors\n27|       may be used to endorse or promote products derived from this software\n28|       without specific prior written permission.\n29| \n30| THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n31| \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n32| LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n33| A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR\n34| CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n35| EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n36| PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n37| PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n38| LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n39| NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n40| SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n41| \"\"\"\n42| import sys\n43| \n44| from django.conf import settings\n45| from django.template import RequestContext\n46| from django.shortcuts import render_to_response\n47| fr
@@ -4724,7 +4724,7 @@ I didn't see the dispatcher.register_function loop for XMLRPC_METHODS in views.p
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/django_xmlrpc/views.py", "encoding": "utf-8-sig", "total_lines": 155, "start_line": 110, "end_line": 155, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "110|             # This behaviour is deprecated\n111|             if settings.DEBUG:\n112|                 print \"Use of settings.XMLRPC_GET_TEMPLATE is deprecated \" \\\n113|                     + \"Please update your code to use django_xmlrpc/templates\"\n114|             template = settings.XMLRPC_GET_TEMPLATE\n115|         else:\n116|             template = 'xmlrpc_get.html'\n117|         return render_to_response(template, {'methods': method_list},\n118|                                   context_instance=RequestContext(request))\n119| \n120| \n121| # Load up any methods that have been registered with the server in settings\n122| if hasattr(settings, 'XMLRPC_METHODS'):\n123|     for path, name in settings.XMLRPC_METHODS:\n124|         # if \"path\" is actually a function, just add it without fuss\n125|         if callable(path):\n126|             xmlrpcdispatcher.register_function(path, name)\n127|             continue\n128| \n129|         # Otherwise we try and find something that we can call\n130|         i = path.rfind('.')\n131|         module, attr = path[:i], path[i+1:]\n132| \n133|         try:\n134|             mod = __import__(module, globals(), locals(), [attr])\n135|         except ImportError, ex:\n136|             raise ImproperlyConfigured, \"Error registering XML-RPC method: \" \\\n137|                 + \"module %s can't be imported\" % module\n138| \n139|         try:\n140|             func = getattr(mod, attr)\n141|         except AttributeError:\n142|             raise ImproperlyConfigured, 'Error registering XML-RPC method: ' \\\n143|                 + 'module %s doesn\\'t define a method \"%s\"' % (module, attr)\n144| \n145|         if not callable(func):\n146|             raise ImproperlyConfigured, 'Error registering XML-RPC method: ' \\\n147|                 + '\"%s\" is not callable in module %s' % (attr, module)\n148| \n149|         xmlrpcdispatcher.register_function(func, name)\n150| \n151| \n152| # Finally, register the introspection and multicall methods with the XML-RPC\n153| # namespace\n154| xmlrpcdispatcher.register_introspection_functions()\n155| xmlrpcdispatcher.register_multicall_functions()", "ok": true}
@@ -4796,7 +4796,7 @@ Weakest point: 可利用性——`f.name` 来自 req.FILES，而 req.FILES/chunk
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "def show_topic|has_access", "count": 4, "matches": [{"path": "app/wiki/views.py", "line": 141, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 172, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 192, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 423, "text": "if not topic.catalog.has_access(request.user):"}], "ok": true}
@@ -4814,7 +4814,7 @@ Weakest point: 可利用性——`f.name` 来自 req.FILES，而 req.FILES/chunk
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/urls.py", "encoding": "utf-8-sig", "total_lines": 10, "start_line": 1, "end_line": 10, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ydata.views',\n6|     url(r'^uploadsf/(?P<id>\\d+)/$', 'upload_single_file', name='uploadsf'),\n7|     url(r'^attachment/(?P<id>\\d+)/$', 'show_attachment', name='show_attachment'),\n8|     url(r'^attachment/(?P<id>\\d+)/remove/$', 'remove_attachment', name='delete_attachment'),\n9|     url(r'^attachment/(?P<id>\\d+)/download/$', 'download_attachment', name='download_attachment'),\n10| )", "ok": true}
@@ -4853,7 +4853,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4872,7 +4872,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-002", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4891,7 +4891,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-003", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4910,7 +4910,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"uncovered": ["lib/ylinux_xmlrpc.py:39-45"], "ok": false, "error": "read_file each evidence location with at least 10 lines of context on both sides before judging it"}
@@ -4929,7 +4929,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4948,7 +4948,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-002", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4967,7 +4967,7 @@ Let me write them in Chinese as required.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CSRF-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -4999,7 +4999,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 20, "end_line": 60, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "20|         return u\n21|     else:\n22|         return u.encode(encoding)\n23| \n24| def datetime_from_iso(isostring):\n25| \n26|     try:\n27|         isostring = isostring.split(\".\")[0]\n28|     except:\n29|         pass\n30|     \n31|     ret = isostring\n32|     try:\n33|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%SZ')))\n34|     except:\n35|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%S')))\n36| \n37|     return ret\n38| \n39| def has_auth(user, passwd):\n40| \n41|     user = authenticate(username=user, password=passwd)\n42|     if user is not None:\n43|         return True\n44|     else:\n45|         return False\n46| \n47| def delete_topic(id, user, passwd):\n48|     '''delete one topic'''\n49|     if not has_auth(user, passwd):\n50|         raise Fault(-1, \"Authentication Failure\")\n51| \n52|     try:\n53|         topic = Topic.objects.get(pk=id)\n54|         topic.posts.all().delete()\n55|         topic.delete()\n56|         return True\n57|     except:\n58|         raise Fault(-1, \"delete one topic failed\")\n59| \n60| def delete_all_topic(user, passwd):", "ok": true}
@@ -5022,7 +5022,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "AUTHZ-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5041,7 +5041,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"uncovered": ["app/account/models.py:424-430"], "ok": false, "error": "read_file each evidence location with at least 10 lines of context on both sides before judging it"}
@@ -5060,7 +5060,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"uncovered": ["app/account/models.py:62-65"], "ok": false, "error": "read_file each evidence location with at least 10 lines of context on both sides before judging it"}
@@ -5079,7 +5079,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5098,7 +5098,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-002", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5117,7 +5117,7 @@ AUTHZ-001 因证据窗口差一行被拒绝，补读上下文后重提。
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CONFIG-003", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5149,7 +5149,7 @@ CRYPTO-001 needs app/account/models.py:424-430 with 10 lines before (414-430) �
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 45, "end_line": 85, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "45| \n46| SHA1_RE = re.compile('^[a-f0-9]{40}$')\n47| \n48| \n49| # 设置密码\n50| def get_hexdigest(algorithm, salt, raw_password):\n51|     \"\"\"根据 algorithm,salt,raw_password 参数返回加密后的密码字符串。\n52|     支持 'md5', 'sha1' 和 'crypt' 三种加密算法。\n53|     \"\"\"\n54|     raw_password, salt = smart_str(raw_password), smart_str(salt)\n55|     if algorithm == 'crypt':\n56|         try:\n57|             import crypt\n58|         except ImportError:\n59|             raise ValueError('当前环境不支持 \"crypt\" 加密算法！')\n60|         return crypt.crypt(raw_password, salt)\n61| \n62|     if algorithm == 'md5':\n63|         return md5_constructor(salt + raw_password).hexdigest()\n64|     elif algorithm == 'sha1':\n65|         return sha_constructor(salt + raw_password).hexdigest()\n66|     raise ValueError(\"未知加密算法\")\n67| \n68| \n69| # 检查密码\n70| def check_password(raw_password, enc_password):\n71|     \"\"\"\n72|     Returns a boolean of whether the raw_password was correct. Handles\n73|     encryption formats behind the scenes.\n74|     \"\"\"\n75|     algo, salt, hsh = enc_password.split('$')\n76|     return hsh == get_hexdigest(algo, salt, raw_password)\n77| \n78| \n79| # 由于 Permission, Group, User 之间的相互关系，\n80| # 按照 Permission->Group->User 顺序定义方便传递对象而非名字\n81| \n82| class Permission(models.Model):\n83|     \"\"\"权限\"\"\"\n84|     \n85|     name = models.CharField('名字', max_length=32)", "ok": true}
@@ -5167,7 +5167,7 @@ CRYPTO-001 needs app/account/models.py:424-430 with 10 lines before (414-430) �
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/account/models.py", "encoding": "utf-8-sig", "total_lines": 430, "start_line": 408, "end_line": 430, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "408|     def send_activation_email(self):\n409|         ''' 向用户发送注册验证邮件 '''\n410| \n411|         ctx_dict = {'activation_key': self.activation_key,\n412|                     'expiration_days': 3}\n413|         #subject = render_to_string('account/activation_email_subject.txt', ctx_dict)\n414|         subject = 'YLinux.org 注册申请信息'\n415|         # Email subject *must not* contain newlines\n416|         subject = ''.join(subject.splitlines())\n417|         \n418|         #message = render_to_string('account/activation_email.txt', ctx_dict)\n419|         message = \"尊敬的 %s ：您的注册 URL 是：http://ylinux.org/account/register/%s\" % (self.email,self.activation_key)\n420| \n421|         from django.core.mail import send_mail\n422|         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])\n423| \n424|     def reset_activation_key (self):\n425|         ''' 重新生成 activation_key '''\n426| \n427|         salt = sha_constructor(str(random.random())).hexdigest()[:5]\n428|         if isinstance(self.email, unicode):\n429|             email = self.email.encode('utf-8')\n430|         self.activation_key = sha_constructor(salt+self.email).hexdigest()", "ok": true}
@@ -5190,7 +5190,7 @@ CRYPTO-001 needs app/account/models.py:424-430 with 10 lines before (414-430) �
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CRYPTO-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5209,7 +5209,7 @@ CRYPTO-001 needs app/account/models.py:424-430 with 10 lines before (414-430) �
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "CRYPTO-002", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5243,7 +5243,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/sessions/backends/base.py", "encoding": "utf-8-sig", "total_lines": 287, "start_line": 80, "end_line": 120, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "80|     def test_cookie_worked(self):\n81|         return self.get(self.TEST_COOKIE_NAME) == self.TEST_COOKIE_VALUE\n82| \n83|     def delete_test_cookie(self):\n84|         del self[self.TEST_COOKIE_NAME]\n85| \n86|     def encode(self, session_dict):\n87|         \"Returns the given session dictionary pickled and encoded as a string.\"\n88|         pickled = pickle.dumps(session_dict, pickle.HIGHEST_PROTOCOL)\n89|         pickled_md5 = md5_constructor(pickled + settings.SECRET_KEY).hexdigest()\n90|         return base64.encodestring(pickled + pickled_md5)\n91| \n92|     def decode(self, session_data):\n93|         encoded_data = base64.decodestring(session_data)\n94|         pickled, tamper_check = encoded_data[:-32], encoded_data[-32:]\n95|         if md5_constructor(pickled + settings.SECRET_KEY).hexdigest() != tamper_check:\n96|             raise SuspiciousOperation(\"User tampered with session cookie.\")\n97|         try:\n98|             return pickle.loads(pickled)\n99|         # Unpickling can cause a variety of exceptions. If something happens,\n100|         # just return an empty dictionary (an empty session).\n101|         except:\n102|             return {}\n103| \n104|     def update(self, dict_):\n105|         self._session.update(dict_)\n106|         self.modified = True\n107| \n108|     def has_key(self, key):\n109|         return self._session.has_key(key)\n110| \n111|     def values(self):\n112|         return self._session.values()\n113| \n114|     def iterkeys(self):\n115|         return self._session.iterkeys()\n116| \n117|     def itervalues(self):\n118|         return self._session.itervalues()\n119| \n120|     def iteritems(self):", "ok": true}
@@ -5267,7 +5267,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "FILE-001", "status": "disputed", "verdict": "dispute", "ok": true}
@@ -5286,7 +5286,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "REDIRECT-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5305,7 +5305,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "EMAIL-001", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5324,7 +5324,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "DESER-001", "status": "needs_review", "verdict": "agree", "ok": true}
@@ -5343,7 +5343,7 @@ For DESER-001, let me widen the read.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "XSS-004", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -5381,7 +5381,7 @@ I'll submit 2 gaps. Then accept_report.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "G1", "ok": true}
@@ -5397,7 +5397,7 @@ I'll submit 2 gaps. Then accept_report.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "G2", "ok": true}
@@ -5427,7 +5427,7 @@ All findings reviewed (17/17: 16 agree, 1 dispute), 2 gaps noted. Now call accep
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "critic accepted the current findings", "ok": true}
@@ -5486,7 +5486,7 @@ Re-read the code. The code uses `f.name` directly in `os.path.join` and `open()`
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 90, "end_line": 160, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "90| #    ‘parentID’ – ID of the category’s parent\n91| #    ‘description’ – Name of the category\n92| #    ‘categoryDescription’ – Description of the category\n93| #    ‘categoryName’ – Name of the category\n94| #    ‘htmlUrl’ – Category permalink\n95| #    ‘rssUrl’ – RSS feed for the category\n96| def category_to_struct(cate):\n97|     return {'description':cate.description,\n98|             'summary':cate.summary,\n99|             'categoryName':cate.name,\n100|             'htmlUrl':cate.get_absolute_url(),\n101|             'categoryID': 1, # TODO:FIXME!!\n102|             'parentID':1,\n103|             }\n104| \n105| def new_media(blogid, user, passwd, fileObject):\n106|     '''upload media or acctachment\n107|     \n108|        struct = {'name':, 'type':, 'bits'}\n109|     '''\n110|     if not has_auth(user, passwd):\n111|         raise Fault(-1, \"Authentication Failure\")\n112| \n113|     file_data = str(fileObject['bits'])\n114|     file_name = fileObject['name'].encode('utf8')\n115|     file_type = 'img'\n116|     \n117|     # TODO: figure out saving files api in django\n118|     \n119|     if file_type == 'img':\n120|         dated_path = datetime.now().strftime('%Y_%m_%d_') + os.path.basename(file_name)\n121|         relative_path = os.path.join(file_type, dated_path)\n122|         target_path = os.path.join(settings.MEDIA_ROOT, relative_path)\n123|         target_url = '%s/%s' % (settings.MEDIA_URL, relative_path)\n124|         open(target_path, 'w').write(file_data)\n125|         return {'url': target_url}\n126|     \n127|     return ''\n128| \n129| def get_topic(postid, user, passwd):\n130|     '''return a topic'''\n131| \n132|     if not has_auth(user, passwd):\n133|         raise Fault(-1, \"Authentication Failure\")\n134| \n135|     try:\n136|         topic = Topic.objects.get(pk = int(postid))\n137|         return topic_to_struct(topic)\n138|     except Topic.DoesNotExist:\n139|         raise Fault(-2, \"Topic does not exist\")\n140|     except Exception, e:\n141|         raise Fault(-255, 'Unknown Exception: %s' % str(e))\n142| \n143| def get_recent_topics(postid, user, passwd, count):\n144|     '''get recent topics'''\n145| \n146|     if not has_auth(user,passwd):\n147|         raise Fault(-1, \"Authentication Failure\")\n148| 
@@ -5504,7 +5504,7 @@ Re-read the code. The code uses `f.name` directly in `os.path.join` and `open()`
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 95, "end_line": 149, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "95|            notes)\n96| \n97|     print r\n98|     return HttpResponse(r)\n99| \n100| \n101| @render_to('ydata/attachment.html')\n102| def show_attachment(req, id):\n103|     ''' 显示指定 id 的附件信息 '''\n104|     attachment = get_object_or_404(Attachment,pk=id)    \n105|     return {'attachment': attachment}\n106| \n107| \n108| \n109| @login_required\n110| @render_to('ydata/attachment.html')\n111| def remove_attachment(req, id):\n112|     ''' 删除指定 id 的附件信息 '''\n113|     a = get_object_or_404(Attachment,pk=id)\n114|     return {'attachment': a}\n115| \n116| \n117| def download_attachment(request, id):\n118| \n119|     a = get_object_or_404(Attachment,pk=id)\n120| \n121|     a.dtimes += 1\n122|     a.save()\n123| \n124|     print a.get_absolute_path()\n125|     f = open(a.get_absolute_path())\n126|     response = HttpResponse(f.read())\n127|     f.close()\n128| \n129|     type, encoding = mimetypes.guess_type(a.get_absolute_path())\n130|     if type is None:\n131|         type = 'application/octet-stream'\n132|     response['Content-Type'] = type\n133|     response['Content-Length'] = str(a.size)\n134|     if encoding is not None:\n135|         response['Content-Encoding'] = encoding\n136| \n137|     # To inspect details for the below code, see http://greenbytes.de/tech/tc2231/\n138|     if u'WebKit' in request.META['HTTP_USER_AGENT']:\n139|         # Safari 3.0 and Chrome 2.0 accepts UTF-8 encoded string directly.\n140|         filename_header = 'filename=%s' % a.name.encode('utf-8')\n141|     elif u'MSIE' in request.META['HTTP_USER_AGENT']:\n142|         # IE does not support internationalized filename at all.\n143|         # It can only recognize internationalized URL, so we do the trick via routing rules.\n144|         filename_header = ''\n145|     else:\n146|         # For others like Firefox, we follow RFC2231 (encoding extension in HTTP headers).\n147|         filename_header = 'filename*=UTF-8\\'\\'%s' % urllib.quote(a.name.encode('utf-8'))\n148|     response['Content-Disposition'] = 'attachment; ' + filename_header\n149|     return response", "ok": true}
@@ -5542,7 +5542,7 @@ G2 confirmed from code: show_attachment (101-105) and download_attachment (117-1
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "lib/ylinux_xmlrpc.py", "encoding": "utf-8-sig", "total_lines": 252, "start_line": 1, "end_line": 40, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| #\n3| \n4| \"\"\"\n5|  XML-RPC public interface for YLinux\n6| \n7| \"\"\"\n8| \n9| import sys,os\n10| from datetime import datetime\n11| from time import strftime, mktime,strptime\n12| from xmlrpclib import Fault, Boolean, DateTime\n13| \n14| from account import authenticate,login\n15| from ydata.models import Topic,Catalog,User\n16| \n17| def st(u, encoding):\n18|     '''convert unicode to string'''\n19|     if isinstance(u, str):\n20|         return u\n21|     else:\n22|         return u.encode(encoding)\n23| \n24| def datetime_from_iso(isostring):\n25| \n26|     try:\n27|         isostring = isostring.split(\".\")[0]\n28|     except:\n29|         pass\n30|     \n31|     ret = isostring\n32|     try:\n33|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%SZ')))\n34|     except:\n35|         ret = datetime.fromtimestamp(mktime(strftime(isostring, '%Y%m%dT%H:%M:%S')))\n36| \n37|     return ret\n38| \n39| def has_auth(user, passwd):\n40| ", "ok": true}
@@ -5560,7 +5560,7 @@ G2 confirmed from code: show_attachment (101-105) and download_attachment (117-1
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 1, "end_line": 95, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden\n4| from django.shortcuts import get_object_or_404\n5| from django.core.urlresolvers import reverse\n6| #from django.contrib.syndication.views import Feed\n7| from syndication.views import Feed\n8| \n9| from account.decorators import login_required, permission_required\n10| from ydata.models import Catalog,Topic,Post,Attachment\n11| from ydata.forms import AddPostForm, \\\n12|     AddTopicForm, EditTopicForm\n13| \n14| from ydata.util import render_to, build_form, get_parents, ylinux_get_ip\n15| \n16| from django.conf import settings\n17| from ydata import settings as ydata_settings\n18| import os, hashlib, mimetypes, urllib\n19| \n20| from string import Template\n21| \n22| # dic = {'ID':XXX, 'URL':XXX, 'THUMBNAIL':XXX, 'DURL':XXX}\n23| attachment_response_innerHTML = Template(u'<tr>\\\n24| <td>$ID</td>\\\n25| <td><a href=\"$URL\">$NAME</a></td>\\\n26| <td>$THUMBNAIL</td>\\\n27| <td><a href=\"$DURL\">$DURL</a></td>\\\n28| </tr>')\n29| \n30| \n31| @login_required\n32| def upload_single_file(req, id):\n33|     ''' 上传单个附件， 只作异步上传使用\n34|     1. 上传的 form 中文件的 name = 'single_file'\n35|     '''\n36| \n37|     if req.method != 'POST':\n38|         return HttpResponse(\"Just for POST a single file\")\n39| \n40|     f = req.FILES['single_file'] #req.FILES.values()[0]\n41|     if f.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n42|         notes = u'文件太大： %s (限制大小： %s)' % (f.size, ydata_settings.ATTACHMENT_SIZE_LIMIT)\n43|         r = u'<script type=\"text/javascript\">window.parent.UploadError(\"%s\");</script>' % notes\n44|         return HttpResponse(r)\n45| \n46|     #topic = get_object_or_404(Topic, pk=id)\n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         topic = False\n51| \n52|     sha1_hash = hashlib.sha1()\n53|     for chunk in f.chunks():\n54|         sha1_hash.update(chunk)\n55|     fhash = sha1_hash.hexdigest()\n56| \n57|     attachments = Attachment.objects.filter(hash=fhash)\n58|     notes = ''\n59| \n60|     if attachments:\n61|         # 此文件在服务器上已存在， 增加引用计数即可\n62|         local_name = ''\n63|         attachment = False\n64|         for a in attachments:\n65|             if l
@@ -5578,7 +5578,7 @@ G2 confirmed from code: show_attachment (101-105) and download_attachment (117-1
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 330, "end_line": 400, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "330| \n331| # 举报\n332| class Report(models.Model):\n333|     reported_by = models.ForeignKey(User, related_name='reported_by', verbose_name='Reported by')\n334|     post = models.ForeignKey(Post, verbose_name='Post')\n335|     zapped = models.BooleanField('Zapped', blank=True, default=False)\n336|     zapped_by = models.ForeignKey(User, related_name='zapped_by', blank=True, null=True,  verbose_name='Zapped by')\n337|     created = models.DateTimeField('Created', blank=True)\n338|     reason = models.TextField('Reason', blank=True, default='', max_length='1024')\n339| \n340|     class Meta:\n341|         verbose_name = 'Report'\n342|         verbose_name_plural = 'Reports'\n343| \n344|     def __unicode__(self):\n345|         return u'%s %s' % (self.reported_by ,self.zapped)\n346| \n347| \n348| # 附件\n349| class Attachment(models.Model):\n350|     user = models.ForeignKey(User, related_name='attachments', verbose_name='User')\n351|     topic = models.ForeignKey(Topic, related_name='attachments', verbose_name='Topic')\n352|     name = models.TextField('Name')\n353|     size = models.IntegerField('Size')\n354|     path = models.CharField('Path', max_length=256)\n355|     hash = models.CharField('Hash', max_length=40, blank=True, default='', db_index=True)\n356|     description = models.TextField('描述', blank=True,  default='')\n357|     qtimes = models.IntegerField('引用次数', blank=True, default=1) #被其他用户引用的次数\n358|     dtimes = models.IntegerField('下载次数', blank=True, default=0) #被下载的次数\n359|     created = models.DateTimeField(\"创建时间\", auto_now_add=True)\n360|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n361| \n362|     def __unicode__(self):\n363|         return self.name\n364| \n365|     @models.permalink\n366|     def get_absolute_url(self):\n367|         return ('ydata:show_attachment', [self.id])\n368| \n369|     @models.permalink\n370|     def get_absolute_durl(self):\n371|         return ('ydata:download_attachment', [self.id])\n372| \n373|     def get_absolute_path(self):\n374|         return os.path.join(settings.MEDIA_ROOT, ydata_settings.ATTACHMENT_UPLOAD_TO,\n375|                             self.path)\n376| \n377| \n378| class Tag(models.Model):\n379|     ''' Tag 模型 '''\n380|     \n381|     name = models.CharField('Name', max_l
@@ -5618,7 +5618,7 @@ So G1 resolution: the function is registered but broken at runtime (NameError on
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "settings", "count": 2, "matches": [{"path": "lib/ylinux_xmlrpc.py", "line": 122, "text": "target_path = os.path.join(settings.MEDIA_ROOT, relative_path)"}, {"path": "lib/ylinux_xmlrpc.py", "line": 123, "text": "target_url = '%s/%s' % (settings.MEDIA_URL, relative_path)"}], "ok": true}
@@ -5636,7 +5636,7 @@ So G1 resolution: the function is registered but broken at runtime (NameError on
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 30, "end_line": 110, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30|     (-1, 'MINUS'),\n31| )\n32| \n33| MARKUP_CHOICES = ( \n34|     ('bbcode', 'bbcode'),\n35|     ('markdown', 'markdown'),\n36| )\n37| \n38| PRIVACY_CHOICES = ( \n39|     (0, u'Display your e-mail address.'),\n40|     (1, u'Hide your e-mail address but allow form e-mail.'),\n41|     (2, u'Hide your e-mail address and disallow form e-mail.'),\n42| )\n43| \n44| \n45| # Category 下分很多 Catalog\n46| class Catalog(models.Model):\n47|     # parent 键可以搜索 child\n48|     parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Catalog', related_name='child')\n49|     name = models.CharField('名字', max_length=30)\n50|     summary = models.CharField('概述', max_length=80)\n51|     groups = models.ManyToManyField(Group, blank=True,\n52|                verbose_name=\"只有在组中的用户可以访问此目录\")\n53|     position = models.IntegerField('位置', blank=True, \n54|                default=0, help_text=\"决定目录排序，默认0\")\n55|     description = models.TextField('描述', blank=True, \n56|                                    default='')\n57|     # auto_now_add 在 create object 自动保存为当前时间\n58|     # auto_now 在每次 save object 都自动保存为当前时间\n59|     created = models.DateTimeField(\"创建时间\", \n60|                auto_now_add=True)\n61|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n62|     post_count = models.IntegerField('总帖子数', \n63|                blank=True, default=0)\n64|     topic_count = models.IntegerField('总主题数', \n65|                blank=True, default=0)\n66|     last_post = models.ForeignKey('Post', blank=True, \n67|                null=True, related_name='last_catalog_post')\n68|     # There should be many topics here! FIXME!\n69|     last_topic = models.ForeignKey('Topic', blank=True, \n70|                null=True, related_name='last_catalog_topic')\n71|     class Meta:\n72|         ordering = ['position']\n73|         verbose_name = '目录'\n74|         verbose_name_plural = '目录'\n75| \n76|     def __unicode__(self):\n77|         return self.name\n78| \n79|     @models.permalink\n80|     def get_absolute_url(self):\n81|         return ('wiki:show_catalog', [self.id])\n82| \n83|     @property\n84|     def children(self):\n85|         return Catalog.objects.filter(parent=self.id)\n86| \n87|     #@property\n88|     #def posts(self):\n89|     #    return Post.objec
@@ -5654,7 +5654,7 @@ So G1 resolution: the function is registered but broken at runtime (NameError on
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "settings.py", "encoding": "utf-8-sig", "total_lines": 177, "start_line": 160, "end_line": 175, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "160| \n161| # XML-RPC Public interface for YLinux\n162| XMLRPC_DEBUG=True\n163| #XMLRPC_METHODS = ylinux_xmlrpc.XMLRPC_METHODS\n164| XMLRPC_METHODS = (\n165|     ('ylinux_xmlrpc.delete_topic', 'delete_topic'),\n166|     ('ylinux_xmlrpc.delete_all_topic', 'delete_all_topic'),\n167| \n168|     # MetaWebBlog API\n169|     ('ylinux_xmlrpc.new_topic', 'metaWeblog.newPost'),\n170|     ('ylinux_xmlrpc.new_media', 'metaWeblog.newMediaObject'),\n171|     ('ylinux_xmlrpc.edit_topic', 'metaWeblog.editPost'),\n172|     ('ylinux_xmlrpc.get_topic', 'metaWeblog.getPost'),\n173|     ('ylinux_xmlrpc.get_categories', 'metaWeblog.getCategories'),\n174|     ('ylinux_xmlrpc.get_recent_topics', 'metaWeblog.getRecentPosts'),\n175| ", "ok": true}
@@ -5697,7 +5697,7 @@ I'll resolve G1 noting this, and also mention that if the missing import were ev
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 125, "end_line": 160, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "125|         url = reverse ('wiki:post_not_exist', args=[id])\n126|         return HttpResponseRedirect(url)\n127| \n128|     return {'post':post}\n129| \n130| \n131| # 发表回复\n132| @login_required\n133| @render_to('wiki/add_post.html')\n134| def add_post(request, id):\n135|     \"\"\"添加一个Post（wiki 形式）\"\"\"\n136| \n137|     if not request.user.is_authenticated():\n138|         return HttpResponseForbidden('<h1>您没有这个权限！请 <a href=\"/account/login\">登录</a></h1>')\n139| \n140|     topic = get_object_or_404(Topic,pk=id)\n141|     if not topic.catalog.has_access(request.user):\n142|         return HttpResponseForbidden('<h1>您没有权限回复此帖！</h1>')\n143|     # 如果 topic 已锁，则重定向到显示 topic\n144|     if topic and topic.closed:\n145|         return HttpResponseRedirect(topic.get_absolute_url())\n146| \n147|     ip = ylinux_get_ip(request)\n148| \n149|     form = build_form(AddPostForm, request, topic=topic,\n150|                       user=request.user, ip=ip)\n151| \n152|     if form.is_valid():\n153|         post = form.save()\n154|         # set last post\n155|         topic.last_post = Post.objects.filter(topic=topic).latest('updated')\n156|         topic.save()\n157|         url = reverse ('wiki:show_topic', args=[post.topic.id])\n158|         return HttpResponseRedirect(url)\n159| \n160|     posts = topic.posts.all().select_related()", "ok": true}
@@ -5757,7 +5757,7 @@ Let me write the updated FILE-001 and new ACCESS-003.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "FILE-001", "status": "needs_review", "evidence_count": 1, "ok": true}
@@ -5811,7 +5811,7 @@ Let me write the updated FILE-001 and new ACCESS-003.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-003", "status": "confirmed", "evidence_count": 4, "ok": true}
@@ -5842,7 +5842,7 @@ G2: resolved by ACCESS-003.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "G1", "resolved": true, "ok": true}
@@ -5859,7 +5859,7 @@ G2: resolved by ACCESS-003.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "G2", "resolved": true, "ok": true}
@@ -5888,7 +5888,7 @@ Now re-finalize. Update the executive summary to mention ACCESS-003 and the FILE
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "report accepted", "finding_count": 18, "ok": true}
@@ -5938,7 +5938,7 @@ Note: os.path.join with a component — local_name is a single string (no slashe
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 30, "end_line": 149, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30| \n31| @login_required\n32| def upload_single_file(req, id):\n33|     ''' 上传单个附件， 只作异步上传使用\n34|     1. 上传的 form 中文件的 name = 'single_file'\n35|     '''\n36| \n37|     if req.method != 'POST':\n38|         return HttpResponse(\"Just for POST a single file\")\n39| \n40|     f = req.FILES['single_file'] #req.FILES.values()[0]\n41|     if f.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n42|         notes = u'文件太大： %s (限制大小： %s)' % (f.size, ydata_settings.ATTACHMENT_SIZE_LIMIT)\n43|         r = u'<script type=\"text/javascript\">window.parent.UploadError(\"%s\");</script>' % notes\n44|         return HttpResponse(r)\n45| \n46|     #topic = get_object_or_404(Topic, pk=id)\n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         topic = False\n51| \n52|     sha1_hash = hashlib.sha1()\n53|     for chunk in f.chunks():\n54|         sha1_hash.update(chunk)\n55|     fhash = sha1_hash.hexdigest()\n56| \n57|     attachments = Attachment.objects.filter(hash=fhash)\n58|     notes = ''\n59| \n60|     if attachments:\n61|         # 此文件在服务器上已存在， 增加引用计数即可\n62|         local_name = ''\n63|         attachment = False\n64|         for a in attachments:\n65|             if local_name == '':\n66|                 local_name = a.path\n67|             if a.user == req.user:\n68|                 attachment = a\n69|                 notes = u'文件已经存在，请不要重复上传。'\n70|             a.qtimes += 1\n71|             a.save()\n72|         if not attachment:\n73|             attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash, qtimes=2)\n74|             if topic:\n75|                 attachment.topic = topic\n76| \n77|     else:\n78|         local_name = str(id) + '-' + str(req.user.id) + '-' + f.name\n79|         save_path = os.path.join(settings.MEDIA_ROOT,\n80|                                  ydata_settings.ATTACHMENT_UPLOAD_TO,\n81|                                  local_name)\n82|         save_file = open(save_path, 'wb+')\n83|         for chunk in f.chunks():\n84|             save_file.write(chunk)\n85| \n86|         attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash)\n87|         if topic:\n88|             attachment.topic = topic\n89| \n90|     attac
@@ -5956,7 +5956,7 @@ Note: os.path.join with a component — local_name is a single string (no slashe
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 70, "end_line": 130, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "70|                null=True, related_name='last_catalog_topic')\n71|     class Meta:\n72|         ordering = ['position']\n73|         verbose_name = '目录'\n74|         verbose_name_plural = '目录'\n75| \n76|     def __unicode__(self):\n77|         return self.name\n78| \n79|     @models.permalink\n80|     def get_absolute_url(self):\n81|         return ('wiki:show_catalog', [self.id])\n82| \n83|     @property\n84|     def children(self):\n85|         return Catalog.objects.filter(parent=self.id)\n86| \n87|     #@property\n88|     #def posts(self):\n89|     #    return Post.objects.filter(topic__catalog=self).select_related().count()\n90| \n91|     def has_access(self, user):\n92|         ''' 判断用户是否有权限，如果一个 Catalog 还未指定用户组，所有用户都有权限 '''\n93|         if self.groups.count() > 0:\n94|             if user.is_authenticated():\n95|                 try:\n96|                     self.groups.get(user__pk=user.id)\n97|                 except Group.DoesNotExist:\n98|                     return False\n99|             else:\n100|                 return False\n101|         return True\n102| \n103| \n104| # 主题：每个 catalog 下会有很多主题，\n105| # YLinux 默认： 论坛以 Topic 为表现形式，Wiki 以 Tag 为表现形式。\n106| class Topic(models.Model):\n107|     catalog = models.ForeignKey(Catalog, related_name='topics', verbose_name='Catalog')\n108|     # 预计修改为 Subject\n109|     name = models.CharField('标题', max_length=256)\n110|     created = models.DateTimeField('Created', auto_now_add=True)\n111|     updated = models.DateTimeField('Updated')\n112|     user = models.ForeignKey(User, related_name='topics', verbose_name='User')\n113|     user_ip = models.IPAddressField('User IP', blank=True, null=True)\n114|     # 己弃用!!! 现使用 view_count\n115|     views = models.IntegerField('查看次数', blank=True, default=0)\n116|     # sticky 置顶属性\n117|     sticky = models.BooleanField('Sticky', blank=True, default=False)\n118|     # distillate ['distilit;'distəlit] n. 蒸馏物，馏份，精华\n119|     distillate = models.BooleanField('精华', blank=True, default=False)\n120|     # closed 禁止回复\n121|     closed = models.BooleanField('关闭', blank=True, default=False)\n122|     bloged = models.BooleanField('Blog中显示', default=True)\n123|     wikied = models.BooleanField('Wiki中显示', default=True)\n124|     forumed = models.BooleanField('Forum中显示', d
@@ -5974,7 +5974,7 @@ Note: os.path.join with a component — local_name is a single string (no slashe
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 128, "end_line": 155, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "128|     return {'post':post}\n129| \n130| \n131| # 发表回复\n132| @login_required\n133| @render_to('wiki/add_post.html')\n134| def add_post(request, id):\n135|     \"\"\"添加一个Post（wiki 形式）\"\"\"\n136| \n137|     if not request.user.is_authenticated():\n138|         return HttpResponseForbidden('<h1>您没有这个权限！请 <a href=\"/account/login\">登录</a></h1>')\n139| \n140|     topic = get_object_or_404(Topic,pk=id)\n141|     if not topic.catalog.has_access(request.user):\n142|         return HttpResponseForbidden('<h1>您没有权限回复此帖！</h1>')\n143|     # 如果 topic 已锁，则重定向到显示 topic\n144|     if topic and topic.closed:\n145|         return HttpResponseRedirect(topic.get_absolute_url())\n146| \n147|     ip = ylinux_get_ip(request)\n148| \n149|     form = build_form(AddPostForm, request, topic=topic,\n150|                       user=request.user, ip=ip)\n151| \n152|     if form.is_valid():\n153|         post = form.save()\n154|         # set last post\n155|         topic.last_post = Post.objects.filter(topic=topic).latest('updated')", "ok": true}
@@ -5990,7 +5990,7 @@ Note: os.path.join with a component — local_name is a single string (no slashe
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/urls.py", "encoding": "utf-8-sig", "total_lines": 10, "start_line": 1, "end_line": 10, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ydata.views',\n6|     url(r'^uploadsf/(?P<id>\\d+)/$', 'upload_single_file', name='uploadsf'),\n7|     url(r'^attachment/(?P<id>\\d+)/$', 'show_attachment', name='show_attachment'),\n8|     url(r'^attachment/(?P<id>\\d+)/remove/$', 'remove_attachment', name='delete_attachment'),\n9|     url(r'^attachment/(?P<id>\\d+)/download/$', 'download_attachment', name='download_attachment'),\n10| )", "ok": true}
@@ -6042,7 +6042,7 @@ Let me also check the Attachment model and get_absolute_path.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "has_access", "count": 5, "matches": [{"path": "app/wiki/views.py", "line": 141, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 172, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 192, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 423, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/ydata/models.py", "line": 91, "text": "def has_access(self, user):"}], "ok": true}
@@ -6060,7 +6060,7 @@ Let me also check the Attachment model and get_absolute_path.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 285, "end_line": 360, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "285|             topic.last_post = None\n286|         topic.post_count = Post.objects.filter(topic=topic).count()\n287|         topic.save()\n288|         try:\n289|             catalog.last_post = Post.objects.filter(topic__catalog=catalog).latest()\n290|         except Post.DoesNotExist:\n291|             catalog.last_post = None\n292|         catalog.post_count = Post.objects.filter(topic__catalog=catalog).count()\n293|         catalog.topic_count = Topic.objects.filter(catalog=catalog).count()\n294|         catalog.save()\n295| \n296|     @models.permalink\n297|     def get_absolute_url(self):\n298|         return ('wiki:show_post', [self.id])\n299| \n300| \n301|     @property\n302|     def children(self):\n303|         return Post.objects.filter(parent=self.id)\n304| \n305| \n306|     def summary(self):\n307|         LIMIT = 30\n308|         tail = len(self.body) > LIMIT and '...' or '' \n309|         return self.body[:LIMIT] + tail\n310| \n311|     __unicode__ = summary\n312| \n313| \n314| # 声望\n315| class Reputation(models.Model):\n316|     from_user = models.ForeignKey(User, related_name='reputations_from', verbose_name='From')\n317|     to_user = models.ForeignKey(User, related_name='reputations_to', verbose_name='To')\n318|     topic = models.ForeignKey(Topic, related_name='topic', verbose_name='Topic')\n319|     time = models.DateTimeField('Time', blank=True)\n320|     sign = models.IntegerField('Sign', choices=SIGN_CHOICES, default=0)\n321|     reason = models.TextField('Reason', blank=True, default='', max_length=1000)\n322| \n323|     class Meta:\n324|         verbose_name = 'Reputation'\n325|         verbose_name_plural = 'Reputations'\n326| \n327|     def __unicode__(self):\n328|         return u'T[%d], FU[%d], TU[%d]: %s' % (self.topic.id, self.from_user.id, self.to_user.id, unicode(self.time))\n329| \n330| \n331| # 举报\n332| class Report(models.Model):\n333|     reported_by = models.ForeignKey(User, related_name='reported_by', verbose_name='Reported by')\n334|     post = models.ForeignKey(Post, verbose_name='Post')\n335|     zapped = models.BooleanField('Zapped', blank=True, default=False)\n336|     zapped_by = models.ForeignKey(User, related_name='zapped_by', blank=True, null=True,  verbose_name='Zapped by')\n337|     created = mod
@@ -6078,7 +6078,7 @@ Let me also check the Attachment model and get_absolute_path.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "urls.py", "encoding": "utf-8-sig", "total_lines": 64, "start_line": 1, "end_line": 64, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| try:\n4|     import settings\n5| except ImportError:\n6|     import sys\n7|     sys.stderr.write(\"import settting error!\")\n8|     sys.exit(1)\n9| \n10| \n11| from django.conf.urls.defaults import *\n12| from django_xmlrpc.views import handle_xmlrpc\n13| \n14| # Uncomment the next two lines to enable the admin:\n15| # from django.contrib import admin\n16| # admin.autodiscover()\n17| \n18| urlpatterns = patterns('',\n19|     # Example:\n20|     # (r'^ylinux/', include('ylinux.foo.urls')),\n21|     # 注意 '' 和 ^$ 不同！\n22|     # namespace 参考\n23|     # http://docs.djangoproject.com/en/dev/topics/http/urls/#topics-http-defining-url-namespaces\n24|     (r'', include('ylinux.app.home.urls', namespace='home')),\n25|     (r'^admin/', include('ylinux.app.admin.urls', namespace='admin')),\n26|     (r'^account/', include('ylinux.app.account.urls', namespace='account')),\n27|     (r'^wiki/', include('ylinux.app.wiki.urls', namespace='wiki')), \n28|     (r'^blog/', include('ylinux.app.blog.urls', namespace='blog')),\n29|     (r'^bbs/', include('ylinux.app.bbs.urls', namespace='bbs')),\n30|     (r'^ydata/', include('ylinux.app.ydata.urls', namespace='ydata')),\n31|     (r'^lab/', include('ylinux.app.ylab.urls', namespace='lab')),\n32|     (r'^me/', include('ylinux.app.me.urls', namespace='me')),\n33| \n34|     # 静态地址\n35|     (r'^favicon\\.ico$', 'django.views.generic.simple.redirect_to', {'url': settings.MEDIA_URL+'images/favicon.ico'}),\n36| \n37|     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' \n38|     # to INSTALLED_APPS to enable admin documentation:\n39|     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),\n40| \n41|     # Uncomment the next line to enable the admin:\n42|     #(r'^admin/', include(admin.site.urls)),\n43| )\n44| \n45| urlpatterns += patterns('django_xmlrpc.views',\n46| \n47|     url(r'^xmlrpc/$', handle_xmlrpc, {}, name='xmlrpc'),\n48| )\n49| \n50| # 开发使用 django 自带的 web 服务器，需按照下面方法设置静态目录。如果放\n51| # 到公网上，那么需要用你所有的 web 服务器设置静态目录。一般在共享主机的\n52| # 环境里，针对 apache 可以用 .htaccess 实现\n53| \n54| # 另外要注意的是，如果打开 admin 功能，就不要用 static 作为 url 前部分。\n55| \n56| # 如果用 'show_indexes' 打开目录显示功能，可以在定义一个\n57| # static/directory_index.html 模板。\n58| \n59| if (settings.DEBUG):\n60|     urlpatterns += patterns ('',\n6
@@ -6119,7 +6119,7 @@ Let me check the topic display view. Look at wiki/views.py around show_topic. Le
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "def (show|topic|index)", "count": 2, "matches": [{"path": "app/wiki/views.py", "line": 24, "text": "def index(request):"}, {"path": "app/wiki/views.py", "line": 82, "text": "def topic(request, id):"}], "ok": true}
@@ -6136,7 +6136,7 @@ Let me check the topic display view. Look at wiki/views.py around show_topic. Le
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "def ", "count": 6, "matches": [{"path": "app/bbs/views.py", "line": 16, "text": "def index(request):"}, {"path": "app/bbs/views.py", "line": 31, "text": "def catalog(request, id):"}, {"path": "app/bbs/views.py", "line": 45, "text": "def topic(request, id):"}, {"path": "app/bbs/views.py", "line": 59, "text": "def post(request, id):"}, {"path": "app/bbs/views.py", "line": 71, "text": "def doesnotexist(request, type, id):"}, {"path": "app/bbs/views.py", "line": 77, "text": "def catalog_forum(request, id):"}], "ok": true}
@@ -6164,7 +6164,7 @@ Let me read wiki/views.py topic view (line 82 onward) and bbs/views.py topic vie
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 78, "end_line": 128, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "78|             'curpage': curpage+1,\n79|             'pages': pages}\n80| \n81| @render_to('wiki/topic.html')\n82| def topic(request, id):\n83| \n84|     try:\n85|         topic = Topic.objects.get(pk=id)\n86|     except Topic.DoesNotExist:\n87|         url = reverse ('wiki:topic_not_exist', args=[id])\n88|         return HttpResponseRedirect(url)\n89| \n90|     parents = get_parents (Catalog, topic.catalog.id)\n91|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n92| \n93|     posts = Post.objects.filter(topic=id, parent=None).order_by('created')\n94|     POST_HTML = ''\n95|     for p in posts:\n96|         POST_HTML += render_post(request.user, p)\n97| \n98| \n99|     return {'parents':parents, 'topic':topic,\n100|             'edit_topic_perm':edit_topic_perm,\n101|             'title': u\"[知识库]%s\" % topic.name,\n102|             'POST_HTML': POST_HTML,\n103|             'posts': posts}\n104| \n105| @render_to('wiki/ajax_topic.html')\n106| def ajax_topic(request, id):\n107|     try:\n108|         topic = Topic.objects.get(pk=id)\n109|     except Topic.DoesNotExist:\n110|         url = reverse ('wiki:topic_not_exist', args=[id])\n111|         return HttpResponseRedirect(url)\n112| \n113|     parents = get_parents (Catalog, topic.catalog.id)\n114|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n115| \n116|     return {'parents':parents, 'topic':topic,\n117|             'edit_topic_perm':edit_topic_perm}\n118| \n119| @render_to('wiki/post.html')\n120| def post(request, id):\n121| \n122|     try:\n123|         post = Post.objects.get(pk=id)\n124|     except Post.DoesNotExist:\n125|         url = reverse ('wiki:post_not_exist', args=[id])\n126|         return HttpResponseRedirect(url)\n127| \n128|     return {'post':post}", "ok": true}
@@ -6182,7 +6182,7 @@ Let me read wiki/views.py topic view (line 82 onward) and bbs/views.py topic vie
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/bbs/views.py", "encoding": "utf-8-sig", "total_lines": 90, "start_line": 16, "end_line": 80, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "16| def index(request):\n17| \n18|     catalogs = Catalog.objects.filter(parent=None)\n19| \n20|     all_user = User.objects.all()\n21|     if all_user:\n22|         new_register_user = all_user.order_by('-date_joined')[0]\n23|     else:\n24|         new_register_user = None\n25| \n26|     return {'title':'论坛', 'catalogs':catalogs, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| @render_to('bbs/catalog.html')\n31| def catalog(request, id):\n32| \n33|     try:\n34|         catalog = Catalog.objects.get(pk=id)\n35|     except Catalog.DoesNotExist:\n36|         url = reverse ('bbs:forum_not_exist', args=[id])\n37|         return HttpResponseRedirect(url)\n38| \n39|     parents = get_parents (Catalog, id)\n40|     topics = Topic.objects.filter(catalog=catalog)\n41| \n42|     return {'catalog':catalog, 'parents':parents, 'topics':topics}\n43| \n44| @render_to('bbs/topic.html')\n45| def topic(request, id):\n46| \n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         url = reverse ('bbs:topic_not_exist', args=[id])\n51|         return HttpResponseRedirect(url)\n52| \n53|     parents = get_parents (Catalog, topic.catalog.id)\n54|     posts = Post.objects.filter(topic=topic)\n55| \n56|     return {'topic':topic, 'parents': parents, 'posts':posts}\n57| \n58| @render_to('bbs/post.html')\n59| def post(request, id):\n60| \n61|     try:\n62|         post = Post.objects.get(pk=id)\n63|     except Post.DoesNotExist:\n64|         url = reverse ('bbs:post_not_exist', args=[id])\n65|         return HttpResponseRedirect(url)\n66| \n67|     return {'post':post}\n68| \n69| # 一些 DoesNotExist 的页面这里处理\n70| @render_to('bbs/DoesNotExist.html')\n71| def doesnotexist(request, type, id):\n72|     return {'type':type, 'id':id,}\n73| \n74| \n75| \n76| @render_to('bbs/catalog_forum.html')\n77| def catalog_forum(request, id):\n78| \n79|     try:\n80|         catalog = Catalog.objects.get(pk=id)", "ok": true}
@@ -6241,7 +6241,7 @@ Hmm wait. But the impact claim specifically says "受限版块（Catalog.groups 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "FILE-001", "status": "needs_review", "verdict": "agree", "ok": true}
@@ -6261,7 +6261,7 @@ Hmm wait. But the impact claim specifically says "受限版块（Catalog.groups 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-003", "status": "disputed", "verdict": "dispute", "ok": true}
@@ -6291,7 +6291,7 @@ Both reviews submitted. Now call accept_report with notes summarizing what I re-
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "critic accepted the current findings", "ok": true}
@@ -6339,7 +6339,7 @@ The critic's recommended severity for ACCESS-003 as framed: low. If I broaden it
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 60, "end_line": 125, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "60|             return HttpResponseRedirect(url)\n61|         parents = get_parents (Catalog, id)\n62|     else:\n63|         catalog = None\n64|         parents = None\n65| \n66|     subcatalogs = Catalog.objects.filter(parent=id)\n67|     topics = Topic.objects.filter(catalog=id).exclude(hidden=1).exclude(recycled=1).order_by('-updated')[curpage:20]\n68|     pages = [ i+1 for i in range(int(math.ceil(Topic.objects.filter(catalog=id).exclude(hidden=1).exclude(recycled=1).count()/float(PERPAGE))))]\n69| \n70|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n71| \n72|     return {'catalog':catalog,\n73|             'parents':parents,\n74|             'subcatalogs':subcatalogs,\n75|             'topics':topics,\n76|             'title': u'[知识库] 目录浏览',\n77|             'edit_topic_perm':edit_topic_perm,\n78|             'curpage': curpage+1,\n79|             'pages': pages}\n80| \n81| @render_to('wiki/topic.html')\n82| def topic(request, id):\n83| \n84|     try:\n85|         topic = Topic.objects.get(pk=id)\n86|     except Topic.DoesNotExist:\n87|         url = reverse ('wiki:topic_not_exist', args=[id])\n88|         return HttpResponseRedirect(url)\n89| \n90|     parents = get_parents (Catalog, topic.catalog.id)\n91|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n92| \n93|     posts = Post.objects.filter(topic=id, parent=None).order_by('created')\n94|     POST_HTML = ''\n95|     for p in posts:\n96|         POST_HTML += render_post(request.user, p)\n97| \n98| \n99|     return {'parents':parents, 'topic':topic,\n100|             'edit_topic_perm':edit_topic_perm,\n101|             'title': u\"[知识库]%s\" % topic.name,\n102|             'POST_HTML': POST_HTML,\n103|             'posts': posts}\n104| \n105| @render_to('wiki/ajax_topic.html')\n106| def ajax_topic(request, id):\n107|     try:\n108|         topic = Topic.objects.get(pk=id)\n109|     except Topic.DoesNotExist:\n110|         url = reverse ('wiki:topic_not_exist', args=[id])\n111|         return HttpResponseRedirect(url)\n112| \n113|     parents = get_parents (Catalog, topic.catalog.id)\n114|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n115| \n116|     return {'parents':parents, 'topic':topic,\n117|             'edit_topic_perm':edit_topic_pe
@@ -6357,7 +6357,7 @@ The critic's recommended severity for ACCESS-003 as framed: low. If I broaden it
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/bbs/views.py", "encoding": "utf-8-sig", "total_lines": 90, "start_line": 1, "end_line": 62, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| #coding: utf-8\n2| \n3| #from forms import ContactForm\n4| from django.shortcuts import render_to_response\n5| from django.http import HttpResponseRedirect,HttpResponse\n6| #from django.template import RequestContext\n7| from django.shortcuts import get_object_or_404\n8| from django.core.urlresolvers import reverse\n9| \n10| from account.models import User\n11| from ydata.models import Catalog, Topic, Post\n12| from ydata.util import render_to, build_form, get_parents\n13| \n14| \n15| @render_to('bbs/index.html')\n16| def index(request):\n17| \n18|     catalogs = Catalog.objects.filter(parent=None)\n19| \n20|     all_user = User.objects.all()\n21|     if all_user:\n22|         new_register_user = all_user.order_by('-date_joined')[0]\n23|     else:\n24|         new_register_user = None\n25| \n26|     return {'title':'论坛', 'catalogs':catalogs, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| @render_to('bbs/catalog.html')\n31| def catalog(request, id):\n32| \n33|     try:\n34|         catalog = Catalog.objects.get(pk=id)\n35|     except Catalog.DoesNotExist:\n36|         url = reverse ('bbs:forum_not_exist', args=[id])\n37|         return HttpResponseRedirect(url)\n38| \n39|     parents = get_parents (Catalog, id)\n40|     topics = Topic.objects.filter(catalog=catalog)\n41| \n42|     return {'catalog':catalog, 'parents':parents, 'topics':topics}\n43| \n44| @render_to('bbs/topic.html')\n45| def topic(request, id):\n46| \n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         url = reverse ('bbs:topic_not_exist', args=[id])\n51|         return HttpResponseRedirect(url)\n52| \n53|     parents = get_parents (Catalog, topic.catalog.id)\n54|     posts = Post.objects.filter(topic=topic)\n55| \n56|     return {'topic':topic, 'parents': parents, 'posts':posts}\n57| \n58| @render_to('bbs/post.html')\n59| def post(request, id):\n60| \n61|     try:\n62|         post = Post.objects.get(pk=id)", "ok": true}
@@ -6374,7 +6374,7 @@ The critic's recommended severity for ACCESS-003 as framed: low. If I broaden it
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "has_access", "count": 5, "matches": [{"path": "app/wiki/views.py", "line": 141, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 172, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 192, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 423, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/ydata/models.py", "line": 91, "text": "def has_access(self, user):"}], "ok": true}
@@ -6461,7 +6461,7 @@ Decision:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-004", "status": "confirmed", "evidence_count": 4, "warning": "evidence overlaps with ['ACCESS-003']; merge them if they describe the same issue", "ok": true}
@@ -6503,7 +6503,7 @@ Decision:
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-003", "status": "confirmed", "evidence_count": 2, "ok": true}
@@ -6536,7 +6536,7 @@ Finalize again with updated summary.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "report accepted", "finding_count": 19, "ok": true}
@@ -6614,7 +6614,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/views.py", "encoding": "utf-8-sig", "total_lines": 149, "start_line": 30, "end_line": 149, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "30| \n31| @login_required\n32| def upload_single_file(req, id):\n33|     ''' 上传单个附件， 只作异步上传使用\n34|     1. 上传的 form 中文件的 name = 'single_file'\n35|     '''\n36| \n37|     if req.method != 'POST':\n38|         return HttpResponse(\"Just for POST a single file\")\n39| \n40|     f = req.FILES['single_file'] #req.FILES.values()[0]\n41|     if f.size > ydata_settings.ATTACHMENT_SIZE_LIMIT:\n42|         notes = u'文件太大： %s (限制大小： %s)' % (f.size, ydata_settings.ATTACHMENT_SIZE_LIMIT)\n43|         r = u'<script type=\"text/javascript\">window.parent.UploadError(\"%s\");</script>' % notes\n44|         return HttpResponse(r)\n45| \n46|     #topic = get_object_or_404(Topic, pk=id)\n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         topic = False\n51| \n52|     sha1_hash = hashlib.sha1()\n53|     for chunk in f.chunks():\n54|         sha1_hash.update(chunk)\n55|     fhash = sha1_hash.hexdigest()\n56| \n57|     attachments = Attachment.objects.filter(hash=fhash)\n58|     notes = ''\n59| \n60|     if attachments:\n61|         # 此文件在服务器上已存在， 增加引用计数即可\n62|         local_name = ''\n63|         attachment = False\n64|         for a in attachments:\n65|             if local_name == '':\n66|                 local_name = a.path\n67|             if a.user == req.user:\n68|                 attachment = a\n69|                 notes = u'文件已经存在，请不要重复上传。'\n70|             a.qtimes += 1\n71|             a.save()\n72|         if not attachment:\n73|             attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash, qtimes=2)\n74|             if topic:\n75|                 attachment.topic = topic\n76| \n77|     else:\n78|         local_name = str(id) + '-' + str(req.user.id) + '-' + f.name\n79|         save_path = os.path.join(settings.MEDIA_ROOT,\n80|                                  ydata_settings.ATTACHMENT_UPLOAD_TO,\n81|                                  local_name)\n82|         save_file = open(save_path, 'wb+')\n83|         for chunk in f.chunks():\n84|             save_file.write(chunk)\n85| \n86|         attachment = Attachment(user=req.user, name=f.name, path=local_name, size=f.size, hash=fhash)\n87|         if topic:\n88|             attachment.topic = topic\n89| \n90|     attac
@@ -6632,7 +6632,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 40, "end_line": 120, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "40|     (1, u'Hide your e-mail address but allow form e-mail.'),\n41|     (2, u'Hide your e-mail address and disallow form e-mail.'),\n42| )\n43| \n44| \n45| # Category 下分很多 Catalog\n46| class Catalog(models.Model):\n47|     # parent 键可以搜索 child\n48|     parent = models.ForeignKey('self', blank=True, null=True, verbose_name='Catalog', related_name='child')\n49|     name = models.CharField('名字', max_length=30)\n50|     summary = models.CharField('概述', max_length=80)\n51|     groups = models.ManyToManyField(Group, blank=True,\n52|                verbose_name=\"只有在组中的用户可以访问此目录\")\n53|     position = models.IntegerField('位置', blank=True, \n54|                default=0, help_text=\"决定目录排序，默认0\")\n55|     description = models.TextField('描述', blank=True, \n56|                                    default='')\n57|     # auto_now_add 在 create object 自动保存为当前时间\n58|     # auto_now 在每次 save object 都自动保存为当前时间\n59|     created = models.DateTimeField(\"创建时间\", \n60|                auto_now_add=True)\n61|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n62|     post_count = models.IntegerField('总帖子数', \n63|                blank=True, default=0)\n64|     topic_count = models.IntegerField('总主题数', \n65|                blank=True, default=0)\n66|     last_post = models.ForeignKey('Post', blank=True, \n67|                null=True, related_name='last_catalog_post')\n68|     # There should be many topics here! FIXME!\n69|     last_topic = models.ForeignKey('Topic', blank=True, \n70|                null=True, related_name='last_catalog_topic')\n71|     class Meta:\n72|         ordering = ['position']\n73|         verbose_name = '目录'\n74|         verbose_name_plural = '目录'\n75| \n76|     def __unicode__(self):\n77|         return self.name\n78| \n79|     @models.permalink\n80|     def get_absolute_url(self):\n81|         return ('wiki:show_catalog', [self.id])\n82| \n83|     @property\n84|     def children(self):\n85|         return Catalog.objects.filter(parent=self.id)\n86| \n87|     #@property\n88|     #def posts(self):\n89|     #    return Post.objects.filter(topic__catalog=self).select_related().count()\n90| \n91|     def has_access(self, user):\n92|         ''' 判断用户是否有权限，如果一个 Catalog 还未指定用户组，所有用户都有权限 '''\n93|         if self.groups.count() > 0:\n94|         
@@ -6650,7 +6650,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 55, "end_line": 150, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "55|     if id:\n56|         try:\n57|             catalog = Catalog.objects.get(pk=id)\n58|         except Catalog.DoesNotExist:\n59|             url = reverse ('wiki:catalog_not_exist', args=[id])\n60|             return HttpResponseRedirect(url)\n61|         parents = get_parents (Catalog, id)\n62|     else:\n63|         catalog = None\n64|         parents = None\n65| \n66|     subcatalogs = Catalog.objects.filter(parent=id)\n67|     topics = Topic.objects.filter(catalog=id).exclude(hidden=1).exclude(recycled=1).order_by('-updated')[curpage:20]\n68|     pages = [ i+1 for i in range(int(math.ceil(Topic.objects.filter(catalog=id).exclude(hidden=1).exclude(recycled=1).count()/float(PERPAGE))))]\n69| \n70|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n71| \n72|     return {'catalog':catalog,\n73|             'parents':parents,\n74|             'subcatalogs':subcatalogs,\n75|             'topics':topics,\n76|             'title': u'[知识库] 目录浏览',\n77|             'edit_topic_perm':edit_topic_perm,\n78|             'curpage': curpage+1,\n79|             'pages': pages}\n80| \n81| @render_to('wiki/topic.html')\n82| def topic(request, id):\n83| \n84|     try:\n85|         topic = Topic.objects.get(pk=id)\n86|     except Topic.DoesNotExist:\n87|         url = reverse ('wiki:topic_not_exist', args=[id])\n88|         return HttpResponseRedirect(url)\n89| \n90|     parents = get_parents (Catalog, topic.catalog.id)\n91|     edit_topic_perm = request.user.has_perm ('ydata.edit_topic')\n92| \n93|     posts = Post.objects.filter(topic=id, parent=None).order_by('created')\n94|     POST_HTML = ''\n95|     for p in posts:\n96|         POST_HTML += render_post(request.user, p)\n97| \n98| \n99|     return {'parents':parents, 'topic':topic,\n100|             'edit_topic_perm':edit_topic_perm,\n101|             'title': u\"[知识库]%s\" % topic.name,\n102|             'POST_HTML': POST_HTML,\n103|             'posts': posts}\n104| \n105| @render_to('wiki/ajax_topic.html')\n106| def ajax_topic(request, id):\n107|     try:\n108|         topic = Topic.objects.get(pk=id)\n109|     except Topic.DoesNotExist:\n110|         url = reverse ('wiki:topic_not_exist', args=[id])\n111|         return HttpResponseRedirect(url)\n112| \n113|     parents = get_parents (Catalog
@@ -6668,7 +6668,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/bbs/views.py", "encoding": "utf-8-sig", "total_lines": 90, "start_line": 25, "end_line": 75, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "25| \n26|     return {'title':'论坛', 'catalogs':catalogs, \n27|             'new_register_user':new_register_user}\n28| \n29| \n30| @render_to('bbs/catalog.html')\n31| def catalog(request, id):\n32| \n33|     try:\n34|         catalog = Catalog.objects.get(pk=id)\n35|     except Catalog.DoesNotExist:\n36|         url = reverse ('bbs:forum_not_exist', args=[id])\n37|         return HttpResponseRedirect(url)\n38| \n39|     parents = get_parents (Catalog, id)\n40|     topics = Topic.objects.filter(catalog=catalog)\n41| \n42|     return {'catalog':catalog, 'parents':parents, 'topics':topics}\n43| \n44| @render_to('bbs/topic.html')\n45| def topic(request, id):\n46| \n47|     try:\n48|         topic = Topic.objects.get(pk=id)\n49|     except Topic.DoesNotExist:\n50|         url = reverse ('bbs:topic_not_exist', args=[id])\n51|         return HttpResponseRedirect(url)\n52| \n53|     parents = get_parents (Catalog, topic.catalog.id)\n54|     posts = Post.objects.filter(topic=topic)\n55| \n56|     return {'topic':topic, 'parents': parents, 'posts':posts}\n57| \n58| @render_to('bbs/post.html')\n59| def post(request, id):\n60| \n61|     try:\n62|         post = Post.objects.get(pk=id)\n63|     except Post.DoesNotExist:\n64|         url = reverse ('bbs:post_not_exist', args=[id])\n65|         return HttpResponseRedirect(url)\n66| \n67|     return {'post':post}\n68| \n69| # 一些 DoesNotExist 的页面这里处理\n70| @render_to('bbs/DoesNotExist.html')\n71| def doesnotexist(request, type, id):\n72|     return {'type':type, 'id':id,}\n73| \n74| \n75| ", "ok": true}
@@ -6686,7 +6686,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/urls.py", "encoding": "utf-8-sig", "total_lines": 10, "start_line": 1, "end_line": 10, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "1| # coding: utf-8\n2| \n3| from django.conf.urls.defaults import *\n4| \n5| urlpatterns = patterns('ydata.views',\n6|     url(r'^uploadsf/(?P<id>\\d+)/$', 'upload_single_file', name='uploadsf'),\n7|     url(r'^attachment/(?P<id>\\d+)/$', 'show_attachment', name='show_attachment'),\n8|     url(r'^attachment/(?P<id>\\d+)/remove/$', 'remove_attachment', name='delete_attachment'),\n9|     url(r'^attachment/(?P<id>\\d+)/download/$', 'download_attachment', name='download_attachment'),\n10| )", "ok": true}
@@ -6704,7 +6704,7 @@ Also need to check entry_role: anonymous — topic view has no @login_required? 
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "has_access", "count": 5, "matches": [{"path": "app/wiki/views.py", "line": 141, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 172, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 192, "text": "if not catalog.has_access(request.user):"}, {"path": "app/wiki/views.py", "line": 423, "text": "if not topic.catalog.has_access(request.user):"}, {"path": "app/ydata/models.py", "line": 91, "text": "def has_access(self, user):"}], "ok": true}
@@ -6769,7 +6769,7 @@ For ACCESS-003: The auditor has downgraded to low per previous dispute, and revi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 160, "end_line": 210, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "160|     posts = topic.posts.all().select_related()\n161|     return {'form':form, 'posts':posts, 'topic':topic}\n162| \n163| \n164| # 代码实现 Plux <yfwz100@gmail.com>\n165| @login_required\n166| @render_to('wiki/ajax_add_topic.html')\n167| def ajax_add_topic(request, id):\n168|     if not id:\n169|         return {'errors':'没有指定 Catalog'}\n170| \n171|     catalog = get_object_or_404(Catalog,pk=id)\n172|     if not catalog.has_access(request.user):\n173|         return HttpResponseForbidden(u'<h2>你没有权限在此组中发贴！</h2>')\n174|     parents = get_parents (Catalog, id)\n175|     ip = ylinux_get_ip(request)\n176| \n177|     form = build_form (AddTopicForm, request, \n178|            catalog=catalog, user=request.user, user_ip=ip)\n179| \n180|     return {'parents':parents, 'form':form, 'id': id}\n181| \n182| \n183| @login_required\n184| @render_to('wiki/add_topic.html')\n185| def add_topic(request,id):\n186|     ''' id 是 Catalog '''\n187|     \n188|     if not id:\n189|         return {'errors':'没有指定 Catalog'}\n190| \n191|     catalog = get_object_or_404(Catalog,pk=id)\n192|     if not catalog.has_access(request.user):\n193|         return HttpResponseForbidden(u'<h2>你没有权限在此组中发贴！</h2>')\n194|     parents = get_parents (Catalog, id)\n195|     ip = ylinux_get_ip(request)\n196| \n197|     form = build_form (AddTopicForm, request, \n198|            catalog=catalog, user=request.user, user_ip=ip)\n199| \n200|     if form.is_valid():\n201|         topic = form.save()\n202|         # set last topic\n203|         catalog.last_topic = topic\n204|         catalog.save()\n205|         url = reverse('wiki:show_topic', args=[topic.id])\n206|         return HttpResponseRedirect(url)\n207| \n208|     return {'parents':parents, 'form':form}\n209| \n210| ", "ok": true}
@@ -6787,7 +6787,7 @@ For ACCESS-003: The auditor has downgraded to low per previous dispute, and revi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/wiki/views.py", "encoding": "utf-8-sig", "total_lines": 467, "start_line": 410, "end_line": 445, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "410|         topic = get_object_or_404(Topic, pk = parent_post.topic.id)\n411|         replayID = postID\n412|     else:\n413|         return HttpResponse(u'topicID 和 postID 必需要指定一个！')\n414| \n415|     if request.method == 'GET':\n416|         m = 'POST' if postID else 'TOPIC'\n417|         ajaxFunc = 'ajax_replay(this, \"%s\", \"%s\")' % (m, replayID)\n418|         return { 'method': 'GET',\n419|                  'ajaxFunc' : ajaxFunc }\n420| \n421|     else:\n422| \n423|         if not topic.catalog.has_access(request.user):\n424|             return HttpResponse(u'<h1>您没有权限回复此帖！</h1>')\n425| \n426|         # 如果 topic 已锁，则重定向到显示 topic\n427|         if topic and topic.closed:\n428|             return HttpResponse(u'主题已锁定，不可回复！')\n429| \n430|         ip = ylinux_get_ip(request)\n431| \n432|         post_body = request.POST.get(\"body\", None)\n433|         if len(post_body) < 2:\n434|             return {'error': u'您的回复太短，至少2个字符！'}\n435|         post = Post(topic = topic, user = request.user, user_ip = ip, markup = 'none', body = post_body, parent = parent_post)\n436|         post.save()\n437|         topic.post_count += 1\n438|         topic.last_post = post\n439|         topic.save()\n440|         topic.catalog.post_count += 1\n441|         topic.catalog.last_post = post\n442|         topic.catalog.save()\n443| \n444|         return {'method': 'POST', 'topic': topic, 'post': post}\n445| ", "ok": true}
@@ -6805,7 +6805,7 @@ For ACCESS-003: The auditor has downgraded to low per previous dispute, and revi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"path": "app/ydata/models.py", "encoding": "utf-8-sig", "total_lines": 452, "start_line": 340, "end_line": 400, "note": "Line prefixes like '12| ' are not part of the file. Quotes must omit them.", "content": "340|     class Meta:\n341|         verbose_name = 'Report'\n342|         verbose_name_plural = 'Reports'\n343| \n344|     def __unicode__(self):\n345|         return u'%s %s' % (self.reported_by ,self.zapped)\n346| \n347| \n348| # 附件\n349| class Attachment(models.Model):\n350|     user = models.ForeignKey(User, related_name='attachments', verbose_name='User')\n351|     topic = models.ForeignKey(Topic, related_name='attachments', verbose_name='Topic')\n352|     name = models.TextField('Name')\n353|     size = models.IntegerField('Size')\n354|     path = models.CharField('Path', max_length=256)\n355|     hash = models.CharField('Hash', max_length=40, blank=True, default='', db_index=True)\n356|     description = models.TextField('描述', blank=True,  default='')\n357|     qtimes = models.IntegerField('引用次数', blank=True, default=1) #被其他用户引用的次数\n358|     dtimes = models.IntegerField('下载次数', blank=True, default=0) #被下载的次数\n359|     created = models.DateTimeField(\"创建时间\", auto_now_add=True)\n360|     updated = models.DateTimeField(\"更新时间\", auto_now=True)\n361| \n362|     def __unicode__(self):\n363|         return self.name\n364| \n365|     @models.permalink\n366|     def get_absolute_url(self):\n367|         return ('ydata:show_attachment', [self.id])\n368| \n369|     @models.permalink\n370|     def get_absolute_durl(self):\n371|         return ('ydata:download_attachment', [self.id])\n372| \n373|     def get_absolute_path(self):\n374|         return os.path.join(settings.MEDIA_ROOT, ydata_settings.ATTACHMENT_UPLOAD_TO,\n375|                             self.path)\n376| \n377| \n378| class Tag(models.Model):\n379|     ''' Tag 模型 '''\n380|     \n381|     name = models.CharField('Name', max_length=256)\n382|     user = models.ForeignKey(User, related_name='tags', verbose_name='User')\n383|     created = models.DateTimeField('Created', auto_now_add=True)\n384|     total_ref = models.IntegerField(blank=True, default=0)\n385| \n386|     def __unicode__(self):\n387|         return self.name \n388| \n389| \n390| # TOPIC 里几种可行的引用附件格式： \n391| # [A:ID] | [a:ID] | [附:ID] | [附件:ID] 等\n392| ATTACHMENT_QUOTE = re.compile(u'\\[[ ]*(a|atta|attachment|附|附件)[ ]*:[ ]*(?P<id>[0-9]+)[ ]*\\]', re.I)\n393| WIKI_QUOTE = re.compile(u'\\[[ ]*(w|wiki|维科|知识库)[ ]*:[ ]*(?P<id>[0-9]+)[
@@ -6823,7 +6823,7 @@ For ACCESS-003: The auditor has downgraded to low per previous dispute, and revi
 }
 ```
 
-观察：
+返回：
 
 ```
 {"pattern": "\\.groups", "count": 6, "matches": [{"path": "app/admin/forms.py", "line": 93, "text": "user.groups.add(g)"}, {"path": "app/admin/forms.py", "line": 118, "text": "user.groups.add(g)"}, {"path": "app/admin/forms.py", "line": 147, "text": "catalog.groups.add(g)"}, {"path": "app/admin/forms.py", "line": 172, "text": "catalog.groups.add(g)"}, {"path": "app/ydata/models.py", "line": 93, "text": "if self.groups.count() > 0:"}, {"path": "app/ydata/models.py", "line": 96, "text": "self.groups.get(user__pk=user.id)"}], "ok": true}
@@ -6883,7 +6883,7 @@ Now call review_finding for both, then accept_report.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-003", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -6903,7 +6903,7 @@ Now call review_finding for both, then accept_report.
 }
 ```
 
-观察：
+返回：
 
 ```
 {"id": "ACCESS-004", "status": "confirmed", "verdict": "agree", "ok": true}
@@ -6933,7 +6933,7 @@ Both review_finding calls succeeded. Now call accept_report with notes on what I
 }
 ```
 
-观察：
+返回：
 
 ```
 {"message": "critic accepted the current findings", "ok": true}

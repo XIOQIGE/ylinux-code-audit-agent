@@ -33,7 +33,7 @@
 | low | [`CONFIG-003`](#finding-config-003) | 会话 Cookie 未设 HttpOnly，XSS 可直接窃取会话 | 无请求入口 | confirmed | 同意 | `taskManager/settings.py:108` |
 | info | [`COMP-001`](#finding-comp-001) | 使用已停止维护的 Django 1.8.3，存在已知未修复漏洞 | 无请求入口 | confirmed | 同意 | `requirements.txt:1` |
 
-发现列表来自 Agent 写入并经过引用核对的结构化结果。审计员综述写于复核之前，单条发现的状态以复核之后为准。线索处置、读过的文件、阶段记录、工具序列和逐条引用核对见 `appendix.md`；关键决策摘要见 `decisions.md`。
+下面的发现由 Agent 写入，每条引用都回到源码核对过。审计员综述写在复核之前，单条发现的状态以复核后为准。线索处置、读过的文件、阶段记录、工具序列和引用核对见 `appendix.md`，关键决策见 `decisions.md`。
 
 ## 审计员综述
 

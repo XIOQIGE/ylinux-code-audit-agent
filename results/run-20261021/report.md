@@ -26,7 +26,7 @@
 | low | [`FILE-001`](#finding-file-001) | 上传文件名未清洗：头注入/JS 注入风险，XML-RPC 可投放任意内容到媒体目录 | 未填 | confirmed | 同意 | `app/ydata/views.py:78` |
 | low | [`REDIRECT-001`](#finding-redirect-001) | 登录/退出/后台登录处基于 next 与 Referer 的开放重定向 | 未填 | confirmed | 同意 | `app/account/views.py:44` |
 
-发现列表来自 Agent 写入并经过引用核对的结构化结果。审计员综述写于复核之前，单条发现的状态以复核之后为准。线索处置、读过的文件、阶段记录、工具序列和逐条引用核对见 `appendix.md`；关键决策摘要见 `decisions.md`。
+下面的发现由 Agent 写入，每条引用都回到源码核对过。审计员综述写在复核之前，单条发现的状态以复核后为准。线索处置、读过的文件、阶段记录、工具序列和引用核对见 `appendix.md`，关键决策见 `decisions.md`。
 
 ## 审计员综述
 

@@ -1,7 +1,7 @@
 {
  "target": "https://github.com/nVisium/django.nV",
  "commit": "a48901f106da4888417339b7b44b8ed56b64c63f",
- "notes": "第二个目标，用于检验提示词和规则是否只对 ylinux_old 有效（提示词、规则在跑 django.nV 前已冻结）。由一个独立子代理（Claude）在 Agent 跑 django.nV 之前逐条打开源码标注，标注时看不到任何 Agent 输出；主会话按源码抽查了 NV-01/03/04/05/07 的行号与成因。未经人类安全工程师复核。django.nV 是故意留洞的教学项目，源码里有 A1/A2 等注释提示漏洞位置，标注者和被测 Agent 都能看到。issues 计入召回；optional 命中不扣分；traps 按精确行匹配。",
+ "notes": "第二个目标，用来检验提示词和规则是不是只对 ylinux_old 有效（跑 django.nV 之前提示词和规则已冻结）。在 Agent 运行之前另开一个 Claude 会话逐条打开源码标注，标注时看不到 Agent 的任何输出；我对着源码抽查了 NV-01/03/04/05/07 的行号和成因。没有经过安全工程师复核。django.nV 是故意留洞的教学项目，源码里有 A1/A2 等注释提示漏洞位置，标注和被测 Agent 都能看到。issues 计入召回；optional 命中不扣分；traps 按精确行号匹配。",
  "issues": [
   {
    "id": "NV-01",

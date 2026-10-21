@@ -1,6 +1,6 @@
 # 运行 `run-20261020` 的评审
 
-由 `audit_agent evaluate` 按 `eval/ground_truth.json` 自动生成，是对 report.md 的外部打分，不修改报告本身。
+用 `audit_agent evaluate` 对照 `eval/ground_truth.json` 生成，只是给 report.md 打分，不改报告本身。
 
 - 上报 7 条：命中真值 6，踩中误报陷阱 1，未匹配 0
 - 精确率下限 0.857，召回率 0.188，高危及以上召回 0.5，按严重性加权召回 0.227

@@ -26,7 +26,7 @@
 | low | [`MISC-001`](#finding-misc-001) | ylab update_post_profile 匿名批量改写帖子数据 | 匿名 | confirmed | 同意 | `app/ylab/views.py:37` |
 | low | [`REDIR-001`](#finding-redir-001) | logout 与管理登录存在开放重定向 | 匿名 | confirmed | 同意 | `app/account/views.py:55` |
 
-发现列表来自 Agent 写入并经过引用核对的结构化结果。审计员综述写于复核之前，单条发现的状态以复核之后为准。线索处置、读过的文件、阶段记录、工具序列和逐条引用核对见 `appendix.md`；关键决策摘要见 `decisions.md`。
+下面的发现由 Agent 写入，每条引用都回到源码核对过。审计员综述写在复核之前，单条发现的状态以复核后为准。线索处置、读过的文件、阶段记录、工具序列和引用核对见 `appendix.md`，关键决策见 `decisions.md`。
 
 ## 审计员综述
 

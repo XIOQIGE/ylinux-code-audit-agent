@@ -159,7 +159,7 @@ def load_findings(run_dir: Path) -> list[dict]:
 def render(results: dict[str, dict], truth: dict, truth_path: Path = Path("eval/ground_truth.json")) -> str:
     titles = {issue["id"]: f"{issue['id']} [{issue['severity']}] {issue['title']}" for issue in truth["issues"]}
     trap_titles = {trap["id"]: trap["title"] for trap in truth.get("false_positive_traps", [])}
-    lines = ["# 评测结果", "", f"由 `python -m audit_agent evaluate` 生成。真值见 `{truth_path.as_posix()}`（{truth.get('target', '')}）。", ""]
+    lines = ["# 评测结果", "", f"用 `python -m audit_agent evaluate` 生成，真值文件是 `{truth_path.as_posix()}`（{truth.get('target', '')}）。", ""]
     lines.append("| 运行 | 上报 | 命中真值 | 踩中误报陷阱 | 未匹配 | 精确率下限 | 召回率 | 高危及以上召回 | 按严重性加权召回 |")
     lines.append("| --- | --- | --- | --- | --- | --- | --- | --- | --- |")
     for name, result in results.items():
@@ -168,7 +168,7 @@ def render(results: dict[str, dict], truth: dict, truth_path: Path = Path("eval/
             f"{result['unmatched_findings']} | {result['precision_lower_bound']} | {result['recall']} | {result['high_recall']} | {result['severity_weighted_recall']} |"
         )
     lines.append("")
-    lines.append("“未匹配”既可能是误报，也可能是真值清单没收录的真问题，需要人工看。所以精确率只给下限。“附带陷阱”表示发现的主体命中了真值，但部分证据或影响落在已知误判上（问题对、影响说过头）。")
+    lines.append("“未匹配”可能是误报，也可能是真值里没收录的真问题，要人工看，所以精确率只给下限。“附带陷阱”指发现本身命中了真值，但有一部分证据或影响描述落在已知的误判上，也就是问题找对了、影响说过头了。")
     for name, result in results.items():
         lines.extend(["", f"## `{name}`", "", "| 发现 | 状态 | 严重性 | 判定 | 对应真值 | 严重性偏差 |", "| --- | --- | --- | --- | --- | --- |"])
         for row in result["findings"]:
@@ -208,7 +208,7 @@ def summarize_group(results: list[dict], truth: dict) -> dict:
 
 
 def render_groups(groups: dict[str, dict], truth: dict) -> str:
-    lines = ["## 重复运行的波动", "", "均值 ± 样本标准差（最小 – 最大）。同一套代码、同一模型、同一目标，差异只来自模型采样。", ""]
+    lines = ["## 重复运行的波动", "", "均值 ± 样本标准差（最小 – 最大）。代码、模型、目标都相同，差别只来自模型每次的采样。", ""]
     lines.append("| 组 | 次数 | " + " | ".join(METRIC_LABELS[key] for key in GROUP_METRICS) + " |")
     lines.append("| --- | --- | " + " | ".join("---" for _ in GROUP_METRICS) + " |")
     for name, group in groups.items():
@@ -234,7 +234,7 @@ def render_review(name: str, result: dict, truth: dict, truth_path: Path) -> str
     lines = [
         f"# 运行 `{name}` 的评审",
         "",
-        f"由 `audit_agent evaluate` 按 `{truth_path.as_posix()}` 自动生成，是对 report.md 的外部打分，不修改报告本身。",
+        f"用 `audit_agent evaluate` 对照 `{truth_path.as_posix()}` 生成，只是给 report.md 打分，不改报告本身。",
         "",
         f"- 上报 {result['reported']} 条：命中真值 {result['true_positive_findings']}，踩中误报陷阱 {result['false_positive_trap_findings']}，未匹配 {result['unmatched_findings']}",
         f"- 精确率下限 {result['precision_lower_bound']}，召回率 {result['recall']}，高危及以上召回 {result['high_recall']}，按严重性加权召回 {result['severity_weighted_recall']}",
@@ -267,7 +267,7 @@ def render_review(name: str, result: dict, truth: dict, truth_path: Path) -> str
         lines.append("- 无")
     unmatched = [row for row in result["findings"] if row["verdict"] == "unmatched"]
     if unmatched:
-        lines.extend(["", "## 未匹配的发现", "", "真值清单没收录，可能是误报，也可能是清单漏掉的真问题；需要人工打开证据判断。", ""])
+        lines.extend(["", "## 未匹配的发现", "", "真值里没有对应条目，可能是误报，也可能是真值漏了，需要打开证据看。", ""])
         lines.extend(f"- `{row['id']}` {row['title']}（{row['category']}，{row['severity']}）" for row in unmatched)
     lines.append("")
     return "\n".join(lines)
