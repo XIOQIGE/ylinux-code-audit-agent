@@ -7,7 +7,7 @@
 ```powershell
 pip install -e ".[dev]"; copy .env.example .env   # 在 .env 里填 DEEPSEEK_API_KEY
 python -m audit_agent run                           # 克隆 ylinux_old 固定 commit，完整跑一遍，写到 results/<时间戳>/
-python -m audit_agent replay results/run-20261021-r3   # 不需要密钥：用录下的模型响应离线重放，验证结果可复现
+python -m audit_agent replay results/run-20261021-r3   # 不需要密钥：用录下的模型响应离线重放（目标不在 workspace/ 时先按记录的 commit 克隆），验证结果可复现
 ```
 
 ## 结果

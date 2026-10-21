@@ -169,6 +169,8 @@ def _replay(run_dir: Path, target: Path, out: str) -> int:
         print(f"missing {recording}; only runs made with this version record responses", file=sys.stderr)
         return 1
     meta = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
+    if not target.is_dir() and meta.get("target_url") and meta.get("commit"):
+        ensure_checkout(meta["target_url"], target, meta["commit"])
     rows = ReplayLLM.load(recording)
     out_dir = Path(out) if out else run_dir / "replay"
     budgets = meta.get("budgets") or {}
